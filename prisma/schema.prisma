@@ -29,7 +29,7 @@ model role {
 model user {
   id String @id @default(uuid())
   name String
-  email String @unique
+  email String
   password String
   profile_uri String?
   address String?
@@ -41,6 +41,7 @@ model user {
   
   role role @relation(fields: [role_id], references: [id], onDelete: Cascade)
 
+  items item[]
   blogs blog[]
   comments comment[]
 }
@@ -72,4 +73,19 @@ model comment {
 
   user user @relation(fields: [user_id], references: [id], onDelete: Cascade)
   blog blog @relation(fields: [blog_id], references: [id], onDelete: Cascade)
+}
+
+model item {
+  id String @id @default(uuid())
+  user_id String
+  name String
+  image_uri String
+  price Int
+  description String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by String @default("system")
+  updated_by String @default("system")
+
+  user user @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
