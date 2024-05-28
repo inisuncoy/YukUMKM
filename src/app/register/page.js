@@ -5,9 +5,131 @@ import React, { useState } from 'react';
 import bg1 from '../../../public/assets/img/bg/bg1.png';
 import logo1 from '../../../public/assets/img/logo/logo1.png';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
+import InputField from '@/components/forms/InputField';
+import { z } from 'zod';
+import request from '@/utils/request';
+
+const formSchema = z.object({
+  name: z
+    .string()
+    .min(1, { message: 'Name must be at least 3 characters long' })
+    .max(30, { message: 'Name must be at most 30 characters long.' }),
+  email: z.string().email({ message: 'Invalid email address' }),
+  password: z
+    .string()
+    .min(8, { message: 'Password must be at least 8 characters long.' })
+    .refine((value) => /\d/.test(value), {
+      message: 'Password must contain at least one number.',
+    })
+    .refine((value) => /[!@#$%^&*(),.?":{}|<>]/.test(value), {
+      message: 'Password must contain at least one symbol.',
+    }),
+});
 
 function Register() {
   const [menu, setMenu] = useState(true);
+
+  const [validations, setValidations] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [name, setName] = useState();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+
+  const onSubmit = async (e) => {
+    setValidations([]);
+    setLoading(true);
+    toast.loading('Saving data...');
+    e.preventDefault();
+
+    try {
+      const validation = formSchema.safeParse({
+        name: name,
+        email: email,
+        password: password,
+      });
+
+      if (!validation.success) {
+        validation.error.errors.map((validation) => {
+          const key = [
+            {
+              name: validation.path[0],
+              message: validation.message,
+            },
+          ];
+          setValidations((validations) => [...validations, ...key]);
+        });
+        setLoading(false);
+        toast.dismiss();
+        toast.error('Invalid Input.');
+        console.log(validations);
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    if (menu) {
+      request
+        .post(
+          '/auth/buyer/register',
+          JSON.stringify({
+            name: name,
+            email: email,
+            password: password,
+          })
+        )
+        .then(function (response) {
+          if (response.data?.code === 200 || response.data?.code === 201) {
+            toast.dismiss();
+            toast.success(response.data.data.message);
+            router.push('/beranda');
+          } else if (
+            response.response.data.code === 400 &&
+            response.response.data.status == 'VALIDATION_ERROR'
+          ) {
+            setValidations(response.response.data.error.validation);
+            toast.dismiss();
+            toast.error(response.response.data.error.message);
+          } else if (response.response.data.code === 500) {
+            console.error('INTERNAL_SERVER_ERROR');
+            toast.dismiss();
+            toast.error(response.response.data.error.message);
+          }
+          setLoading(false);
+        });
+    } else {
+      request
+        .post(
+          '/auth/seller/register',
+          JSON.stringify({
+            name: name,
+            email: email,
+            password: password,
+          })
+        )
+        .then(function (response) {
+          if (response.data?.code === 200 || response.data?.code === 201) {
+            toast.dismiss();
+            toast.success(response.data.data.message);
+            router.push('/beranda');
+          } else if (
+            response.response.data.code === 400 &&
+            response.response.data.status == 'VALIDATION_ERROR'
+          ) {
+            setValidations(response.response.data.error.validation);
+            toast.dismiss();
+            toast.error(response.response.data.error.message);
+          } else if (response.response.data.code === 500) {
+            console.error('INTERNAL_SERVER_ERROR');
+            toast.dismiss();
+            toast.error(response.response.data.error.message);
+          }
+          setLoading(false);
+        });
+    }
+  };
+
   return (
     <div className="px-[32px] flex">
       <div className="relative ">
@@ -106,55 +228,46 @@ function Register() {
             </div>
             {menu ? (
               <div className="pt-[45px]">
-                <form>
+                <form onSubmit={onSubmit}>
                   <div className="grid grid-cols-1 gap-[32px]">
-                    <div className="relative  w-full min-w-[200px] ">
-                      <input
-                        id="email"
-                        placeholder="Email"
-                        type="email"
-                        autoComplete="off"
-                        className=" peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-7 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 "
-                      />
-                      <label
-                        htmlFor="email"
-                        className="after:content[' '] pointer-events-none absolute left-0 top-0 flex h-full w-full  select-none !overflow-visible truncate text-[16px] font-bold  leading-tight text-gray-500 transition-all after:absolute after:bottom-0 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500"
-                      >
-                        Email<span className="text-[#FE6D00]">*</span>
-                      </label>
-                    </div>
-                    <div className="relative  w-full min-w-[200px] ">
-                      <input
-                        id="password"
-                        placeholder="Password"
-                        type="password"
-                        autoComplete="off"
-                        className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-7 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 "
-                      />
-                      <label
-                        htmlFor="password"
-                        className="after:content[' '] pointer-events-none absolute left-0 top-0 flex h-full w-full  select-none !overflow-visible truncate text-[16px] font-bold  leading-tight text-gray-500 transition-all after:absolute after:bottom-0 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500"
-                      >
-                        Password <span className="text-[#FE6D00]">*</span>
-                      </label>
-                    </div>
-                    <div className="relative  w-full min-w-[200px] ">
-                      <input
-                        id="password"
-                        placeholder="Password"
-                        type="password"
-                        autoComplete="off"
-                        className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-7 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 "
-                      />
-                      <label
-                        htmlFor="password"
-                        className="after:content[' '] pointer-events-none absolute left-0 top-0 flex h-full w-full  select-none !overflow-visible truncate text-[16px] font-bold  leading-tight text-gray-500 transition-all after:absolute after:bottom-0 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500"
-                      >
-                        Password <span className="text-[#FE6D00]">*</span>
-                      </label>
-                    </div>
+                    <InputField
+                      id={'name'}
+                      name={'name'}
+                      value={name}
+                      label={'Name'}
+                      placeholder={'Name'}
+                      type={'text'}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                      validations={validations}
+                    />
+                    <InputField
+                      id={'email'}
+                      name={'email'}
+                      value={email}
+                      label={'Email'}
+                      placeholder={'Email'}
+                      type={'email'}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      validations={validations}
+                    />
+                    <InputField
+                      id={'password'}
+                      name={'password'}
+                      value={password}
+                      label={'Password'}
+                      placeholder={'Password'}
+                      type={'password'}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      validations={validations}
+                    />
                   </div>
-                  <button className="w-full text-center bg-gray-800 text-white py-[13px] text-[24px] font-bold rounded-[17px] mt-[30px]">
+                  <button
+                    type="submit"
+                    className="w-full text-center bg-gray-800 text-white py-[13px] text-[24px] font-bold rounded-[17px] mt-[30px]"
+                  >
                     Sign Up
                   </button>
                   <p className="mt-[14px] text-[16px] font-medium">
@@ -170,55 +283,46 @@ function Register() {
               </div>
             ) : (
               <div className="pt-[45px]">
-                <form>
+                <form onSubmit={onSubmit}>
                   <div className="grid grid-cols-1 gap-[32px]">
-                    <div className="relative  w-full min-w-[200px] ">
-                      <input
-                        id="email"
-                        placeholder="Email"
-                        type="email"
-                        autoComplete="off"
-                        className=" peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-7 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 "
-                      />
-                      <label
-                        htmlFor="email"
-                        className="after:content[' '] pointer-events-none absolute left-0 top-0 flex h-full w-full  select-none !overflow-visible truncate text-[16px] font-bold  leading-tight text-gray-500 transition-all after:absolute after:bottom-0 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500"
-                      >
-                        Email<span className="text-[#FE6D00]">*</span>
-                      </label>
-                    </div>
-                    <div className="relative  w-full min-w-[200px] ">
-                      <input
-                        id="password"
-                        placeholder="Password"
-                        type="password"
-                        autoComplete="off"
-                        className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-7 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 "
-                      />
-                      <label
-                        htmlFor="password"
-                        className="after:content[' '] pointer-events-none absolute left-0 top-0 flex h-full w-full  select-none !overflow-visible truncate text-[16px] font-bold  leading-tight text-gray-500 transition-all after:absolute after:bottom-0 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500"
-                      >
-                        Password <span className="text-[#FE6D00]">*</span>
-                      </label>
-                    </div>
-                    <div className="relative  w-full min-w-[200px] ">
-                      <input
-                        id="password"
-                        placeholder="Password"
-                        type="password"
-                        autoComplete="off"
-                        className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-7 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 "
-                      />
-                      <label
-                        htmlFor="password"
-                        className="after:content[' '] pointer-events-none absolute left-0 top-0 flex h-full w-full  select-none !overflow-visible truncate text-[16px] font-bold  leading-tight text-gray-500 transition-all after:absolute after:bottom-0 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500"
-                      >
-                        Password <span className="text-[#FE6D00]">*</span>
-                      </label>
-                    </div>
+                    <InputField
+                      id={'name'}
+                      name={'name'}
+                      value={name}
+                      label={'Name'}
+                      placeholder={'Name'}
+                      type={'text'}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                      validations={validations}
+                    />
+                    <InputField
+                      id={'email'}
+                      name={'email'}
+                      value={email}
+                      label={'Email'}
+                      placeholder={'Email'}
+                      type={'email'}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      validations={validations}
+                    />
+                    <InputField
+                      id={'password'}
+                      name={'password'}
+                      value={password}
+                      label={'Password'}
+                      placeholder={'Password'}
+                      type={'password'}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      validations={validations}
+                    />
                   </div>
-                  <button className="w-full text-center bg-gray-800 text-white py-[13px] text-[24px] font-bold rounded-[17px] mt-[30px]">
+                  <button
+                    type="submit"
+                    className="w-full text-center bg-gray-800 text-white py-[13px] text-[24px] font-bold rounded-[17px] mt-[30px]"
+                  >
                     Sign Up
                   </button>
                   <p className="mt-[14px] text-[16px] font-medium">

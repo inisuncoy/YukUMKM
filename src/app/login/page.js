@@ -5,9 +5,15 @@ import React, { useState } from 'react';
 import bg1 from '../../../public/assets/img/bg/bg1.png';
 import logo1 from '../../../public/assets/img/logo/logo1.png';
 import Link from 'next/link';
+import InputField from '@/components/forms/InputField';
 
 function Login() {
   const [menu, setMenu] = useState(true);
+  const [validations, setValidations] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
   return (
     <div className="px-[32px] flex">
       <div className="relative ">
@@ -108,36 +114,28 @@ function Login() {
               <div className="pt-[45px] ">
                 <form>
                   <div className="grid grid-cols-1 gap-[32px]">
-                    <div className="relative  w-full min-w-[200px] ">
-                      <input
-                        id="email"
-                        placeholder="Email"
-                        type="email"
-                        autoComplete="off"
-                        className=" peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-7 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 "
-                      />
-                      <label
-                        htmlFor="email"
-                        className="after:content[' '] pointer-events-none absolute left-0 top-0 flex h-full w-full  select-none !overflow-visible truncate text-[16px] font-bold  leading-tight text-gray-500 transition-all after:absolute after:bottom-0 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500"
-                      >
-                        Email<span className="text-[#FE6D00]">*</span>
-                      </label>
-                    </div>
-                    <div className="relative  w-full min-w-[200px] ">
-                      <input
-                        id="password"
-                        placeholder="Password"
-                        type="password"
-                        autoComplete="off"
-                        className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-7 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 "
-                      />
-                      <label
-                        htmlFor="password"
-                        className="after:content[' '] pointer-events-none absolute left-0 top-0 flex h-full w-full  select-none !overflow-visible truncate text-[16px] font-bold  leading-tight text-gray-500 transition-all after:absolute after:bottom-0 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500"
-                      >
-                        Password <span className="text-[#FE6D00]">*</span>
-                      </label>
-                    </div>
+                    <InputField
+                      id={'email'}
+                      name={'email'}
+                      value={email}
+                      label={'Email'}
+                      placeholder={'Email'}
+                      type={'email'}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      validations={validations}
+                    />
+                    <InputField
+                      id={'password'}
+                      name={'password'}
+                      value={password}
+                      label={'Password'}
+                      placeholder={'Password'}
+                      type={'password'}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      validations={validations}
+                    />
                   </div>
                   <p className="mt-[14px] text-[16px] font-medium">
                     Lupa kata sandi?{' '}
@@ -166,36 +164,28 @@ function Login() {
               <div className="pt-[45px]">
                 <form>
                   <div className="grid grid-cols-1 gap-[32px]">
-                    <div className="relative  w-full min-w-[200px] ">
-                      <input
-                        id="email"
-                        placeholder="Email"
-                        type="email"
-                        autoComplete="off"
-                        className=" peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-7 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 "
-                      />
-                      <label
-                        htmlFor="email"
-                        className="after:content[' '] pointer-events-none absolute left-0 top-0 flex h-full w-full  select-none !overflow-visible truncate text-[16px] font-bold  leading-tight text-gray-500 transition-all after:absolute after:bottom-0 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500"
-                      >
-                        Email<span className="text-[#FE6D00]">*</span>
-                      </label>
-                    </div>
-                    <div className="relative  w-full min-w-[200px] ">
-                      <input
-                        id="password"
-                        placeholder="Password"
-                        type="password"
-                        autoComplete="off"
-                        className="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-7 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 "
-                      />
-                      <label
-                        htmlFor="password"
-                        className="after:content[' '] pointer-events-none absolute left-0 top-0 flex h-full w-full  select-none !overflow-visible truncate text-[16px] font-bold  leading-tight text-gray-500 transition-all after:absolute after:bottom-0 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500"
-                      >
-                        Password <span className="text-[#FE6D00]">*</span>
-                      </label>
-                    </div>
+                    <InputField
+                      id={'email'}
+                      name={'email'}
+                      value={email}
+                      label={'Email'}
+                      placeholder={'Email'}
+                      type={'email'}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      validations={validations}
+                    />
+                    <InputField
+                      id={'password'}
+                      name={'password'}
+                      value={password}
+                      label={'Password'}
+                      placeholder={'Password'}
+                      type={'password'}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      validations={validations}
+                    />
                   </div>
                   <p className="mt-[14px] text-[16px] font-medium">
                     Lupa kata sandi?{' '}
