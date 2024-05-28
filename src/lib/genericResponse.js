@@ -1,7 +1,7 @@
 export function successResponse(data, recordsTotal) {
     return {
-        status: 200,
-        message: "OK",
+        code: 200,
+        status: "OK",
         recordsTotal: recordsTotal || 0,
         data: data,
         error: null
@@ -10,8 +10,8 @@ export function successResponse(data, recordsTotal) {
 
 export function createdResponse(message) {
     return {
-        status: 201,
-        message: "CREATED",
+        code: 201,
+        status: "CREATED",
         recordsTotal: 1,
         data: message || {
             message : "Resource created successfully."

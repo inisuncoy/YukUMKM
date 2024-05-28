@@ -1,7 +1,7 @@
 export function notFoundResponse(message) {
     return {
-        status: 404,
-        message: "NOT_FOUND",
+        code: 404,
+        status: "NOT_FOUND",
         recordsTotal: 0,
         data: null,
         error: {
@@ -14,8 +14,8 @@ export function notFoundResponse(message) {
 
 export function validationErrorResponse(validation) {
     return {
-        status: 422,
-        message: "VALIDATION_ERROR",
+        code: 422,
+        status: "VALIDATION_ERROR",
         recordsTotal: 0,
         data: null,
         error: {
@@ -28,8 +28,8 @@ export function validationErrorResponse(validation) {
 
 export function badRequestResponse(message) {
     return {
-        status: 400,
-        message: "BAD_REQUEST",
+        code: 400,
+        status: "BAD_REQUEST",
         recordsTotal: 0,
         data: null,
         error: {
@@ -42,8 +42,8 @@ export function badRequestResponse(message) {
 
 export function internalErrorResponse(error) {
     return {
-        status: 500,
-        message: "INTERNAL_SERVER_ERROR",
+        code: 500,
+        status: "INTERNAL_SERVER_ERROR",
         recordsTotal: 0,
         data: null,
         error: {
@@ -56,8 +56,8 @@ export function internalErrorResponse(error) {
 
 export function notAuthorizedResponse(message) {
     return {
-        status: 401,
-        message: "UNAUTHORIZED",
+        code: 401,
+        status: "UNAUTHORIZED",
         recordsTotal: 0,
         data: null,
         error: {
@@ -70,8 +70,8 @@ export function notAuthorizedResponse(message) {
 
 export function forbiddenResponse(message) {
     return {
-        status: 403,
-        message: "FORBIDDEN",
+        code: 403,
+        status: "FORBIDDEN",
         recordsTotal: 0,
         data: null,
         error: {
