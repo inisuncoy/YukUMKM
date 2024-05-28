@@ -23,7 +23,7 @@ export async function isSeller(request) {
             return false;
         }
 
-        return !!payload;
+        return payload;
     } catch (error) {
         console.error('Authentication error:', error);
         return false;

@@ -84,7 +84,7 @@ export async function POST(
             }
         });
 
-        return Response.json(createdResponse("Resource created successfully."), { status: 201 });
+        return Response.json(createdResponse({ message :'Resource created successfully.' }), { status: 201 });
 
     } catch (error) {
         console.log('[ROLE_POST]', error);
