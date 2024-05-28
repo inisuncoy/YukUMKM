@@ -6,14 +6,112 @@ import bg1 from '../../../public/assets/img/bg/bg1.png';
 import logo1 from '../../../public/assets/img/logo/logo1.png';
 import Link from 'next/link';
 import InputField from '@/components/forms/InputField';
+import toast from 'react-hot-toast';
+import request from '@/utils/request';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 function Login() {
+  const router = useRouter();
   const [menu, setMenu] = useState(true);
+
   const [validations, setValidations] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+
+  const onSubmit = async (e) => {
+    setValidations([]);
+    setLoading(true);
+    toast.loading('Loading...');
+    e.preventDefault();
+
+    try {
+      const validation = formSchema.safeParse({
+        email: email,
+        password: password,
+      });
+
+      if (!validation.success) {
+        validation.error.errors.map((validation) => {
+          const key = [
+            {
+              name: validation.path[0],
+              message: validation.message,
+            },
+          ];
+          setValidations((validations) => [...validations, ...key]);
+        });
+        setLoading(false);
+        toast.dismiss();
+        toast.error('Invalid Input.');
+        console.log(validations);
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    if (menu) {
+      request
+        .post(
+          '/auth/buyer/login',
+          JSON.stringify({
+            email: email,
+            password: password,
+          })
+        )
+        .then(function (response) {
+          if (response.data?.code === 200 || response.data?.code === 201) {
+            toast.dismiss();
+            toast.success('Success Login');
+            Cookies.set('token', response.data.data.token);
+            router.push('/beranda');
+          } else if (
+            response.data.code === 400 &&
+            response.data.status == 'VALIDATION_ERROR'
+          ) {
+            setValidations(response.data.error.validation);
+            toast.dismiss();
+            toast.error(response.data.error.message);
+          } else if (response.data.code === 500) {
+            console.error('INTERNAL_SERVER_ERROR');
+            toast.dismiss();
+            toast.error(response.data.error.message);
+          }
+          setLoading(false);
+        });
+    } else {
+      request
+        .post(
+          '/auth/seller/login',
+          JSON.stringify({
+            email: email,
+            password: password,
+          })
+        )
+        .then(function (response) {
+          if (response.data?.code === 200 || response.data?.code === 201) {
+            toast.dismiss();
+            toast.success('Success Login');
+            Cookies.set('token', response.data.data.token);
+            router.push('/beranda');
+          } else if (
+            response.data.code === 400 &&
+            response.data.status == 'VALIDATION_ERROR'
+          ) {
+            setValidations(response.data.error.validation);
+            toast.dismiss();
+            toast.error(response.data.error.message);
+          } else if (response.data.code === 500) {
+            console.error('INTERNAL_SERVER_ERROR');
+            toast.dismiss();
+            toast.error(response.data.error.message);
+          }
+          setLoading(false);
+        });
+    }
+  };
   return (
     <div className="px-[32px] flex">
       <div className="relative ">
@@ -112,7 +210,7 @@ function Login() {
             </div>
             {menu ? (
               <div className="pt-[45px] ">
-                <form>
+                <form onSubmit={onSubmit}>
                   <div className="grid grid-cols-1 gap-[32px]">
                     <InputField
                       id={'email'}
@@ -162,7 +260,7 @@ function Login() {
               </div>
             ) : (
               <div className="pt-[45px]">
-                <form>
+                <form onSubmit={onSubmit}>
                   <div className="grid grid-cols-1 gap-[32px]">
                     <InputField
                       id={'email'}

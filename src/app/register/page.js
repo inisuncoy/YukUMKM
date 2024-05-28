@@ -9,6 +9,8 @@ import toast from 'react-hot-toast';
 import InputField from '@/components/forms/InputField';
 import { z } from 'zod';
 import request from '@/utils/request';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 const formSchema = z.object({
   name: z
@@ -28,6 +30,7 @@ const formSchema = z.object({
 });
 
 function Register() {
+  const router = useRouter();
   const [menu, setMenu] = useState(true);
 
   const [validations, setValidations] = useState([]);
@@ -83,18 +86,19 @@ function Register() {
           if (response.data?.code === 200 || response.data?.code === 201) {
             toast.dismiss();
             toast.success(response.data.data.message);
+            Cookies.set('token', response.data.data.token);
             router.push('/beranda');
           } else if (
-            response.response.data.code === 400 &&
-            response.response.data.status == 'VALIDATION_ERROR'
+            response.data.code === 400 &&
+            response.data.status == 'VALIDATION_ERROR'
           ) {
-            setValidations(response.response.data.error.validation);
+            setValidations(response.data.error.validation);
             toast.dismiss();
-            toast.error(response.response.data.error.message);
-          } else if (response.response.data.code === 500) {
+            toast.error(response.data.error.message);
+          } else if (response.data.code === 500) {
             console.error('INTERNAL_SERVER_ERROR');
             toast.dismiss();
-            toast.error(response.response.data.error.message);
+            toast.error(response.data.error.message);
           }
           setLoading(false);
         });
@@ -112,18 +116,19 @@ function Register() {
           if (response.data?.code === 200 || response.data?.code === 201) {
             toast.dismiss();
             toast.success(response.data.data.message);
+            Cookies.set('token', response.data.data.token);
             router.push('/beranda');
           } else if (
-            response.response.data.code === 400 &&
-            response.response.data.status == 'VALIDATION_ERROR'
+            response.data.code === 400 &&
+            response.data.status == 'VALIDATION_ERROR'
           ) {
-            setValidations(response.response.data.error.validation);
+            setValidations(response.data.error.validation);
             toast.dismiss();
-            toast.error(response.response.data.error.message);
-          } else if (response.response.data.code === 500) {
+            toast.error(response.data.error.message);
+          } else if (response.data.code === 500) {
             console.error('INTERNAL_SERVER_ERROR');
             toast.dismiss();
-            toast.error(response.response.data.error.message);
+            toast.error(response.data.error.message);
           }
           setLoading(false);
         });
