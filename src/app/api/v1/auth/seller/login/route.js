@@ -1,10 +1,9 @@
 import db from '@/lib/db';
 
-import jwt from 'jsonwebtoken';
-
 import { internalErrorResponse, notFoundResponse, notAuthorizedResponse } from '@/lib/errorException';
 import { compare } from 'bcrypt';
 import { successResponse } from '@/lib/genericResponse';
+import { jwtSign } from '@/lib/jwtTokenControl';
 
 export async function POST(
     req
@@ -41,7 +40,7 @@ export async function POST(
             role: user.role.name
         }
 
-        const token = jwtSign(payload);
+        const token = await jwtSign(payload);
 
         const resp = {
             token : token,

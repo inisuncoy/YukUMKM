@@ -3,7 +3,7 @@ import db from "@/lib/db"
 import { z } from "zod";
 
 import { createdResponse } from "@/lib/genericResponse";
-import { internalErrorResponse, validationErrorResponse } from "@/lib/errorException";
+import { internalErrorResponse, validationErrorResponse, notFoundResponse } from "@/lib/errorException";
 
 import exclude from "@/utils/exclude";
 
