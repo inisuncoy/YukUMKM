@@ -5,18 +5,19 @@ import { IoIosSearch } from 'react-icons/io';
 
 import hero from '../../../../public/assets/img/hero/image.png';
 import Link from 'next/link';
-import InputField from '@/components/forms/InputField';
+import CardProduct from '@/components/card/CardProduct';
+import SwiperProduk from '@/components/swiper/SwiperProduk';
 
 export default function HomePage() {
   return (
     <div className=" w-full h-screen">
-      <div className="absolute top-0 bottom-0 right-0 left-0 mx-auto -z-10  w-[1090px] h-[390px] mt-[94px] md:mt-[78px] inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_bottom,_black_0%,_black_calc(100%-300px),_transparent_100%)]">
+      <div className="absolute top-0 bottom-0 right-0 left-0 mx-auto -z-10  max-w-[1090px] h-[390px] mt-[94px] md:mt-[78px] inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_bottom,_black_0%,_black_calc(100%-300px),_transparent_100%)]">
         <Image
           width={0}
           height={0}
           alt="hero"
           src={hero}
-          className="w-full object-cover object-bottom rounded-lg"
+          className="w-full object-cover object-bottom lg:rounded-lg"
         />
       </div>
 
@@ -30,10 +31,10 @@ export default function HomePage() {
             <IoIosSearch className="text-[24px] text-black " />
           </button>
         </div>
-        <div className="mt-[30px] w-full bg-white rounded-lg">
+        <div className="mt-[30px] w-full bg-white rounded-lg relative">
           <div className="px-[22px] py-[18px] flex gap-[17px] bg-white rounded-[8px]">
             <span className="border-2 rounded-full border-[#4DBB8D]"></span>
-            <h1 className="text-[20px] font-semibold items-center flex gap-5">
+            <h1 className="md:text-[20px] text-[16px] font-semibold items-center flex gap-5">
               Rekomendasi Toko{' '}
               <Link
                 href={'#'}
@@ -43,7 +44,73 @@ export default function HomePage() {
               </Link>
             </h1>
           </div>
-          <div></div>
+          <div className="px-[20px]  pb-[32px] flex">
+            <div className="flex lg:flex-row flex-col w-full lg:gap-[52px] md:gap-[12px] gap-[12px]">
+              <div className="relative w-full flex md:flex-row items-end">
+                <div className="w-[218px] h-[269px]  ">
+                  <Image
+                    width={0}
+                    height={0}
+                    alt="product-bg"
+                    src={hero}
+                    className="w-full h-full object-cover object-bottom rounded-lg"
+                  />
+                </div>
+                <div className="absolute  right-0 flex flex-col gap-[11px]">
+                  <div className="flex justify-end gap-[16px] ">
+                    <CardProduct />
+                    <CardProduct />
+                  </div>
+                  <Link
+                    href={'#'}
+                    className="flex justify-end text-[#FE6D00] text-[13px] font-bold underline"
+                  >
+                    Lihat toko
+                  </Link>
+                </div>
+              </div>
+              <div className="relative w-full flex items-end">
+                <div className="w-[218px] h-[269px]  ">
+                  <Image
+                    width={0}
+                    height={0}
+                    alt="product-bg"
+                    src={hero}
+                    className="w-full h-full object-cover object-bottom rounded-lg"
+                  />
+                </div>
+                <div className="absolute  right-0 flex flex-col gap-[11px]">
+                  <div className="flex justify-end gap-[16px] ">
+                    <CardProduct />
+                    <CardProduct />
+                  </div>
+                  <Link
+                    href={'#'}
+                    className="flex justify-end text-[#FE6D00] text-[13px] font-bold underline"
+                  >
+                    Lihat toko
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="mt-[30px] w-full bg-white rounded-lg relative">
+          <div className="px-[22px] py-[18px] flex gap-[17px] bg-white rounded-[8px]">
+            <span className="border-2 rounded-full border-[#4DBB8D]"></span>
+            <h1 className="md:text-[20px] text-[16px] font-semibold items-center flex gap-5">
+              Barang - barang kekinian{' '}
+              <Link
+                href={'#'}
+                className="text-[#FE6D00] text-[13px] font-bold underline"
+              >
+                Lihat semua
+              </Link>
+            </h1>
+          </div>
+          <div className="px-[20px]  pb-[32px] flex">
+            <SwiperProduk />
+          </div>
         </div>
       </div>
     </div>

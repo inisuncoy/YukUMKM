@@ -7,8 +7,8 @@ import { FaUser } from 'react-icons/fa6';
 const PembeliLayout = ({ children }) => {
   const [navBtn, setNavBtn] = useState(false);
   return (
-    <div>
-      <nav className="bg-[#1D1D1D] border-gray-200 fixed w-full top-0">
+    <div className="w-full">
+      <nav className="bg-[#1D1D1D] border-gray-200 fixed w-full top-0 z-50 ">
         <div className="max-w-full flex flex-wrap items-center justify-between  py-4 px-[26px]">
           <Link
             href="/beranda"
@@ -134,8 +134,11 @@ const PembeliLayout = ({ children }) => {
       </nav>
 
       <div>
-        <div className="mt-[94px] md:mt-[78px]" />
-        <div className="px-[189px]">{React.cloneElement(children)}</div>
+        <div className="pt-[94px] pb-[22px] pb md:pt-[78px] md:pb-[24px]">
+          <div className="2xl:px-[189px] xl:px-[189px] lg:px-[50px] md:px-[50px] px-[12px]">
+            {React.cloneElement(children)}
+          </div>
+        </div>
       </div>
     </div>
   );
