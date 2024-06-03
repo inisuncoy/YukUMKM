@@ -116,8 +116,8 @@ function Login() {
     <div className="px-[32px] flex">
       <div className="relative ">
         <div className=" h-screen w-[605px] overflow-hidden">
-          <div class="grid grid-cols-2 gap-[29px] grid-flow-row-dense">
-            <div class="bg-gray-500 rounded-b-[20px] row-span-5">
+          <div className="grid grid-cols-2 gap-[29px] grid-flow-row-dense">
+            <div className="bg-gray-500 rounded-b-[20px] row-span-5">
               <Image
                 width={0}
                 height={0}
@@ -126,7 +126,7 @@ function Login() {
                 className="w-full h-full object-cover rounded-b-[20px]"
               />
             </div>
-            <div class="bg-gray-500 rounded-b-[20px] row-span-12">
+            <div className="bg-gray-500 rounded-b-[20px] row-span-12">
               <Image
                 width={0}
                 height={0}
@@ -135,7 +135,7 @@ function Login() {
                 className="w-full h-full object-cover rounded-b-[20px]"
               />
             </div>
-            <div class="bg-gray-500 rounded-[20px] row-span-12">
+            <div className="bg-gray-500 rounded-[20px] row-span-12">
               <Image
                 width={0}
                 height={0}
@@ -144,7 +144,7 @@ function Login() {
                 className="w-full h-full object-cover rounded-[20px]"
               />
             </div>
-            <div class="bg-gray-500 rounded-[20px] row-span-12">
+            <div className="bg-gray-500 rounded-[20px] row-span-12">
               <Image
                 width={0}
                 height={0}
@@ -153,7 +153,7 @@ function Login() {
                 className="w-full h-full object-cover rounded-[20px]"
               />
             </div>
-            <div class="bg-gray-500 rounded-[20px] row-span-12">
+            <div className="bg-gray-500 rounded-[20px] row-span-12">
               <Image
                 width={0}
                 height={0}
@@ -162,7 +162,7 @@ function Login() {
                 className="w-full h-full object-cover rounded-[20px]"
               />
             </div>
-            <div class="bg-gray-500 rounded-[20px] row-span-12">
+            <div className="bg-gray-500 rounded-[20px] row-span-12">
               <Image
                 width={0}
                 height={0}
