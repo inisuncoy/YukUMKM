@@ -8,6 +8,9 @@ import whatshapp from '../../../../../../public/assets/icon/whatshapp.png';
 import facebook from '../../../../../../public/assets/icon/facebook.png';
 import { GoDotFill } from 'react-icons/go';
 import CardProduct from '@/components/card/CardProduct';
+export async function generateStaticParams() {
+  return [{ detailToko: 'Inod’s Crafthouse', detailProduk: 'Keranjang kayu' }];
+}
 
 const DetailProdukPage = ({ params }) => {
   return (

@@ -4,6 +4,15 @@ import Image from 'next/image';
 import React from 'react';
 import thumnail from '../../../../../public/assets/uploads/blog/blog1.png';
 
+export async function generateStaticParams() {
+  return [
+    {
+      detailBlog:
+        'PSSI Ungkap Alasan Harga Tiket Timnas Indonesia Melonjak Drastis',
+    },
+  ];
+}
+
 const DetailBlogPage = ({ params }) => {
   return (
     <div className="flex flex-col gap-[30px]">
