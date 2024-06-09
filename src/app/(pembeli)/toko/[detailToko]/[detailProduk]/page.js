@@ -9,7 +9,7 @@ import facebook from '../../../../../../public/assets/icon/facebook.png';
 import { GoDotFill } from 'react-icons/go';
 import CardProduct from '@/components/card/CardProduct';
 
-const DetailProdukPage = () => {
+const DetailProdukPage = ({ params }) => {
   return (
     <div className="flex flex-col gap-[19px]">
       <div className="w-full relative ">

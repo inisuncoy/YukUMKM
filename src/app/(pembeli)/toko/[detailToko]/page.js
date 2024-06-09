@@ -7,7 +7,7 @@ import LogoUMKM from '../../../../../public/assets/uploads/toko/logoUMKM.png';
 import CardProduct from '@/components/card/CardProduct';
 import NextBreadcrumb from '@/components/NextBreadcrumb';
 
-const DetailTokoPage = () => {
+const DetailTokoPage = ({ params }) => {
   return (
     <div className="flex flex-col gap-[19px]">
       <div className="w-full relative">
