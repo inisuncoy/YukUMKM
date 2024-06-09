@@ -4,7 +4,7 @@ import Image from 'next/image';
 import React from 'react';
 import thumnail from '../../../../../public/assets/uploads/blog/blog1.png';
 
-const DetailBlogPage = () => {
+const DetailBlogPage = ({ params }) => {
   return (
     <div className="flex flex-col gap-[30px]">
       <NextBreadcrumb
