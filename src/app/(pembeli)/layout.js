@@ -1,4 +1,5 @@
 'use client';
+import { Button } from 'flowbite-react';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
@@ -6,6 +7,7 @@ import { FaUser } from 'react-icons/fa6';
 
 const PembeliLayout = ({ children }) => {
   const [navBtn, setNavBtn] = useState(false);
+  const [active, setActive] = useState(false);
   return (
     <div className="w-full">
       <nav className="bg-[#1D1D1D] border-gray-200 fixed w-full top-0 z-50 ">
@@ -115,12 +117,38 @@ const PembeliLayout = ({ children }) => {
                 </Link>
               </li>
               <li>
+                <Link
+                  href="/chat"
+                  className="block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
+                >
+                  Chat
+                </Link>
+              </li>
+              <li>
                 <button
                   type="button"
+                  onClick={() => setActive(!active)}
                   className="hidden  py-2 px-3 text-white rounded hover:bg-gray-100 md:block md:hover:bg-transparent md:border-0 md:p-0 "
                 >
                   <FaUser className="text-[#FE6D00]" />
                 </button>
+                <div className={`relative ${active ? '' : 'hidden'}`}>
+                  <div className="absolute -right-[26px] top-3 shadow-lg w-48 h-24 bg-white rounded-lg flex flex-col">
+                    <div className="flex-1 text-center flex justify-center items-center border-b-2 ">
+                      <Link
+                        href="/profile"
+                        className="block py-2 px-3  rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
+                      >
+                        Profile
+                      </Link>
+                    </div>
+                    <div className="flex-1 text-center flex justify-center items-center">
+                      <button className="block py-2 px-3  rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 ">
+                        Keluar
+                      </button>
+                    </div>
+                  </div>
+                </div>
                 <Link
                   href="/login"
                   className="block w-full py-2 px-3 text-white bg-[#FE6D00] rounded md:hidden"
