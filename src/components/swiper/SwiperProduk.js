@@ -98,7 +98,7 @@ export default function App() {
     <div className="w-full relative">
       <div className="w-full md:[mask-image:_linear-gradient(to_right,_black_0%,_black_calc(100%-100px),_transparent_100%)] [mask-image:_linear-gradient(to_right,_black_0%,_black_calc(100%-40px),_transparent_100%)]">
         <Swiper
-          slidesPerView={2.5}
+          slidesPerView={2}
           spaceBetween={10}
           navigation={{
             nextEl: '.next',
@@ -123,31 +123,31 @@ export default function App() {
             },
           }}
         >
-          <SwiperSlide>
+          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
             <CardProduct />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
             <CardProduct />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
             <CardProduct />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
             <CardProduct />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
             <CardProduct />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
             <CardProduct />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
             <CardProduct />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
             <CardProduct />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
             <CardProduct />
           </SwiperSlide>
         </Swiper>
