@@ -10,8 +10,6 @@ export async function middleware(request) {
             return Response.json(notAuthorizedResponse(), { status: 401 })
         }
 
-        request.user = result;
-
     } catch (error) {
         return Response.json(internalErrorResponse(error), { status: 500 });
     }

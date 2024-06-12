@@ -86,11 +86,13 @@ export async function POST(
             return Response.json(validationErrorResponse(validationError), { status: 422 });
         }
 
+        const hashedPassword = await hashPass(password);
+
         const user = await db.user.create({
             data: {
                 name: name,
                 email: email,
-                password: await hashPass(password),
+                password: hashedPassword,
                 role_id: role.id
             }
         });

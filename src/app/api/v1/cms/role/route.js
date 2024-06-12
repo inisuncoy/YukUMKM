@@ -78,7 +78,7 @@ export async function POST(
             return Response.json(validationErrorResponse(validationError), { status: 422 });
         }
 
-        const role = await db.role.create({
+        await db.role.create({
             data: {
                 name: name
             }

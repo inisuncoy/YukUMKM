@@ -57,6 +57,29 @@ export async function isBuyer(request) {
     }
 }
 
+export async function Auth(request) {
+    try {
+        const authHeader = request.headers.get('Authorization');
+
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return false;
+        }
+
+        const token = authHeader.split(' ')[1];
+
+        if (!token) {
+            return false;
+        }
+
+        const { payload } = await jwtVerify(token, JWT_SECRET);
+
+        return payload;
+    } catch (error) {
+        console.error('Authentication error:', error);
+        return false;
+    }
+}
+
 export async function jwtSign(payload) {
     return jwt.sign(payload, JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN
