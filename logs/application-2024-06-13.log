@@ -1,0 +1,14 @@
+2024-06-13 02:50:18 +07:00 [development] info: GET /api/v1/public/role info +0ms
+2024-06-13 02:50:29 +07:00 [development] info: GET /api/v1/public/role info +12s
+2024-06-13 02:50:45 +07:00 [development] info: GET /api/v1/public/role info +0ms
+2024-06-13 02:51:01 +07:00 [development] info: GET /api/v1/public/role info +0ms
+2024-06-13 02:51:07 +07:00 [development] info: GET /api/v1/public/role info 200 +0ms
+2024-06-13 02:51:10 +07:00 [development] info: GET /api/v1/public/role info 200 +4s
+2024-06-13 02:52:15 +07:00 [development] info: GET /api/v1/public/role +0ms
+2024-06-13 02:53:31 +07:00 [development] info: GET /api/v1/public/role +1m
+2024-06-13 02:53:37 +07:00 [development] info: GET /api/v1/public/role +6s
+2024-06-13 02:53:40 +07:00 [development] info: GET /api/v1/public/role +3s
+2024-06-13 02:53:43 +07:00 [development] info: GET /api/v1/public/role +3s
+2024-06-13 02:53:44 +07:00 [development] info: GET /api/v1/public/role +677ms
+2024-06-13 02:54:00 +07:00 [development] info: GET /api/v1/public/role undefined
+2024-06-13 02:54:14 +07:00 [development] info: GET /api/v1/public/role

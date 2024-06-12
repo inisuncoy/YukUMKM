@@ -79,7 +79,6 @@ model item {
   id String @id @default(uuid())
   user_id String
   name String
-  image_uri String
   price Int
   description String
   created_at DateTime @default(now())
@@ -87,5 +86,19 @@ model item {
   created_by String @default("system")
   updated_by String @default("system")
 
+  item_image itemImage[]
   user user @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model itemImage {
+  id String @id @default(uuid())
+  item_id String
+  uri String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by String @default("system")
+  updated_by String @default("system")
+
+  item item @relation(fields: [item_id], references: [id], onDelete: Cascade)
+  @@map("item_image")
 }

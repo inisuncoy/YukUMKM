@@ -5,10 +5,14 @@ import { compare } from 'bcrypt';
 import { successResponse } from '@/lib/genericResponse';
 import { jwtSign } from '@/lib/jwtTokenControl';
 
+import { logger } from '@/logger';
+
 export async function POST(
     req
 ) {
     try {
+        logger.info(`POST /api/v1/auth/buyer/login ${req}`);
+
         const body = await req.json();
         const { email, password } = body
 
@@ -50,6 +54,7 @@ export async function POST(
 
 
     } catch (error) {
+        logger.info(`POST /api/v1/auth/buyer/login ${req}`);
         console.log('[LOGIN_BUYER]', error);
         return Response.json(internalErrorResponse(error), { status: 500 });
     }

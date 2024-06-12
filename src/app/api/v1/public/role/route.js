@@ -2,9 +2,11 @@ import db from '@/lib/db';
 
 import { successResponse } from '@/lib/genericResponse';
 import { internalErrorResponse, notFoundResponse } from '@/lib/errorException';
+import logger from '@/services/logger';
 
 export async function GET(req) {
-  try {
+
+  try {    
     const url = new URL(req.url);
     const searchParams = url.searchParams;
 
@@ -32,10 +34,14 @@ export async function GET(req) {
     };
 
     const datas = await db.role.findMany(baseQuery);
-
+    logger.info(`GET /api/v1/public/role`)
+    
     return Response.json(successResponse(datas, datas.length), { status: 200 });
+
+    
   } catch (error) {
     // console.log('[ROLE_GET]', error);
+    logger.error(`GET /api/v1/public/role ${error}`)
     return Response.json(internalErrorResponse(error), { status: 500 });
   }
 }
