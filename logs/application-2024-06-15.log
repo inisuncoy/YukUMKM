@@ -228,294 +228,342 @@
 2024-06-15 15:30:54 +07:00 [development] error: GET /api/v1/cms/item 
 2024-06-15 15:35:27 +07:00 [development] error: GET /api/v1/cms/item ReferenceError: s is not defined
 2024-06-15 15:35:48 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 15:57:49 +07:00 [development] info: POST /api/v1/cms/itemCategory 
-2024-06-15 15:57:59 +07:00 [development] error: POST /api/v1/cms/item SyntaxError: No number after minus sign in JSON at position 1
-2024-06-15 15:58:12 +07:00 [development] error: POST /api/v1/cms/item SyntaxError: Unexpected end of JSON input
-2024-06-15 16:03:44 +07:00 [development] error: POST /api/v1/cms/item SyntaxError: Unexpected token ']', ..."    
-    ],
-    "i"... is not valid JSON
-2024-06-15 16:13:33 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 16:14:24 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 16:26:25 +07:00 [development] info: GET /api/v1/cms/itemCategory 
-2024-06-15 16:26:30 +07:00 [development] info: POST /api/v1/cms/itemCategory 
-2024-06-15 16:26:33 +07:00 [development] info: GET /api/v1/cms/itemCategory 
-2024-06-15 16:48:52 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 17:07:51 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
-Invalid `prisma.item.create()` invocation:
-
-
-Foreign key constraint failed on the field: `item_user_id_fkey (index)`
-2024-06-15 17:08:51 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 17:08:56 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
-Invalid `prisma.item.create()` invocation:
-
-
-Foreign key constraint failed on the field: `item_user_id_fkey (index)`
-2024-06-15 17:10:45 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
-Invalid `prisma.item.create()` invocation:
-
-
-Foreign key constraint failed on the field: `item_user_id_fkey (index)`
-2024-06-15 17:12:06 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
-Invalid `prisma.item.create()` invocation:
-
-
-Foreign key constraint failed on the field: `item_user_id_fkey (index)`
-2024-06-15 17:12:34 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
-Invalid `prisma.item.create()` invocation:
-
-
-Foreign key constraint failed on the field: `item_user_id_fkey (index)`
-2024-06-15 17:15:06 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
-Invalid `prisma.item.create()` invocation:
-
-
-Foreign key constraint failed on the field: `item_user_id_fkey (index)`
-2024-06-15 17:15:18 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
-Invalid `prisma.item.create()` invocation:
-
-
-Foreign key constraint failed on the field: `item_user_id_fkey (index)`
-2024-06-15 17:16:16 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
-Invalid `prisma.item.create()` invocation:
-
-
-Foreign key constraint failed on the field: `item_user_id_fkey (index)`
-2024-06-15 17:18:14 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
-Invalid `prisma.item.create()` invocation:
-
-
-Foreign key constraint failed on the field: `item_user_id_fkey (index)`
-2024-06-15 17:18:16 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
-Invalid `prisma.item.create()` invocation:
-
-
-Foreign key constraint failed on the field: `item_user_id_fkey (index)`
-2024-06-15 17:21:15 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
-Invalid `prisma.item.create()` invocation:
-
-
-Foreign key constraint failed on the field: `item_user_id_fkey (index)`
-2024-06-15 17:21:17 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
-Invalid `prisma.item.create()` invocation:
-
-
-Foreign key constraint failed on the field: `item_user_id_fkey (index)`
-2024-06-15 17:21:20 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
-Invalid `prisma.item.create()` invocation:
-
-
-Foreign key constraint failed on the field: `item_user_id_fkey (index)`
-2024-06-15 17:22:37 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 17:22:46 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 17:22:49 +07:00 [development] info: POST /api/v1/cms/item 
-2024-06-15 17:23:06 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 17:56:40 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
+2024-06-15 16:15:06 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
 Invalid `prisma.item.findUnique()` invocation:
 
 {
   where: {
-    id: "9783b094-ecd6-4613-9d70-d9ae675b6b43",
-    user_id: {
-      id: "68c2261e-5111-4c76-8f7d-df166df7c0a1",
-      ~~
-      email: "test1@gmail.com",
-      role: "seller",
-      iat: 1718446959,
-      exp: 1718533359,
-?     equals?: String | StringFieldRefInput,
-?     in?: String[] | ListStringFieldRefInput,
-?     notIn?: String[] | ListStringFieldRefInput,
-?     lt?: String | StringFieldRefInput,
-?     lte?: String | StringFieldRefInput,
-?     gt?: String | StringFieldRefInput,
-?     gte?: String | StringFieldRefInput,
-?     contains?: String | StringFieldRefInput,
-?     startsWith?: String | StringFieldRefInput,
-?     endsWith?: String | StringFieldRefInput,
-?     mode?: QueryMode,
-?     not?: String | NestedStringFilter
-    }
+    id: "f0b20cc9-2266-4caa-8cdb-70669d3a1c6c"
   },
   include: {
     item_image: true,
-    item_category: true
+    item_category: true,
+    ~~~~~~~~~~~~~
+?   user?: true
   }
 }
 
-Unknown argument `id`. Did you mean `in`? Available options are marked with ?.
-2024-06-15 17:56:46 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
+Unknown field `item_category` for include statement on model `item`. Available options are marked with ?.
+2024-06-15 16:16:22 +07:00 [development] error: GET /api/v1/cms/itemCategory TypeError: Cannot read properties of undefined (reading 'findMany')
+2024-06-15 16:16:34 +07:00 [development] error: GET /api/v1/cms/itemCategory TypeError: Cannot read properties of undefined (reading 'findMany')
+2024-06-15 16:16:38 +07:00 [development] error: GET /api/v1/cms/itemCategory TypeError: Cannot read properties of undefined (reading 'findUnique')
+2024-06-15 16:16:55 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
 Invalid `prisma.item.findUnique()` invocation:
 
 {
   where: {
-    id: "9783b094-ecd6-4613-9d70-d9ae675b6b43",
-    user_id: {
-      id: "68c2261e-5111-4c76-8f7d-df166df7c0a1",
-      ~~
-      email: "test1@gmail.com",
-      role: "seller",
-      iat: 1718446959,
-      exp: 1718533359,
-?     equals?: String | StringFieldRefInput,
-?     in?: String[] | ListStringFieldRefInput,
-?     notIn?: String[] | ListStringFieldRefInput,
-?     lt?: String | StringFieldRefInput,
-?     lte?: String | StringFieldRefInput,
-?     gt?: String | StringFieldRefInput,
-?     gte?: String | StringFieldRefInput,
-?     contains?: String | StringFieldRefInput,
-?     startsWith?: String | StringFieldRefInput,
-?     endsWith?: String | StringFieldRefInput,
-?     mode?: QueryMode,
-?     not?: String | NestedStringFilter
-    }
+    id: "f0b20cc9-2266-4caa-8cdb-70669d3a1c6c"
   },
   include: {
     item_image: true,
-    item_category: true
+    item_category: true,
+    ~~~~~~~~~~~~~
+?   user?: true
   }
 }
 
-Unknown argument `id`. Did you mean `in`? Available options are marked with ?.
-2024-06-15 17:57:22 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
-Invalid `prisma.item.findMany()` invocation:
+Unknown field `item_category` for include statement on model `item`. Available options are marked with ?.
+2024-06-15 16:18:29 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
+Invalid `prisma.item.findUnique()` invocation:
 
 {
   where: {
-    user_id: {
-      id: "68c2261e-5111-4c76-8f7d-df166df7c0a1",
-      ~~
-      email: "test1@gmail.com",
-      role: "seller",
-      iat: 1718449024,
-      exp: 1718535424,
-?     equals?: String | StringFieldRefInput,
-?     in?: String[] | ListStringFieldRefInput,
-?     notIn?: String[] | ListStringFieldRefInput,
-?     lt?: String | StringFieldRefInput,
-?     lte?: String | StringFieldRefInput,
-?     gt?: String | StringFieldRefInput,
-?     gte?: String | StringFieldRefInput,
-?     contains?: String | StringFieldRefInput,
-?     startsWith?: String | StringFieldRefInput,
-?     endsWith?: String | StringFieldRefInput,
-?     mode?: QueryMode,
-?     not?: String | NestedStringFilter
-    }
+    id: "f0b20cc9-2266-4caa-8cdb-70669d3a1c6c"
   },
   include: {
     item_image: true,
-    item_category: true
-  },
-  orderBy: {
-    created_at: "desc"
+    item_category: true,
+    ~~~~~~~~~~~~~
+?   user?: true
   }
 }
 
-Unknown argument `id`. Did you mean `in`? Available options are marked with ?.
-2024-06-15 17:57:45 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
-Invalid `prisma.item.findMany()` invocation:
+Unknown field `item_category` for include statement on model `item`. Available options are marked with ?.
+2024-06-15 16:18:44 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
+Invalid `prisma.item.findUnique()` invocation:
 
 {
   where: {
-    user_id: {
-      id: "68c2261e-5111-4c76-8f7d-df166df7c0a1",
-      ~~
-      email: "test1@gmail.com",
-      role: "seller",
-      iat: 1718449024,
-      exp: 1718535424,
-?     equals?: String | StringFieldRefInput,
-?     in?: String[] | ListStringFieldRefInput,
-?     notIn?: String[] | ListStringFieldRefInput,
-?     lt?: String | StringFieldRefInput,
-?     lte?: String | StringFieldRefInput,
-?     gt?: String | StringFieldRefInput,
-?     gte?: String | StringFieldRefInput,
-?     contains?: String | StringFieldRefInput,
-?     startsWith?: String | StringFieldRefInput,
-?     endsWith?: String | StringFieldRefInput,
-?     mode?: QueryMode,
-?     not?: String | NestedStringFilter
-    }
+    id: "f0b20cc9-2266-4caa-8cdb-70669d3a1c6c"
   },
   include: {
     item_image: true,
-    item_category: true
-  },
-  orderBy: {
-    created_at: "desc"
+    item_category: true,
+    ~~~~~~~~~~~~~
+?   user?: true
   }
 }
 
-Unknown argument `id`. Did you mean `in`? Available options are marked with ?.
-2024-06-15 17:58:16 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
-Invalid `prisma.item.findMany()` invocation:
+Unknown field `item_category` for include statement on model `item`. Available options are marked with ?.
+2024-06-15 16:23:20 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
+Invalid `prisma.item.findUnique()` invocation:
 
 {
   where: {
-    user_id: {
-      id: "68c2261e-5111-4c76-8f7d-df166df7c0a1",
-      ~~
-      email: "test1@gmail.com",
-      role: "seller",
-      iat: 1718449024,
-      exp: 1718535424,
-?     equals?: String | StringFieldRefInput,
-?     in?: String[] | ListStringFieldRefInput,
-?     notIn?: String[] | ListStringFieldRefInput,
-?     lt?: String | StringFieldRefInput,
-?     lte?: String | StringFieldRefInput,
-?     gt?: String | StringFieldRefInput,
-?     gte?: String | StringFieldRefInput,
-?     contains?: String | StringFieldRefInput,
-?     startsWith?: String | StringFieldRefInput,
-?     endsWith?: String | StringFieldRefInput,
-?     mode?: QueryMode,
-?     not?: String | NestedStringFilter
-    }
+    id: "f0b20cc9-2266-4caa-8cdb-70669d3a1c6c"
   },
   include: {
     item_image: true,
-    item_category: true
-  },
-  orderBy: {
-    created_at: "desc"
+    item_category: true,
+    ~~~~~~~~~~~~~
+?   user?: true
   }
 }
 
-Unknown argument `id`. Did you mean `in`? Available options are marked with ?.
-2024-06-15 17:58:48 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 17:58:55 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 17:59:42 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 17:59:46 +07:00 [development] info: POST /api/v1/cms/item 
-2024-06-15 17:59:49 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 18:02:29 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 18:02:36 +07:00 [development] info: POST /api/v1/cms/item 
-2024-06-15 18:02:57 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 18:05:41 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
-2024-06-15 18:08:43 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
-2024-06-15 18:09:22 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
-2024-06-15 18:09:26 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
-2024-06-15 18:10:43 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
-2024-06-15 18:11:01 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
-2024-06-15 18:11:10 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
-2024-06-15 18:11:19 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
-2024-06-15 18:11:27 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
-2024-06-15 18:11:35 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
-2024-06-15 18:12:03 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
-2024-06-15 18:14:34 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
-2024-06-15 18:18:03 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
-2024-06-15 18:20:46 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 18:20:51 +07:00 [development] info: POST /api/v1/cms/item 
-2024-06-15 18:20:53 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 18:21:40 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
-2024-06-15 18:21:42 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
-2024-06-15 18:21:54 +07:00 [development] info: GET /api/v1/cms/item 
-2024-06-15 18:21:56 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
-2024-06-15 18:22:41 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
-2024-06-15 18:22:46 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
-2024-06-15 18:22:48 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
-2024-06-15 18:22:54 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
-2024-06-15 18:23:35 +07:00 [development] info: GET /api/v1/cms/item 
+Unknown field `item_category` for include statement on model `item`. Available options are marked with ?.
+2024-06-15 16:23:21 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
+Invalid `prisma.item.findUnique()` invocation:
+
+{
+  where: {
+    id: "f0b20cc9-2266-4caa-8cdb-70669d3a1c6c"
+  },
+  include: {
+    item_image: true,
+    item_category: true,
+    ~~~~~~~~~~~~~
+?   user?: true
+  }
+}
+
+Unknown field `item_category` for include statement on model `item`. Available options are marked with ?.
+2024-06-15 16:24:04 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
+Invalid `prisma.item.findUnique()` invocation:
+
+{
+  where: {
+    id: "f0b20cc9-2266-4caa-8cdb-70669d3a1c6c"
+  },
+  include: {
+    item_image: true,
+    item_category: true,
+    ~~~~~~~~~~~~~
+?   user?: true
+  }
+}
+
+Unknown field `item_category` for include statement on model `item`. Available options are marked with ?.
+2024-06-15 16:24:05 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
+Invalid `prisma.item.findUnique()` invocation:
+
+{
+  where: {
+    id: "f0b20cc9-2266-4caa-8cdb-70669d3a1c6c"
+  },
+  include: {
+    item_image: true,
+    item_category: true,
+    ~~~~~~~~~~~~~
+?   user?: true
+  }
+}
+
+Unknown field `item_category` for include statement on model `item`. Available options are marked with ?.
+2024-06-15 16:24:13 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
+Invalid `prisma.item.findUnique()` invocation:
+
+{
+  where: {
+    id: "f0b20cc9-2266-4caa-8cdb-70669d3a1c6c"
+  },
+  include: {
+    item_image: true,
+    item_category: true,
+    ~~~~~~~~~~~~~
+?   user?: true
+  }
+}
+
+Unknown field `item_category` for include statement on model `item`. Available options are marked with ?.
+2024-06-15 16:25:34 +07:00 [development] error: GET /api/v1/cms/itemCategory TypeError: Cannot read properties of undefined (reading 'findUnique')
+2024-06-15 16:25:40 +07:00 [development] error: GET /api/v1/cms/itemCategory TypeError: Cannot read properties of undefined (reading 'findMany')
+2024-06-15 16:28:28 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:32:55 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 16:43:00 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:43:36 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:43:48 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:43:54 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:43:54 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:44:50 +07:00 [development] info: POST /api/v1/cms/itemCategory 
+2024-06-15 16:45:09 +07:00 [development] info: POST /api/v1/cms/itemCategory 
+2024-06-15 16:45:30 +07:00 [development] info: POST /api/v1/cms/itemCategory 
+2024-06-15 16:46:00 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:46:01 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:49:03 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:49:28 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:50:10 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:52:52 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:53:45 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:53:45 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:55:21 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:56:45 +07:00 [development] error: POST /api/v1/cms/item SyntaxError: Unexpected end of JSON input
+2024-06-15 16:56:46 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:58:08 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 16:58:09 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:04:05 +07:00 [development] error: POST /api/v1/cms/item SyntaxError: No number after minus sign in JSON at position 1
+2024-06-15 17:10:49 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:10:49 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:11:37 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:11:37 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:15:15 +07:00 [development] error: POST /api/v1/cms/item TypeError: Error: Unexpected end of multipart data
+2024-06-15 17:15:16 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:16:31 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:17:24 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:17:24 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:39:18 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:39:18 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:39:52 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 17:40:12 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:40:12 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:40:52 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:40:52 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:41:05 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:41:13 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:41:13 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:41:13 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:41:13 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:41:13 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:41:13 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:42:38 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:42:38 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:42:42 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:42:42 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:47:37 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:47:53 +07:00 [development] error: GET /api/v1/cms/itemCategory PrismaClientKnownRequestError: 
+Invalid `prisma.itemCategory.findMany()` invocation:
+
+
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+2024-06-15 17:48:58 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:48:59 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:49:00 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:49:00 +07:00 [development] error: GET /api/v1/cms/itemCategory PrismaClientKnownRequestError: 
+Invalid `prisma.itemCategory.findMany()` invocation:
+
+
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+2024-06-15 17:49:00 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:49:08 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:50:22 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:50:22 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:50:22 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:50:22 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:50:22 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:50:23 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:52:08 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 17:52:24 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:52:24 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:52:24 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:52:25 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:52:25 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:52:25 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:54:20 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:54:20 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:54:21 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:54:21 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:54:21 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:54:22 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:59:31 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:59:31 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:59:31 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:59:31 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:59:32 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:59:32 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:59:34 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:59:34 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 17:59:34 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:59:35 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:59:36 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:59:36 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:00:14 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:00:14 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:00:18 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:00:18 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:00:19 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:00:19 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:00:20 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:00:20 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:00:20 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:00:20 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:00:20 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:00:20 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:00:20 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:00:20 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:00:20 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:00:20 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:00:20 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:00:21 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:01:52 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:01:53 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:02:32 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:02:32 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:02:32 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:02:33 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:02:33 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:02:33 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:03:07 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:03:21 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:03:21 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:03:21 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:03:21 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:03:21 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:03:21 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:04:04 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:04:04 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:04:24 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:04:25 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:04:25 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:04:25 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:04:25 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:04:25 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:05:00 +07:00 [development] error: POST /api/v1/cms/item PrismaClientUnknownRequestError: 
+Invalid `prisma.item.create()` invocation:
+
+
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(Error { kind: ToSql(4), cause: Some(Error { kind: ConversionError("Unable to fit integer value '4678239812' into an INT4 (32-bit signed integer)."), original_code: None, original_message: None }) }), transient: false })
+2024-06-15 18:08:54 +07:00 [development] error: POST /api/v1/cms/item PrismaClientUnknownRequestError: 
+Invalid `prisma.item.create()` invocation:
+
+
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(Error { kind: ToSql(4), cause: Some(Error { kind: ConversionError("Unable to fit integer value '4678239812' into an INT4 (32-bit signed integer)."), original_code: None, original_message: None }) }), transient: false })
+2024-06-15 18:18:09 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:18:22 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:18:22 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:18:23 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:18:23 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:18:23 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:18:23 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:20:23 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:20:23 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:20:24 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:20:24 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:20:24 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:20:25 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:20:50 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:21:03 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:21:03 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:21:03 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:21:03 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:21:03 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:21:03 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:21:10 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:21:10 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:33:47 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:33:47 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:33:47 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:33:47 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:33:47 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:33:47 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:34:52 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:35:05 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:35:05 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:35:05 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:35:05 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:35:05 +07:00 [development] info: GET /api/v1/cms/itemCategory 
+2024-06-15 18:35:05 +07:00 [development] info: GET /api/v1/cms/item 

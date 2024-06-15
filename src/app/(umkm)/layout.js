@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 
 import { FaUser } from 'react-icons/fa6';
 
-const PembeliLayout = ({ children }) => {
+const UmkmLayout = ({ children }) => {
   const [navBtn, setNavBtn] = useState(false);
   const [active, setActive] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -27,7 +27,7 @@ const PembeliLayout = ({ children }) => {
       <nav className="bg-[#1D1D1D] border-gray-200 fixed w-full top-0 z-50 ">
         <div className="max-w-full flex flex-wrap items-center justify-between  py-4 px-[26px]">
           <Link
-            href="/beranda"
+            href="/produk"
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
             <svg
@@ -109,23 +109,15 @@ const PembeliLayout = ({ children }) => {
               <li>
                 <Link
                   href="/beranda"
-                  className="block py-2 px-3 text-white rounded  md:hover:bg-transparent md:border-0 md:p-0 "
+                  className="block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
                 >
-                  Beranda
+                  Produk
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/toko"
-                  className="block py-2 px-3 text-white rounded  md:hover:bg-transparent md:border-0 md:p-0 "
-                >
-                  Toko
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/blog"
-                  className="block py-2 px-3 text-white rounded  md:hover:bg-transparent md:border-0 md:p-0 "
+                  href="/blogUmkm"
+                  className="block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
                 >
                   Blog
                 </Link>
@@ -133,7 +125,7 @@ const PembeliLayout = ({ children }) => {
               <li>
                 <Link
                   href="/chat"
-                  className="block py-2 px-3 text-white rounded  md:hover:bg-transparent md:border-0 md:p-0 "
+                  className="block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
                 >
                   Chat
                 </Link>
@@ -144,14 +136,14 @@ const PembeliLayout = ({ children }) => {
                     <button
                       type="button"
                       onClick={() => setActive(!active)}
-                      className="hidden py-2 px-3 text-white rounded  md:block md:hover:bg-transparent md:border-0 md:p-0 "
+                      className="hidden py-2 px-3 text-white rounded hover:bg-gray-100 md:block md:hover:bg-transparent md:border-0 md:p-0 "
                     >
                       <FaUser className="text-[#FE6D00]" />
                     </button>
                   ) : (
                     <Link
                       href="/login"
-                      className="hidden md:block py-2 px-3 text-white rounded  md:hover:bg-transparent md:border-0 md:p-0 "
+                      className="block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
                     >
                       Login
                     </Link>
@@ -159,41 +151,34 @@ const PembeliLayout = ({ children }) => {
                 ) : (
                   <Link
                     href="/login"
-                    className="hidden md:block py-2 px-3 text-white rounded  md:hover:bg-transparent md:border-0 md:p-0 "
+                    className="block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
                   >
                     Login
                   </Link>
                 )}
 
                 {isClient ? (
-                  hasToken ? (
-                    <>
-                      <Link
-                        href="/profile"
-                        className="block w-full py-2 px-3 text-white  rounded md:hidden"
-                      >
-                        Profile
-                      </Link>
-                      <button
-                        className="block w-full py-2 px-3 text-white bg-[#FE6D00] rounded md:hidden "
-                        onClick={() => {
-                          Cookies.remove('token');
-                          router.push('/login');
-                        }}
-                      >
-                        Keluar
-                      </button>
-                    </>
-                  ) : (
+                  <Link
+                    href="/login"
+                    className="block w-full py-2 px-3 text-white bg-[#FE6D00] rounded md:hidden"
+                  >
+                    Login
+                  </Link>
+                ) : (
+                  <>
                     <Link
                       href="/login"
-                      className="block w-full py-2 px-3 text-white bg-[#FE6D00] rounded md:hidden "
+                      className="block w-full py-2 px-3 text-white bg-[#FE6D00] rounded md:hidden"
                     >
-                      Login
+                      Sudah Login
                     </Link>
-                  )
-                ) : (
-                  ''
+                    <Link
+                      href="/login"
+                      className="block w-full py-2 px-3 text-white bg-[#FE6D00] rounded md:hidden"
+                    >
+                      Sudah Login
+                    </Link>
+                  </>
                 )}
                 <div className={`relative ${active ? '' : 'hidden'}`}>
                   <div className="absolute -right-[26px] top-3 shadow-lg w-48 h-24 bg-white rounded-lg flex flex-col">
@@ -235,4 +220,4 @@ const PembeliLayout = ({ children }) => {
   );
 };
 
-export default PembeliLayout;
+export default UmkmLayout;
