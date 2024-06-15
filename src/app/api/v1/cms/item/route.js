@@ -49,8 +49,7 @@ export async function GET(
     try {
         const url = new URL(req.url);
         const searchParams = url.searchParams;
-        const { id } = await Auth(req);
-        const userId = id;
+        const userId = await Auth(req);
 
         if (searchParams.get('id')) {
             const id = searchParams.get('id');
@@ -101,15 +100,12 @@ export async function GET(
     }
 }
 
-export async function POST(
-    req
-) {
+export async function POST(req) {
     try {
-        const { id } = await Auth(req);
-        const userId = id;
+        const userId = await Auth(req);
 
         const formData = await req.formData();
-        
+
         const name = formData.get('name');
         const imagesUri = formData.getAll('imagesUri');
         const price = formData.get('price');
@@ -129,13 +125,12 @@ export async function POST(
 
         if (!validation.success) {
             validation.error.errors.map((validation) => {
-              const key = 
-                {
-                  name: `${validation.path[0]}${validation.path[1] ?? ''}`,
-                  message: validation.message,
+                const key = {
+                    name: `${validation.path[0]}${validation.path[1] ?? ''}`,
+                    message: validation.message,
                 };
-              validationError.push(key);
-            })
+                validationError.push(key);
+            });
             return Response.json(validationErrorResponse(validationError), { status: 422 });
         }
 
@@ -154,7 +149,7 @@ export async function POST(
 
         const item = await db.item.create({
             data: {
-                user_id : userId,
+                user_id: userId,
                 name: name,
                 price: Number(price),
                 item_category_id: itemCategory,
@@ -165,19 +160,15 @@ export async function POST(
         });
 
         await db.itemImage.createMany({
-            data: filePaths.map((imageUri) => {
-                return {
-                    item_id: item.id,
-                    uri: imageUri,
-                };
-            }),
+            data: filePaths.map((imageUri) => ({
+                item_id: item.id,
+                uri: imageUri,
+            })),
         });
 
         logger.info(req);
 
-        return Response.json(createdResponse({ message :'Resource created successfully.' }), { status: 201 });
-
-
+        return Response.json(createdResponse({ message: 'Resource created successfully.' }), { status: 201 });
     } catch (error) {
         console.log('[ITEM_POST]', error);
         logger.error(req, {
@@ -187,22 +178,21 @@ export async function POST(
     }
 }
 
-export async function DELETE( 
-    req 
-){
-    const url = new URL(req.url);
-    const searchParams = url.searchParams;
-
-    const { id } = await Auth(req);
-    const userId = id;
-
-    if (searchParams.get('id')) {
+export async function DELETE(req) {
+    try {
+        const url = new URL(req.url);
+        const searchParams = url.searchParams;
         const id = searchParams.get('id');
+
+        if (!id) {
+            return Response.json(notFoundResponse(), { status: 404 });
+        }
+
+        const userId = await Auth(req);
 
         const data = await db.item.findUnique({
             where: {
                 id: id,
-                user_id: userId
             },
             include: {
                 item_image: true,
@@ -210,14 +200,26 @@ export async function DELETE(
             }
         });
 
+        if (!data || data.user_id !== userId) {
+            return Response.json(notFoundResponse(), { status: 404 });
+        }
+
+        
+       
+
         if (!data) {
             return Response.json(notFoundResponse(), { status: 404 });
         }
 
 
-        const deleteFilePromises = data.item_image.map(image => 
-            unlink(path.join(process.cwd(), "public", image.uri))
-        );
+        const deleteFilePromises = data.item_image.map(async (image) => {
+            const filePath = path.join(process.cwd(), "public", image.uri);
+            try {
+                await unlink(filePath);
+            } catch (error) {
+                console.error(`Failed to delete file at ${filePath}:`, error);
+            }
+        });
 
         await Promise.all(deleteFilePromises);
 
@@ -233,6 +235,12 @@ export async function DELETE(
             }
         });
 
-        return Response.json(successResponse(data, 1), { status: 200 });
+        return Response.json(successResponse({ message : 'Resource deleted successfully.'}, 1), { status: 200 });
+    } catch (error) {
+        console.error('[ITEM_DELETE]', error);
+        logger.error(req, {
+            stack: error,
+        });
+        return Response.json(internalErrorResponse(error), { status: 500 });
     }
 }
