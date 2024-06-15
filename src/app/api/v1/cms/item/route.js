@@ -1,7 +1,7 @@
 import db from "@/lib/db";
 
 import { successResponse, createdResponse } from "@/lib/genericResponse";
-import { internalErrorResponse, validationErrorResponse, notFoundResponse, badRequestResponse } from "@/lib/errorException";
+import { internalErrorResponse, validationErrorResponse, notFoundResponse } from "@/lib/errorException";
 import { writeFile } from "fs/promises";
 import path from "path";
 import { createFilename } from "@/utils/filename";
@@ -53,7 +53,6 @@ export async function GET(
 
         if (searchParams.get('id')) {
             const id = searchParams.get('id');
-            
 
             const data = await db.item.findUnique({
                 where: {
@@ -204,29 +203,18 @@ export async function DELETE(req) {
             return Response.json(notFoundResponse(), { status: 404 });
         }
 
-        
-       
-
         if (!data) {
             return Response.json(notFoundResponse(), { status: 404 });
         }
 
-
-        const deleteFilePromises = data.item_image.map(async (image) => {
+        data.item_image.map((image) => {
             const filePath = path.join(process.cwd(), "public", image.uri);
-            try {
-                await unlink(filePath);
-            } catch (error) {
-                console.error(`Failed to delete file at ${filePath}:`, error);
-            }
-        });
-
-        await Promise.all(deleteFilePromises);
-
-        await db.itemImage.deleteMany({
-            where: {
-                item_id: id
-            }
+            
+            unlink(filePath, function (err) {
+                if (err) throw err;
+                console.log('File deleted!');
+            });
+            
         });
 
         await db.item.delete({
@@ -234,6 +222,8 @@ export async function DELETE(req) {
                 id: id
             }
         });
+
+        logger.info(req)
 
         return Response.json(successResponse({ message : 'Resource deleted successfully.'}, 1), { status: 200 });
     } catch (error) {
