@@ -84,6 +84,7 @@ model item {
   item_category_id String
   price Int
   description String
+  is_active Boolean @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   created_by String @default("system")

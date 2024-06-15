@@ -10,6 +10,7 @@ import { Auth } from "@/lib/jwtTokenControl";
 import { z } from "zod";
 
 import logger from "@/services/logger";
+import { unlink } from "fs";
 
 const MAX_FILE_SIZE = 2000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -48,13 +49,17 @@ export async function GET(
     try {
         const url = new URL(req.url);
         const searchParams = url.searchParams;
+        const { id } = await Auth(req);
+        const userId = id;
 
         if (searchParams.get('id')) {
             const id = searchParams.get('id');
+            
 
             const data = await db.item.findUnique({
                 where: {
-                    id: id
+                    id: id,
+                    user_id: userId
                 },
                 include: {
                     item_image: true,
@@ -70,6 +75,9 @@ export async function GET(
         }
 
         let baseQuery = {
+            where: {
+                user_id: userId
+            },
             include: {
                 item_image: true,
                 item_category: true
@@ -99,10 +107,14 @@ export async function POST(
     try {
         const { id } = await Auth(req);
         const userId = id;
-        
-        const body = await req.json();
 
-        const { name, imagesUri, itemCategory, price, description } = body;
+        const formData = await req.formData();
+        
+        const name = formData.get('name');
+        const imagesUri = formData.getAll('imagesUri');
+        const price = formData.get('price');
+        const itemCategory = formData.get('itemCategory');
+        const description = formData.get('description');
 
         const validationError = [];
 
@@ -111,14 +123,15 @@ export async function POST(
             imagesUri: imagesUri,
             price: Number(price),
             itemCategory: itemCategory,
-            description: description
+            description: description,
+            is_active: false,
         });
 
         if (!validation.success) {
             validation.error.errors.map((validation) => {
               const key = 
                 {
-                  name: validation.path[0],
+                  name: `${validation.path[0]}${validation.path[1] ?? ''}`,
                   message: validation.message,
                 };
               validationError.push(key);
@@ -145,7 +158,9 @@ export async function POST(
                 name: name,
                 price: Number(price),
                 item_category_id: itemCategory,
-                description: description
+                description: description,
+                created_by: userId,
+                updated_by: userId
             }
         });
 
@@ -169,5 +184,55 @@ export async function POST(
             stack: error,
         });
         return Response.json(internalErrorResponse(error), { status: 500 });
+    }
+}
+
+export async function DELETE( 
+    req 
+){
+    const url = new URL(req.url);
+    const searchParams = url.searchParams;
+
+    const { id } = await Auth(req);
+    const userId = id;
+
+    if (searchParams.get('id')) {
+        const id = searchParams.get('id');
+
+        const data = await db.item.findUnique({
+            where: {
+                id: id,
+                user_id: userId
+            },
+            include: {
+                item_image: true,
+                item_category: true
+            }
+        });
+
+        if (!data) {
+            return Response.json(notFoundResponse(), { status: 404 });
+        }
+
+
+        const deleteFilePromises = data.item_image.map(image => 
+            unlink(path.join(process.cwd(), "public", image.uri))
+        );
+
+        await Promise.all(deleteFilePromises);
+
+        await db.itemImage.deleteMany({
+            where: {
+                item_id: id
+            }
+        });
+
+        await db.item.delete({
+            where: {
+                id: id
+            }
+        });
+
+        return Response.json(successResponse(data, 1), { status: 200 });
     }
 }
