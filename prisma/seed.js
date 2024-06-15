@@ -16,6 +16,23 @@ async function main() {
   });
 
   console.log('SEEDING ROLE USER SUCCESS!');
+
+  await db.role.createMany({
+    data: [
+        {
+            name: 'Aksesoris',
+        },
+        {
+            name: 'Elektronik',
+        },
+        {
+            name: 'Alat Dapur',
+        },
+    ],
+    skipDuplicates: true,
+  });
+
+  console.log('SEEDING ROLE USER SUCCESS!');
 }
 
 main()
