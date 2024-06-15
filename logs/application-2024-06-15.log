@@ -240,3 +240,282 @@
 2024-06-15 16:26:30 +07:00 [development] info: POST /api/v1/cms/itemCategory 
 2024-06-15 16:26:33 +07:00 [development] info: GET /api/v1/cms/itemCategory 
 2024-06-15 16:48:52 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:07:51 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
+Invalid `prisma.item.create()` invocation:
+
+
+Foreign key constraint failed on the field: `item_user_id_fkey (index)`
+2024-06-15 17:08:51 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:08:56 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
+Invalid `prisma.item.create()` invocation:
+
+
+Foreign key constraint failed on the field: `item_user_id_fkey (index)`
+2024-06-15 17:10:45 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
+Invalid `prisma.item.create()` invocation:
+
+
+Foreign key constraint failed on the field: `item_user_id_fkey (index)`
+2024-06-15 17:12:06 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
+Invalid `prisma.item.create()` invocation:
+
+
+Foreign key constraint failed on the field: `item_user_id_fkey (index)`
+2024-06-15 17:12:34 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
+Invalid `prisma.item.create()` invocation:
+
+
+Foreign key constraint failed on the field: `item_user_id_fkey (index)`
+2024-06-15 17:15:06 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
+Invalid `prisma.item.create()` invocation:
+
+
+Foreign key constraint failed on the field: `item_user_id_fkey (index)`
+2024-06-15 17:15:18 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
+Invalid `prisma.item.create()` invocation:
+
+
+Foreign key constraint failed on the field: `item_user_id_fkey (index)`
+2024-06-15 17:16:16 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
+Invalid `prisma.item.create()` invocation:
+
+
+Foreign key constraint failed on the field: `item_user_id_fkey (index)`
+2024-06-15 17:18:14 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
+Invalid `prisma.item.create()` invocation:
+
+
+Foreign key constraint failed on the field: `item_user_id_fkey (index)`
+2024-06-15 17:18:16 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
+Invalid `prisma.item.create()` invocation:
+
+
+Foreign key constraint failed on the field: `item_user_id_fkey (index)`
+2024-06-15 17:21:15 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
+Invalid `prisma.item.create()` invocation:
+
+
+Foreign key constraint failed on the field: `item_user_id_fkey (index)`
+2024-06-15 17:21:17 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
+Invalid `prisma.item.create()` invocation:
+
+
+Foreign key constraint failed on the field: `item_user_id_fkey (index)`
+2024-06-15 17:21:20 +07:00 [development] error: POST /api/v1/cms/item PrismaClientKnownRequestError: 
+Invalid `prisma.item.create()` invocation:
+
+
+Foreign key constraint failed on the field: `item_user_id_fkey (index)`
+2024-06-15 17:22:37 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:22:46 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:22:49 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 17:23:06 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:56:40 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
+Invalid `prisma.item.findUnique()` invocation:
+
+{
+  where: {
+    id: "9783b094-ecd6-4613-9d70-d9ae675b6b43",
+    user_id: {
+      id: "68c2261e-5111-4c76-8f7d-df166df7c0a1",
+      ~~
+      email: "test1@gmail.com",
+      role: "seller",
+      iat: 1718446959,
+      exp: 1718533359,
+?     equals?: String | StringFieldRefInput,
+?     in?: String[] | ListStringFieldRefInput,
+?     notIn?: String[] | ListStringFieldRefInput,
+?     lt?: String | StringFieldRefInput,
+?     lte?: String | StringFieldRefInput,
+?     gt?: String | StringFieldRefInput,
+?     gte?: String | StringFieldRefInput,
+?     contains?: String | StringFieldRefInput,
+?     startsWith?: String | StringFieldRefInput,
+?     endsWith?: String | StringFieldRefInput,
+?     mode?: QueryMode,
+?     not?: String | NestedStringFilter
+    }
+  },
+  include: {
+    item_image: true,
+    item_category: true
+  }
+}
+
+Unknown argument `id`. Did you mean `in`? Available options are marked with ?.
+2024-06-15 17:56:46 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
+Invalid `prisma.item.findUnique()` invocation:
+
+{
+  where: {
+    id: "9783b094-ecd6-4613-9d70-d9ae675b6b43",
+    user_id: {
+      id: "68c2261e-5111-4c76-8f7d-df166df7c0a1",
+      ~~
+      email: "test1@gmail.com",
+      role: "seller",
+      iat: 1718446959,
+      exp: 1718533359,
+?     equals?: String | StringFieldRefInput,
+?     in?: String[] | ListStringFieldRefInput,
+?     notIn?: String[] | ListStringFieldRefInput,
+?     lt?: String | StringFieldRefInput,
+?     lte?: String | StringFieldRefInput,
+?     gt?: String | StringFieldRefInput,
+?     gte?: String | StringFieldRefInput,
+?     contains?: String | StringFieldRefInput,
+?     startsWith?: String | StringFieldRefInput,
+?     endsWith?: String | StringFieldRefInput,
+?     mode?: QueryMode,
+?     not?: String | NestedStringFilter
+    }
+  },
+  include: {
+    item_image: true,
+    item_category: true
+  }
+}
+
+Unknown argument `id`. Did you mean `in`? Available options are marked with ?.
+2024-06-15 17:57:22 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
+Invalid `prisma.item.findMany()` invocation:
+
+{
+  where: {
+    user_id: {
+      id: "68c2261e-5111-4c76-8f7d-df166df7c0a1",
+      ~~
+      email: "test1@gmail.com",
+      role: "seller",
+      iat: 1718449024,
+      exp: 1718535424,
+?     equals?: String | StringFieldRefInput,
+?     in?: String[] | ListStringFieldRefInput,
+?     notIn?: String[] | ListStringFieldRefInput,
+?     lt?: String | StringFieldRefInput,
+?     lte?: String | StringFieldRefInput,
+?     gt?: String | StringFieldRefInput,
+?     gte?: String | StringFieldRefInput,
+?     contains?: String | StringFieldRefInput,
+?     startsWith?: String | StringFieldRefInput,
+?     endsWith?: String | StringFieldRefInput,
+?     mode?: QueryMode,
+?     not?: String | NestedStringFilter
+    }
+  },
+  include: {
+    item_image: true,
+    item_category: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown argument `id`. Did you mean `in`? Available options are marked with ?.
+2024-06-15 17:57:45 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
+Invalid `prisma.item.findMany()` invocation:
+
+{
+  where: {
+    user_id: {
+      id: "68c2261e-5111-4c76-8f7d-df166df7c0a1",
+      ~~
+      email: "test1@gmail.com",
+      role: "seller",
+      iat: 1718449024,
+      exp: 1718535424,
+?     equals?: String | StringFieldRefInput,
+?     in?: String[] | ListStringFieldRefInput,
+?     notIn?: String[] | ListStringFieldRefInput,
+?     lt?: String | StringFieldRefInput,
+?     lte?: String | StringFieldRefInput,
+?     gt?: String | StringFieldRefInput,
+?     gte?: String | StringFieldRefInput,
+?     contains?: String | StringFieldRefInput,
+?     startsWith?: String | StringFieldRefInput,
+?     endsWith?: String | StringFieldRefInput,
+?     mode?: QueryMode,
+?     not?: String | NestedStringFilter
+    }
+  },
+  include: {
+    item_image: true,
+    item_category: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown argument `id`. Did you mean `in`? Available options are marked with ?.
+2024-06-15 17:58:16 +07:00 [development] error: GET /api/v1/cms/item PrismaClientValidationError: 
+Invalid `prisma.item.findMany()` invocation:
+
+{
+  where: {
+    user_id: {
+      id: "68c2261e-5111-4c76-8f7d-df166df7c0a1",
+      ~~
+      email: "test1@gmail.com",
+      role: "seller",
+      iat: 1718449024,
+      exp: 1718535424,
+?     equals?: String | StringFieldRefInput,
+?     in?: String[] | ListStringFieldRefInput,
+?     notIn?: String[] | ListStringFieldRefInput,
+?     lt?: String | StringFieldRefInput,
+?     lte?: String | StringFieldRefInput,
+?     gt?: String | StringFieldRefInput,
+?     gte?: String | StringFieldRefInput,
+?     contains?: String | StringFieldRefInput,
+?     startsWith?: String | StringFieldRefInput,
+?     endsWith?: String | StringFieldRefInput,
+?     mode?: QueryMode,
+?     not?: String | NestedStringFilter
+    }
+  },
+  include: {
+    item_image: true,
+    item_category: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown argument `id`. Did you mean `in`? Available options are marked with ?.
+2024-06-15 17:58:48 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:58:55 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:59:42 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 17:59:46 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 17:59:49 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:02:29 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:02:36 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:02:57 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:05:41 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
+2024-06-15 18:08:43 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
+2024-06-15 18:09:22 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
+2024-06-15 18:09:26 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
+2024-06-15 18:10:43 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
+2024-06-15 18:11:01 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
+2024-06-15 18:11:10 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
+2024-06-15 18:11:19 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
+2024-06-15 18:11:27 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
+2024-06-15 18:11:35 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
+2024-06-15 18:12:03 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
+2024-06-15 18:14:34 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
+2024-06-15 18:18:03 +07:00 [development] error: DELETE /api/v1/cms/item TypeError [ERR_INVALID_ARG_TYPE]: The "cb" argument must be of type function. Received undefined
+2024-06-15 18:20:46 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:20:51 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:20:53 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:21:40 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
+2024-06-15 18:21:42 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
+2024-06-15 18:21:54 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:21:56 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
+2024-06-15 18:22:41 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
+2024-06-15 18:22:46 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
+2024-06-15 18:22:48 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
+2024-06-15 18:22:54 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
+2024-06-15 18:23:35 +07:00 [development] info: GET /api/v1/cms/item 

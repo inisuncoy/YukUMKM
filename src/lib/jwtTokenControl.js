@@ -73,7 +73,7 @@ export async function Auth(request) {
 
         const { payload } = await jwtVerify(token, JWT_SECRET);
 
-        return payload;
+        return payload.id;
     } catch (error) {
         console.error('Authentication error:', error);
         return false;
