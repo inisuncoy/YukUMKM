@@ -1,13 +1,27 @@
+'use client';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
 import { IoTrashOutline } from 'react-icons/io5';
 import { RiSendPlaneLine } from 'react-icons/ri';
 
 import icontoko from '../../../../public/assets/icon/icon-toko.png';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 const ChatPage = () => {
+  const [isClient, setIsClient] = useState(false);
+  const [hasToken, setHasToken] = useState(false);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    // This will run only in the client
+    setIsClient(true);
+    const token = Cookies.get('token');
+    setHasToken(!!token);
+  }, []);
   return (
     <div className="grid grid-cols-3 gap-[29px]  ">
       <div className=" h-full w-full flex flex-col gap-[29px]">

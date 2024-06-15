@@ -46,32 +46,29 @@ function Register() {
     toast.loading('Saving data...');
     e.preventDefault();
 
-    try {
-      const validation = formSchema.safeParse({
-        name: name,
-        email: email,
-        password: password,
-      });
+    const validation = formSchema.safeParse({
+      name: name,
+      email: email,
+      password: password,
+    });
 
-      if (!validation.success) {
-        validation.error.errors.map((validation) => {
-          const key = [
-            {
-              name: validation.path[0],
-              message: validation.message,
-            },
-          ];
-          setValidations((validations) => [...validations, ...key]);
-        });
-        setLoading(false);
-        toast.dismiss();
-        toast.error('Invalid Input.');
-        console.log(validations);
-        return;
-      }
-    } catch (error) {
-      console.error(error);
+    if (!validation.success) {
+      validation.error.errors.map((validation) => {
+        const key = [
+          {
+            name: validation.path[0],
+            message: validation.message,
+          },
+        ];
+        setValidations((validations) => [...validations, ...key]);
+      });
+      setLoading(false);
+      toast.dismiss();
+      toast.error('Invalid Input.');
+      console.log(validations);
+      return;
     }
+
     if (menu) {
       request
         .post(
@@ -83,22 +80,36 @@ function Register() {
           })
         )
         .then(function (response) {
+          console.log('Response received:', response); // Tambahkan log untuk melihat response
           if (response.data?.code === 200 || response.data?.code === 201) {
             toast.dismiss();
-            toast.success(response.data.data.message);
+            toast.success('Success Registered');
             Cookies.set('token', response.data.data.token);
             router.push('/beranda');
-          } else if (
-            response.data.code === 400 &&
-            response.data.status == 'VALIDATION_ERROR'
+          }
+          setLoading(false);
+        })
+        .catch(function (error) {
+          console.log(error);
+          if (
+            (error.response.data?.code === 400 ||
+              error.response.data?.code === 422) &&
+            error.response.data.status == 'VALIDATION_ERROR'
           ) {
-            setValidations(response.data.error.validation);
+            setValidations(error.response.data.error?.validation);
             toast.dismiss();
-            toast.error(response.data.error.message);
-          } else if (response.data.code === 500) {
+            toast.error(error.response.data.error?.message);
+          } else if (
+            error.response.data?.code === 404 &&
+            error.response.data.status == 'NOT_FOUND'
+          ) {
+            console.error('NOT_FOUND');
+            toast.dismiss();
+            toast.error(error.response.data.error?.message);
+          } else if (error.response.data?.code === 500) {
             console.error('INTERNAL_SERVER_ERROR');
             toast.dismiss();
-            toast.error(response.data.error.message);
+            toast.error(error.response.data.error.message);
           }
           setLoading(false);
         });
@@ -115,20 +126,33 @@ function Register() {
         .then(function (response) {
           if (response.data?.code === 200 || response.data?.code === 201) {
             toast.dismiss();
-            toast.success(response.data.data.message);
+            toast.success('Success Registered');
             Cookies.set('token', response.data.data.token);
-            router.push('/beranda');
-          } else if (
-            response.data.code === 400 &&
-            response.data.status == 'VALIDATION_ERROR'
+            router.push('/produk');
+          }
+          setLoading(false);
+        })
+        .catch(function (error) {
+          console.log(error);
+          if (
+            (error.response.data?.code === 400 ||
+              error.response.data?.code === 422) &&
+            error.response.data.status == 'VALIDATION_ERROR'
           ) {
-            setValidations(response.data.error.validation);
+            setValidations(error.response.data.error?.validation);
             toast.dismiss();
-            toast.error(response.data.error.message);
-          } else if (response.data.code === 500) {
+            toast.error(error.response.data.error?.message);
+          } else if (
+            error.response.data?.code === 404 &&
+            error.response.data.status == 'NOT_FOUND'
+          ) {
+            console.error('NOT_FOUND');
+            toast.dismiss();
+            toast.error(error.response.data.error?.message);
+          } else if (error.response.data?.code === 500) {
             console.error('INTERNAL_SERVER_ERROR');
             toast.dismiss();
-            toast.error(response.data.error.message);
+            toast.error(error.response.data.error.message);
           }
           setLoading(false);
         });
