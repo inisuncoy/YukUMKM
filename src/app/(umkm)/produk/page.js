@@ -104,14 +104,6 @@ const ProdukPage = () => {
     value: category.id,
   }));
 
-  useEffect(() => {
-    setImagesUri(
-      [img1, img2, img3, img4, img5].filter((img) => img !== undefined)
-    );
-  }, [img1, img2, img3, img4, img5]);
-
-  console.log(imagesUri);
-
   const onSubmit = async (e) => {
     setValidations([]);
     setLoading(true);
@@ -141,21 +133,37 @@ const ProdukPage = () => {
       console.log(validations);
       return;
     }
+    let data = {
+      name: name,
+      itemCategory: category,
+      price: price,
+      description: description,
+    };
+
+    if (img1 != null) {
+      data.imagesUri = img1;
+    }
+    if (img2 != null) {
+      data.imagesUri = img2;
+    }
+    if (img3 != null) {
+      data.imagesUri = img3;
+    }
+    if (img4 != null) {
+      data.imagesUri = img4;
+    }
+    if (img5 != null) {
+      data.imagesUri = img5;
+    }
 
     request
-      .post('/cms/item', {
-        name: name,
-        imagesUri: imagesUri,
-        itemCategory: category,
-        price: price,
-        description: description,
-      })
+      .post('/cms/item', data)
       .then(function (response) {
         console.log('Response received:', response); // Tambahkan log untuk melihat response
         if (response.data?.code === 200 || response.data?.code === 201) {
           toast.dismiss();
           toast.success('Success Add Product');
-          setMenuActive(!menuActive);
+          location.reload();
         }
         setLoading(false);
       })
@@ -187,7 +195,7 @@ const ProdukPage = () => {
 
   const fetchProducts = useCallback(async () => {
     request
-      .get(`/cms/item?id=${id}`)
+      .get(`/cms/item`)
       .then(function (response) {
         setProductDatas(response.data.data);
         setRecordsTotal(response.data.recordsTotal);
