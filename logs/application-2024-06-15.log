@@ -519,3 +519,259 @@ Unknown argument `id`. Did you mean `in`? Available options are marked with ?.
 2024-06-15 18:22:48 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
 2024-06-15 18:22:54 +07:00 [development] error: DELETE /api/v1/cms/item TypeError: Cannot read properties of null (reading 'user_id')
 2024-06-15 18:23:35 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:25:21 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:28:13 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:28:15 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:29:41 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:30:34 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:32:23 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:34:22 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:34:24 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:34:28 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:36:36 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:36:44 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:36:46 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:37:56 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:37:58 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:38:00 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:41:28 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:41:37 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:41:39 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:42:35 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:42:41 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:42:44 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:42:52 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:45:35 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:45:37 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:45:39 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:46:22 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:46:28 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:46:31 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:47:11 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:47:13 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:47:51 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:48:09 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 18:48:11 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 18:49:25 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 19:03:43 +07:00 [development] error: GET /api/v1/public/item ReferenceError: userId is not defined
+2024-06-15 19:03:54 +07:00 [development] error: GET /api/v1/public/item ReferenceError: db is not defined
+2024-06-15 19:04:19 +07:00 [development] info: GET /api/v1/public/item 
+2024-06-15 19:04:24 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 19:04:30 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 19:04:33 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 19:04:37 +07:00 [development] info: GET /api/v1/public/item 
+2024-06-15 19:05:52 +07:00 [development] info: GET /api/v1/public/item 
+2024-06-15 19:07:21 +07:00 [development] error: GET /api/v1/public/item PrismaClientValidationError: 
+Invalid `prisma.item.findMany()` invocation:
+
+{
+  include: {
+    item_image: true,
+    item_category: true,
+    user: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        ~~~~~
+        address: true,
+        role: true,
+?       password?: true,
+?       profile_uri?: true,
+?       role_id?: true,
+?       created_at?: true,
+?       updated_at?: true,
+?       created_by?: true,
+?       updated_by?: true,
+?       items?: true,
+?       blogs?: true,
+?       comments?: true,
+?       _count?: true
+      }
+    }
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `phone` for select statement on model `user`. Available options are marked with ?.
+2024-06-15 19:07:47 +07:00 [development] error: GET /api/v1/public/item PrismaClientValidationError: 
+Invalid `prisma.item.findMany()` invocation:
+
+{
+  include: {
+    item_image: true,
+    item_category: true,
+    user: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        ~~~~~
+        address: true,
+        role: true,
+?       password?: true,
+?       profile_uri?: true,
+?       role_id?: true,
+?       created_at?: true,
+?       updated_at?: true,
+?       created_by?: true,
+?       updated_by?: true,
+?       items?: true,
+?       blogs?: true,
+?       comments?: true,
+?       _count?: true
+      }
+    }
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `phone` for select statement on model `user`. Available options are marked with ?.
+2024-06-15 19:08:24 +07:00 [development] error: GET /api/v1/public/item PrismaClientValidationError: 
+Invalid `prisma.item.findMany()` invocation:
+
+{
+  include: {
+    item_image: true,
+    item_category: true,
+    user: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        ~~~~~
+?       password?: true,
+?       profile_uri?: true,
+?       address?: true,
+?       role_id?: true,
+?       created_at?: true,
+?       updated_at?: true,
+?       created_by?: true,
+?       updated_by?: true,
+?       role?: true,
+?       items?: true,
+?       blogs?: true,
+?       comments?: true,
+?       _count?: true
+      }
+    }
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `phone` for select statement on model `user`. Available options are marked with ?.
+2024-06-15 19:08:25 +07:00 [development] error: GET /api/v1/public/item PrismaClientValidationError: 
+Invalid `prisma.item.findMany()` invocation:
+
+{
+  include: {
+    item_image: true,
+    item_category: true,
+    user: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        ~~~~~
+?       password?: true,
+?       profile_uri?: true,
+?       address?: true,
+?       role_id?: true,
+?       created_at?: true,
+?       updated_at?: true,
+?       created_by?: true,
+?       updated_by?: true,
+?       role?: true,
+?       items?: true,
+?       blogs?: true,
+?       comments?: true,
+?       _count?: true
+      }
+    }
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `phone` for select statement on model `user`. Available options are marked with ?.
+2024-06-15 19:08:30 +07:00 [development] info: GET /api/v1/public/item 
+2024-06-15 19:08:55 +07:00 [development] error: GET /api/v1/public/item PrismaClientValidationError: 
+Invalid `prisma.item.findMany()` invocation:
+
+{
+  include: {
+    item_image: true,
+    item_category: true,
+    user: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        ~~~~~
+        address: true,
+?       password?: true,
+?       profile_uri?: true,
+?       role_id?: true,
+?       created_at?: true,
+?       updated_at?: true,
+?       created_by?: true,
+?       updated_by?: true,
+?       role?: true,
+?       items?: true,
+?       blogs?: true,
+?       comments?: true,
+?       _count?: true
+      }
+    }
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `phone` for select statement on model `user`. Available options are marked with ?.
+2024-06-15 19:14:20 +07:00 [development] error: GET /api/v1/public/item PrismaClientValidationError: 
+Invalid `prisma.item.findMany()` invocation:
+
+{
+  include: {
+  ~~~~~~~
+    item_image: true,
+    item_category: true
+  },
+  orderBy: {
+    created_at: "desc"
+  },
+  select: {
+  ~~~~~~
+    user: {
+      select: {
+        id: true,
+        name: true
+      }
+    }
+  }
+}
+
+Please either use `include` or `select`, but not both at the same time.
+2024-06-15 19:15:04 +07:00 [development] info: GET /api/v1/public/item 
+2024-06-15 19:22:34 +07:00 [development] info: GET /api/v1/public/item 
+2024-06-15 19:22:40 +07:00 [development] info: POST /api/v1/cms/item 
+2024-06-15 19:22:43 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 19:22:51 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 19:22:51 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 19:23:35 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 19:29:09 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 19:29:10 +07:00 [development] info: GET /api/v1/cms/item 
