@@ -5,7 +5,9 @@ import { z } from "zod";
 import { successResponse, createdResponse } from "@/lib/genericResponse";
 import { internalErrorResponse, validationErrorResponse, notFoundResponse, badRequestResponse } from "@/lib/errorException";
 
-const RoleSchema = z.object({
+import logger from "@/services/logger";
+
+const CategorySchema = z.object({
     name: z
         .string()
         .min(1, { message: 'Name must be at least 3 characters long' })
@@ -22,7 +24,7 @@ export async function GET(
         if (searchParams.get('id')) {
             const id = searchParams.get('id');
 
-            const data = await db.role.findUnique({
+            const data = await db.itemCategory.findUnique({
                 where: {
                     id: id
                 }
@@ -43,12 +45,12 @@ export async function GET(
         };
         
 
-        const datas = await db.role.findMany(baseQuery)
+        const datas = await db.itemCategory.findMany(baseQuery)
 
         logger.info(req);
         return Response.json(successResponse(datas, datas.length), { status: 200 });
     } catch (error) {
-        console.log('[ROLE_GET]', error);
+        console.log('[ITEM_CATEGORY_GET]', error);
         logger.error(req, {
             stack: error,
         });
@@ -65,7 +67,7 @@ export async function POST(
 
         const validationError = [];
 
-        const validation = RoleSchema.safeParse({
+        const validation = CategorySchema.safeParse({
             name: name,
         })
 
@@ -82,7 +84,7 @@ export async function POST(
             return Response.json(validationErrorResponse(validationError), { status: 422 });
         }
 
-        await db.role.create({
+        await db.itemCategory.create({
             data: {
                 name: name
             }
@@ -92,7 +94,7 @@ export async function POST(
         return Response.json(createdResponse({ message :'Resource created successfully.' }), { status: 201 });
 
     } catch (error) {
-        console.log('[ROLE_POST]', error);
+        console.log('[ITEM_CATEGORY_POST]', error);
         logger.error(req, {
             stack: error,
         });
@@ -117,17 +119,17 @@ export async function PATCH(
 
         const validationError = [];
 
-        const validation = RoleSchema.safeParse({
+        const validation = CategorySchema.safeParse({
             name: name,
         })
 
-        const roleExists = !!await db.role.findFirst({
+        const itemCategoryExists = !!await db.itemCategory.findFirst({
             where : {
                 id: id,
             } 
         });
 
-        if (!roleExists) {
+        if (!itemCategoryExists) {
             return Response.json(notFoundResponse(), { status: 404 });
         }
 
@@ -144,7 +146,7 @@ export async function PATCH(
             return Response.json(validationErrorResponse(validationError), { status: 422 });
         }
 
-        await db.role.update({
+        await db.itemCategory.update({
             where: {
                 id: id
             },
@@ -157,7 +159,7 @@ export async function PATCH(
         return Response.json(successResponse({ message :'Resource updated successfully.' }, 1), { status: 200 });
 
     } catch (error) {
-        console.log('[ROLE_PATCH]', error);
+        console.log('[ITEM_CATEGORY_PATCH]', error);
         logger.error(req, {
             stack: error,
         });
@@ -177,17 +179,17 @@ export async function DELETE(
         }
         const id = searchParams.get('id');
 
-        const roleExists = !!await db.role.findFirst({
+        const itemCategoryExists = !!await db.itemCategory.findFirst({
             where : {
                 id: id,
             } 
         });
 
-        if (!roleExists) {
+        if (!itemCategoryExists) {
             return Response.json(notFoundResponse(), { status: 404 });
         }
 
-        await db.role.delete({
+        await db.itemCategory.delete({
             where: {
                 id: id
             }
@@ -197,7 +199,7 @@ export async function DELETE(
         return Response.json(successResponse({ message : 'Resource deleted successfully.'}, 1), { status: 200 });
 
     } catch (error) {
-        console.log('[ROLE_DELETE]', error);
+        console.log('[ITEM_CATEGORY_DELETE]', error);
         logger.error(req, {
             stack: error,
         });

@@ -1,0 +1,230 @@
+2024-06-15 13:56:40 +07:00 [development] info: GET /api/v1/cms/item
+2024-06-15 13:57:18 +07:00 [development] info: GET /api/v1/cms/item
+2024-06-15 15:03:06 +07:00 [development] info: GET /api/v1/cms/item, undefined
+2024-06-15 15:05:50 +07:00 [development] info: GET /api/v1/cms/item, undefined
+2024-06-15 15:11:56 +07:00 [development] info: GET /api/v1/cms/item, undefined
+2024-06-15 15:12:04 +07:00 [development] info: GET /api/v1/cms/item, undefined
+2024-06-15 15:12:10 +07:00 [development] info: GET /api/v1/cms/item, undefined
+2024-06-15 15:12:25 +07:00 [development] info: GET /api/v1/cms/item, undefined
+2024-06-15 15:12:31 +07:00 [development] info: GET /api/v1/cms/item, undefined
+2024-06-15 15:13:26 +07:00 [development] info: GET /api/v1/cms/item, 
+2024-06-15 15:13:45 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 15:22:37 +07:00 [development] error: GET /api/v1/cms/item ReferenceError: s is not defined
+    at GET (webpack-internal:///(rsc)/./src/app/api/v1/cms/item/route.js:59:9)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:53452
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:122:103
+    at NoopContextManager.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NextTracerImpl.trace (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:122:28)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46261
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at Object.wrap (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:39188)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:45368
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at Object.wrap (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:37583)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:45330
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at e_.execute (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:44777)
+    at e_.handle (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:54711)
+    at doRender (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1377:60)
+    at cacheEntry.responseCache.get.routeKind (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1599:34)
+    at ResponseCache.get (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\response-cache\index.js:49:26)
+    at DevServer.renderToResponseWithComponentsImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1507:53)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1002:121
+    at NextTracerImpl.trace (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:105:20)
+    at DevServer.renderToResponseWithComponents (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1002:41)
+    at DevServer.renderPageComponent (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1924:35)
+    at async DevServer.renderToResponseImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:920:25)
+    at async NextNodeServer.handleCatchallRenderRequest (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:816:17)
+    at async D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\router-server.js:174:21)
+    at async handleRequest (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\router-server.js:353:24)
+    at async requestHandlerImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\router-server.js:377:13)
+    at async Server.requestListener (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\start-server.js:141:13)
+2024-06-15 15:23:05 +07:00 [development] error: GET /api/v1/cms/item 
+2024-06-15 15:23:25 +07:00 [development] error: GET /api/v1/cms/item 
+2024-06-15 15:23:45 +07:00 [development] error: GET /api/v1/cms/item 
+2024-06-15 15:23:51 +07:00 [development] error: GET /api/v1/cms/item ReferenceError: s is not defined
+    at GET (webpack-internal:///(rsc)/./src/app/api/v1/cms/item/route.js:59:9)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:53452
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:122:103
+    at NoopContextManager.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NextTracerImpl.trace (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:122:28)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46261
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at Object.wrap (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:39188)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:45368
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at Object.wrap (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:37583)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:45330
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at e_.execute (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:44777)
+    at e_.handle (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:54711)
+    at doRender (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1377:60)
+    at cacheEntry.responseCache.get.routeKind (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1599:34)
+    at ResponseCache.get (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\response-cache\index.js:49:26)
+    at DevServer.renderToResponseWithComponentsImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1507:53)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1002:121
+    at NextTracerImpl.trace (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:105:20)
+    at DevServer.renderToResponseWithComponents (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1002:41)
+    at DevServer.renderPageComponent (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1924:35)
+    at async DevServer.renderToResponseImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:920:25)
+    at async NextNodeServer.handleCatchallRenderRequest (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:816:17)
+    at async D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\router-server.js:174:21)
+    at async handleRequest (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\router-server.js:353:24)
+    at async requestHandlerImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\router-server.js:377:13)
+    at async Server.requestListener (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\start-server.js:141:13)
+2024-06-15 15:24:02 +07:00 [development] error: GET /api/v1/cms/item 
+2024-06-15 15:24:13 +07:00 [development] error: GET /api/v1/cms/item ReferenceError: s is not defined
+    at GET (webpack-internal:///(rsc)/./src/app/api/v1/cms/item/route.js:59:9)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:53452
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:122:103
+    at NoopContextManager.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NextTracerImpl.trace (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:122:28)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46261
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at Object.wrap (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:39188)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:45368
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at Object.wrap (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:37583)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:45330
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at e_.execute (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:44777)
+    at e_.handle (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:54711)
+    at doRender (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1377:60)
+    at cacheEntry.responseCache.get.routeKind (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1599:34)
+    at ResponseCache.get (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\response-cache\index.js:49:26)
+    at DevServer.renderToResponseWithComponentsImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1507:53)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1002:121
+    at NextTracerImpl.trace (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:105:20)
+    at DevServer.renderToResponseWithComponents (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1002:41)
+    at DevServer.renderPageComponent (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1924:35)
+    at async DevServer.renderToResponseImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:920:25)
+    at async NextNodeServer.handleCatchallRenderRequest (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:816:17)
+    at async D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\router-server.js:174:21)
+    at async handleRequest (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\router-server.js:353:24)
+    at async requestHandlerImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\router-server.js:377:13)
+    at async Server.requestListener (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\start-server.js:141:13)
+2024-06-15 15:24:19 +07:00 [development] error: GET /api/v1/cms/item ReferenceError: s is not defined
+    at GET (webpack-internal:///(rsc)/./src/app/api/v1/cms/item/route.js:59:9)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:53452
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:122:103
+    at NoopContextManager.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NextTracerImpl.trace (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:122:28)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46261
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at Object.wrap (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:39188)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:45368
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at Object.wrap (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:37583)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:45330
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at e_.execute (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:44777)
+    at e_.handle (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:54711)
+    at doRender (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1377:60)
+    at cacheEntry.responseCache.get.routeKind (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1599:34)
+    at ResponseCache.get (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\response-cache\index.js:49:26)
+    at DevServer.renderToResponseWithComponentsImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1507:53)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1002:121
+    at NextTracerImpl.trace (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:105:20)
+    at DevServer.renderToResponseWithComponents (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1002:41)
+    at DevServer.renderPageComponent (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1924:35)
+    at async DevServer.renderToResponseImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:920:25)
+    at async NextNodeServer.handleCatchallRenderRequest (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:816:17)
+    at async D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\router-server.js:174:21)
+    at async handleRequest (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\router-server.js:353:24)
+    at async requestHandlerImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\router-server.js:377:13)
+    at async Server.requestListener (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\start-server.js:141:13)
+2024-06-15 15:24:30 +07:00 [development] error: GET /api/v1/cms/item ReferenceError: s is not defined
+    at GET (webpack-internal:///(rsc)/./src/app/api/v1/cms/item/route.js:59:9)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:53452
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:122:103
+    at NoopContextManager.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NextTracerImpl.trace (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:122:28)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:46261
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at Object.wrap (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:39188)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:45368
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at Object.wrap (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:37583)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:45330
+    at AsyncLocalStorage.run (node:async_hooks:346:14)
+    at e_.execute (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:44777)
+    at e_.handle (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\compiled\next-server\app-route.runtime.dev.js:6:54711)
+    at doRender (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1377:60)
+    at cacheEntry.responseCache.get.routeKind (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1599:34)
+    at ResponseCache.get (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\response-cache\index.js:49:26)
+    at DevServer.renderToResponseWithComponentsImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1507:53)
+    at D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1002:121
+    at NextTracerImpl.trace (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\trace\tracer.js:105:20)
+    at DevServer.renderToResponseWithComponents (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1002:41)
+    at DevServer.renderPageComponent (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1924:35)
+    at async DevServer.renderToResponseImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:1962:32)
+    at async DevServer.pipeImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:920:25)
+    at async NextNodeServer.handleCatchallRenderRequest (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\base-server.js:816:17)
+    at async D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\router-server.js:174:21)
+    at async handleRequest (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\router-server.js:353:24)
+    at async requestHandlerImpl (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\router-server.js:377:13)
+    at async Server.requestListener (D:\MyWork\Project\yuk-umkm\node_modules\next\dist\server\lib\start-server.js:141:13)
+2024-06-15 15:24:37 +07:00 [development] error: GET /api/v1/cms/item ReferenceError: s is not defined
+2024-06-15 15:28:26 +07:00 [development] error: GET /api/v1/cms/item ReferenceError: s is not defined
+2024-06-15 15:29:27 +07:00 [development] error: GET /api/v1/cms/item ReferenceError: s is not defined
+2024-06-15 15:29:32 +07:00 [development] error: GET /api/v1/cms/item ReferenceError: s is not defined
+2024-06-15 15:29:41 +07:00 [development] error: GET /api/v1/cms/item ReferenceError: s is not defined
+2024-06-15 15:29:54 +07:00 [development] error: GET /api/v1/cms/item ReferenceError: s is not defined
+2024-06-15 15:30:43 +07:00 [development] info: GET /api/v1/cms/item 
+2024-06-15 15:30:54 +07:00 [development] error: GET /api/v1/cms/item 
+2024-06-15 15:35:27 +07:00 [development] error: GET /api/v1/cms/item ReferenceError: s is not defined
+2024-06-15 15:35:48 +07:00 [development] info: GET /api/v1/cms/item 
