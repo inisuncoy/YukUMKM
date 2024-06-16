@@ -64,21 +64,21 @@ const DetailProdukPage = ({ params }) => {
                 height={0}
                 alt=""
                 src={preview}
-                className="lg:w-[56px] lg:h-[56px] md:w-full md:h-full w-[94px] h-[94px] object-cover"
+                className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
               />
               <Image
                 width={0}
                 height={0}
                 alt=""
                 src={preview}
-                className="lg:w-[56px] lg:h-[56px] md:w-full md:h-full w-[94px] h-[94px] object-cover"
+                className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
               />
               <Image
                 width={0}
                 height={0}
                 alt=""
                 src={preview}
-                className="lg:w-[56px] lg:h-[56px] md:w-full md:h-full w-[94px] h-[94px] object-cover"
+                className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
               />
             </div>
           </div>

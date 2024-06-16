@@ -1,6 +1,10 @@
 import db from '@/lib/db';
 
-import { internalErrorResponse, notAuthorizedResponse, notFoundResponse } from '@/lib/errorException';
+import {
+  internalErrorResponse,
+  notAuthorizedResponse,
+  notFoundResponse,
+} from '@/lib/errorException';
 import { compare } from 'bcrypt';
 import { successResponse } from '@/lib/genericResponse';
 import { jwtSign } from '@/lib/jwtTokenControl';
@@ -37,27 +41,27 @@ export async function POST(
         }
 
         const payload = {
-            id: user.id,
-            email: user.email,
-            role: user.role.name
-        }
+          id: user.id,
+          email: user.email,
+          role: user.role.name,
+        };
 
         const token = await jwtSign(payload);
 
         const resp = {
-            token : token,
-        }
-
+          token: token,
+        };
+      
         logger.info(req);
 
         return Response.json(successResponse(resp), { status: 200 })
 
-
-    } catch (error) {
-        logger.error(req, {
-            stack: error,
-        });
-        console.log('[LOGIN_BUYER]', error);
-        return Response.json(internalErrorResponse(error), { status: 500 });
+        } catch (error) {
+            logger.error(req, {
+                stack: error,
+            });
+            console.log('[LOGIN_BUYER]', error);
+            return Response.json(internalErrorResponse(error), { status: 500 });
+        }
     }
-}
+
