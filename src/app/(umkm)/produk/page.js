@@ -14,6 +14,7 @@ import TextareaField from '@/components/forms/TextareaField';
 import SelectionField from '@/components/forms/SelectionField';
 import product from '../../../../public/assets/uploads/product/product1.png';
 import Link from 'next/link';
+import { MdAddCircleOutline } from 'react-icons/md';
 
 const ORDERING = 'updatedAt';
 const SORT = 'desc';
@@ -64,19 +65,37 @@ const ProdukPage = () => {
 
   const searchParams = useSearchParams();
   const router = useRouter();
-  const id = searchParams.get('id');
+  const id = searchParams.get('id') ? searchParams.get('id') : '';
 
   const page = searchParams.get('page') ?? '1';
 
   const [productDatas, setProductDatas] = useState([]);
+  const [productDataById, setProductDataById] = useState();
   const [categoryDatas, setCategoryDatas] = useState([]);
   const [isProductAdded, setIsProductAdded] = useState(false);
-  const [productDataById, setProductDataById] = useState();
   const [searchQuery, setSearchQuery] = useState('');
 
   const [recordsTotal, setRecordsTotal] = useState(0);
 
   const [debounceValue] = useDebounce(searchQuery, 500);
+
+  const [images, setImages] = useState([]);
+  const [imgLength, setImgLength] = useState(5);
+
+  const handleImageChange = (e, index) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const newImages = [...images];
+      newImages[index] = files[0];
+      setImages(newImages);
+    }
+  };
+
+  const handleRemoveImage = (index) => {
+    const newImages = [...images];
+    newImages.splice(index, 1);
+    setImages(newImages);
+  };
 
   const icon = (
     <svg
@@ -104,7 +123,12 @@ const ProdukPage = () => {
     name: category.name,
     value: category.id,
   }));
-
+  images.forEach((img) => {
+    if (img != null) {
+      console.log(img);
+    }
+  });
+  console.log(images);
   const onSubmit = async (e) => {
     setValidations([]);
     setLoading(true);
@@ -134,29 +158,36 @@ const ProdukPage = () => {
       console.log(validations);
       return;
     }
+    // let data = {
+    //   name: name,
+    //   itemCategory: category,
+    //   price: price,
+    //   description: description,
+    // };
+
+    // // Collect all images into the imagesUri array
+    // images.forEach((img) => {
+    //   if (img != null) {
+    //     data.imagesUri = img;
+    //   }
+    // });
+
     let data = {
       name: name,
       itemCategory: category,
       price: price,
       description: description,
+      imagesUri: [], // Initialize imagesUri as an empty array
     };
 
-    if (img1 != null) {
-      data.imagesUri = img1;
-    }
-    if (img2 != null) {
-      data.imagesUri = img2;
-    }
-    if (img3 != null) {
-      data.imagesUri = img3;
-    }
-    if (img4 != null) {
-      data.imagesUri = img4;
-    }
-    if (img5 != null) {
-      data.imagesUri = img5;
-    }
+    // Collect all images into the imagesUri array
+    images.forEach((img) => {
+      if (img != null) {
+        data.imagesUri.push(img);
+      }
+    });
 
+    console.log(data);
     request
       .post('/cms/item', data)
       .then(function (response) {
@@ -195,6 +226,38 @@ const ProdukPage = () => {
       });
   };
 
+  const fetchProductsById = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await request.get(`/cms/item?id=${id}`);
+      setProductDataById(response.data.data);
+      setName(response.data.data.name);
+      setCategory(response.data.data.item_category_id);
+      setStatus(response.data.data.is_active);
+      setPrice(response.data.data.price);
+      setDescription(response.data.data.description);
+      setImgLength(response.data.data.item_image.length);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      fetchProductsById();
+    } else {
+      setName('');
+      setCategory('');
+      setStatus('');
+      setPrice();
+      setDescription('');
+      setImages([]);
+      setImgLength(5);
+    }
+  }, [id, fetchProductsById]);
+
   const fetchProducts = useCallback(async () => {
     request
       .get(`/cms/item`)
@@ -216,7 +279,7 @@ const ProdukPage = () => {
   useEffect(() => {
     if (isProductAdded) {
       fetchProducts();
-      setIsProductAdded(false); // reset flag setelah data berhasil diambil
+      setIsProductAdded(false);
     }
   }, [isProductAdded, fetchProducts]);
 
@@ -237,6 +300,8 @@ const ProdukPage = () => {
   useEffect(() => {
     fetchCategory();
   }, [fetchCategory]);
+
+  console.log(productDataById);
 
   return (
     <>
@@ -327,12 +392,10 @@ const ProdukPage = () => {
           setCategory('');
           setStatus();
           setPrice(0);
-          setImg1(null);
-          setImg2(null);
-          setImg3(null);
-          setImg4(null);
-          setImg5(null);
           setDescription('');
+          setImgLength(5);
+          setImages([]);
+          router.push('/produk');
         }}
         className={`fixed w-full h-full overflow-y-scroll backdrop-blur-sm bg-black/20  top-0 left-0 z-50 flex justify-center  ${
           menuActive ? '' : 'hidden'
@@ -399,159 +462,50 @@ const ProdukPage = () => {
                   <h1 className="text-[16px] font-bold leading-tight text-gray-500">
                     Gambar Produk<span className="text-[#FE6D00]">*</span>
                   </h1>
-                  <div className="flex gap-[15px]">
-                    {img1 ? (
-                      <div className="relative ">
-                        <Image
-                          width={0}
-                          height={0}
-                          src={URL.createObjectURL(img1)}
-                          className=" rounded-lg w-[75px] h-[75px]  object-cover"
-                          alt="product-img"
-                        />
-                        <GiCancel
-                          className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full "
-                          onClick={() => setImg1(null)}
-                        />
-                      </div>
-                    ) : (
-                      <label htmlFor="img1" className="cursor-pointer">
-                        {icon}
-                      </label>
-                    )}
-                    <input
-                      id="img1"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files.length > 0) {
-                          setImg1(e.target.files[0]);
-                        }
-                      }}
-                    />
-                    {img2 ? (
-                      <div className="relative ">
-                        <Image
-                          width={0}
-                          height={0}
-                          src={URL.createObjectURL(img2)}
-                          className=" rounded-lg w-[75px] h-[75px]  object-cover"
-                          alt="product-img"
-                        />
-                        <GiCancel
-                          className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full "
-                          onClick={() => setImg2(null)}
+                  <div className="flex gap-[15px] flex-wrap">
+                    {[...Array(imgLength)].map((_, i) => (
+                      <div key={i} className="relative">
+                        {images[i] ? (
+                          <>
+                            <Image
+                              width={0}
+                              height={0}
+                              src={URL.createObjectURL(images[i])}
+                              className="rounded-lg w-[75px] h-[75px] object-cover"
+                              alt={`product-img-${i}`}
+                            />
+                            <GiCancel
+                              className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full"
+                              onClick={() => handleRemoveImage(i)}
+                            />
+                          </>
+                        ) : (
+                          <label htmlFor={`img${i}`} className="cursor-pointer">
+                            {icon}
+                          </label>
+                        )}
+                        <input
+                          id={`img${i}`}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => handleImageChange(e, i)}
                         />
                       </div>
-                    ) : (
-                      <label htmlFor="img2" className="cursor-pointer">
-                        {icon}
-                      </label>
-                    )}
-                    <input
-                      id="img2"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files.length > 0) {
-                          setImg2(e.target.files[0]);
-                        }
-                      }}
-                    />
-                    {img3 ? (
-                      <div className="relative ">
-                        <Image
-                          width={0}
-                          height={0}
-                          src={URL.createObjectURL(img3)}
-                          className=" rounded-lg w-[75px] h-[75px]  object-cover"
-                          alt="product-img"
-                        />
-                        <GiCancel
-                          className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full"
-                          onClick={() => setImg3(null)}
-                        />
-                      </div>
-                    ) : (
-                      <label htmlFor="img3" className="cursor-pointer">
-                        {icon}
-                      </label>
-                    )}
-                    <input
-                      id="img3"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files.length > 0) {
-                          setImg3(e.target.files[0]);
-                        }
-                      }}
-                    />
-                    {img4 ? (
-                      <div className="relative ">
-                        <Image
-                          width={0}
-                          height={0}
-                          src={URL.createObjectURL(img4)}
-                          className=" rounded-lg w-[75px] h-[75px]  object-cover"
-                          alt="product-img"
-                        />
-                        <GiCancel
-                          className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full"
-                          onClick={() => setImg4(null)}
-                        />
-                      </div>
-                    ) : (
-                      <label htmlFor="img4" className="cursor-pointer">
-                        {icon}
-                      </label>
-                    )}
-                    <input
-                      id="img4"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files.length > 0) {
-                          setImg4(e.target.files[0]);
-                        }
-                      }}
-                    />
-                    {img5 ? (
-                      <div className="relative ">
-                        <Image
-                          width={0}
-                          height={0}
-                          src={URL.createObjectURL(img5)}
-                          className=" rounded-lg w-[75px] h-[75px]  object-cover"
-                          alt="product-img"
-                        />
-                        <GiCancel
-                          className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full"
-                          onClick={() => setImg5(null)}
-                        />
-                      </div>
-                    ) : (
-                      <label htmlFor="img5" className="cursor-pointer">
-                        {icon}
-                      </label>
-                    )}
-                    <input
-                      id="img5"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files.length > 0) {
-                          setImg5(e.target.files[0]);
-                        }
-                      }}
-                    />
+                    ))}
+                    <div className="flex justify-center items-center h-[75px]">
+                      <MdAddCircleOutline
+                        className="text-2xl cursor-pointer"
+                        onClick={() => setImgLength(imgLength + 1)}
+                      />
+                    </div>
                   </div>
                 </div>
+                {/* {images.forEach((img) => {
+                  if (img != null) {
+                    <div>{URL.createObjectURL(img)}</div>;
+                  }
+                })} */}
                 <TextareaField
                   id={'description'}
                   name={'description'}
