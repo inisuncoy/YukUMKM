@@ -70,6 +70,7 @@ const ProdukPage = () => {
 
   const [productDatas, setProductDatas] = useState([]);
   const [categoryDatas, setCategoryDatas] = useState([]);
+  const [isProductAdded, setIsProductAdded] = useState(false);
   const [productDataById, setProductDataById] = useState();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -163,7 +164,8 @@ const ProdukPage = () => {
         if (response.data?.code === 200 || response.data?.code === 201) {
           toast.dismiss();
           toast.success('Success Add Product');
-          location.reload();
+          setIsProductAdded(true);
+          setMenuActive(!menuActive);
         }
         setLoading(false);
       })
@@ -205,23 +207,18 @@ const ProdukPage = () => {
         console.log(error);
         setLoading(false);
       });
-  }, [id]);
+  }, []);
 
   useEffect(() => {
-    if (page < 1) {
-      router.push('/produk?page=1');
-    } else {
-      fetchProducts();
-    }
-  }, [page, fetchProducts, router]);
+    fetchProducts();
+  }, [fetchProducts]);
 
   useEffect(() => {
-    if (debounceValue !== '') {
-      router.push('/produk?page=1');
-    } else {
+    if (isProductAdded) {
       fetchProducts();
+      setIsProductAdded(false); // reset flag setelah data berhasil diambil
     }
-  }, [debounceValue, fetchProducts, router]);
+  }, [isProductAdded, fetchProducts]);
 
   const fetchCategory = useCallback(async () => {
     request
