@@ -51,21 +51,47 @@ export async function GET(
             orderBy: {
                 created_at: 'desc'
             },
+            where: {}
         };
 
-        // if userId is set
-        if (searchParams.get('userId')) {
-            baseQuery.where.user_id = searchParams.get('userId');
+        const userId = searchParams.get('userId')
+        if (userId !== null) {
+            baseQuery.where.user_id = userId;
+        }
+
+
+        const name_insensitive = searchParams.get('name_insensitive');
+        const name_sensitive = searchParams.get('name_sensitive');
+
+        if ((name_insensitive != null || name_sensitive != null) && !(name_insensitive != null && name_sensitive != null)) {
+            if (name_insensitive != null) {
+                baseQuery.where.name = {
+                    contains: name_insensitive,
+                    mode: 'insensitive'
+                };
+            } else if (name_sensitive != null) {
+                baseQuery.where.name = {
+                    equals: name_sensitive,
+                };
+            }
         }
 
         // if category_ids is set
-        if (searchParams.get('categoryIds')) {
-            baseQuery.where.category_id = {
-                in: searchParams.get('categoryIds').split(',').map(Number)
+        const categoryIds = searchParams.getAll('categoryIds[]');
+        if (categoryIds && categoryIds.length > 0) {
+            baseQuery.where.item_category_id = {
+                in: categoryIds
             };
         }
 
-        // if limit and page is set
+        // if status is set
+        const status = searchParams.get('status')
+        if (status !== null) {
+            const isActive = status.toLowerCase() === 'true'; // Convert status to boolean
+            baseQuery.where.is_active = isActive;
+        }
+
+
         if (searchParams.get('limit') && searchParams.get('page')) {
             const limit = parseInt(searchParams.get('limit'));
             const page = parseInt(searchParams.get('page'));
@@ -74,9 +100,15 @@ export async function GET(
             baseQuery.take = limit;
         }
 
-        const data = await db.item.findMany(baseQuery);
-        // logger.info(req)
-        return Response.json(successResponse(data, data.length), { status: 200 });
+        const [dataLength, data] = await Promise.all([
+            db.item.count({
+                where: baseQuery.where,
+            }),
+            db.item.findMany(baseQuery),
+        ]);
+
+        logger.info(req)
+        return Response.json(successResponse(data, dataLength), { status: 200 });
 
     } catch (error) {
         logger.error(req, {

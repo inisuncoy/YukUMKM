@@ -53,7 +53,7 @@ export async function GET(
 
         if (searchParams.get('id')) {
             const id = searchParams.get('id');
-
+        
             const data = await db.item.findUnique({
                 where: {
                     id: id,
@@ -61,7 +61,8 @@ export async function GET(
                 },
                 include: {
                     item_image: true,
-                    item_category: true
+                    item_category: true,
+                    user: true
                 }
             });
 
@@ -85,9 +86,54 @@ export async function GET(
             }
         };
 
-        const data = await db.item.findMany(baseQuery);
+        const name_insensitive = searchParams.get('name_insensitive');
+        const name_sensitive = searchParams.get('name_sensitive');
+
+        if ((name_insensitive != null || name_sensitive != null) && !(name_insensitive != null && name_sensitive != null)) {
+            if (name_insensitive != null) {
+                baseQuery.where.name = {
+                    contains: name_insensitive,
+                    mode: 'insensitive'
+                };
+            } else if (name_sensitive != null) {
+                baseQuery.where.name = {
+                    equals: name_sensitive,
+                };
+            }
+        }
+
+        // if category_ids is set
+        const categoryIds = searchParams.getAll('categoryIds[]');
+        if (categoryIds && categoryIds.length > 0) {
+            baseQuery.where.item_category_id = {
+                in: categoryIds
+            };
+        }
+
+        // if status is set
+        const status = searchParams.get('status')
+        if (status !== null) {
+            const isActive = status.toLowerCase() === 'true'; // Convert status to boolean
+            baseQuery.where.is_active = isActive;
+        }
+
+        if (searchParams.get('limit') && searchParams.get('page')) {
+            const limit = parseInt(searchParams.get('limit'));
+            const page = parseInt(searchParams.get('page'));
+
+            baseQuery.skip = (page - 1) * limit;
+            baseQuery.take = limit;
+        }
+
+        const [dataLength, data] = await Promise.all([
+            db.item.count({
+                where: baseQuery.where,
+            }),
+            db.item.findMany(baseQuery),
+        ]);
+
         logger.info(req)
-        return Response.json(successResponse(data, data.length), { status: 200 });
+        return Response.json(successResponse(data, dataLength), { status: 200 });
 
     } catch (error) {
         logger.error(req, {
@@ -106,7 +152,7 @@ export async function POST(req) {
         const formData = await req.formData();
 
         const name = formData.get('name');
-        const imagesUri = formData.getAll('imagesUri');
+        const imagesUri = formData.getAll('imagesUri[]');
         const price = formData.get('price');
         const itemCategory = formData.get('itemCategory');
         const description = formData.get('description');
@@ -131,6 +177,21 @@ export async function POST(req) {
                 validationError.push(key);
             });
             return Response.json(validationErrorResponse(validationError), { status: 422 });
+        }
+
+        const categoryExist = await db.itemCategory.findUnique({
+            where: {
+                id: itemCategory
+            }
+        });
+
+        if (!categoryExist) {
+            const key = {
+                name: "itemCategory",
+                message: "Item category not found.",
+            };
+            validationError.push(key);
+            return Response.json(validationErrorResponse(validationError), { status: 404 });
         }
 
         const fileUploadPromises = imagesUri.map(async (imageUri, index) => {

@@ -65,6 +65,8 @@ export async function POST(
         const body = await req.json();
         const { name } = body;
 
+        const userId = await Auth(req);
+
         const validationError = [];
 
         const validation = CategorySchema.safeParse({
@@ -86,7 +88,9 @@ export async function POST(
 
         await db.itemCategory.create({
             data: {
-                name: name
+                name: name,
+                created_by: userId,
+                updated_by: userId
             }
         });
 

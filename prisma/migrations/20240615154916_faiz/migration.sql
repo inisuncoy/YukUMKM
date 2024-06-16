@@ -1,36 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the `Blog` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Comment` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Role` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropForeignKey
-ALTER TABLE "Blog" DROP CONSTRAINT "Blog_user_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "Comment" DROP CONSTRAINT "Comment_blog_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "Comment" DROP CONSTRAINT "Comment_user_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "User" DROP CONSTRAINT "User_role_id_fkey";
-
--- DropTable
-DROP TABLE "Blog";
-
--- DropTable
-DROP TABLE "Comment";
-
--- DropTable
-DROP TABLE "Role";
-
--- DropTable
-DROP TABLE "User";
-
 -- CreateTable
 CREATE TABLE "role" (
     "id" TEXT NOT NULL,
@@ -88,8 +55,47 @@ CREATE TABLE "comment" (
     CONSTRAINT "comment_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
+-- CreateTable
+CREATE TABLE "item" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "item_category_id" TEXT NOT NULL,
+    "price" INTEGER NOT NULL,
+    "description" TEXT NOT NULL,
+    "is_active" BOOLEAN NOT NULL DEFAULT false,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_by" TEXT NOT NULL DEFAULT 'system',
+    "updated_by" TEXT NOT NULL DEFAULT 'system',
+
+    CONSTRAINT "item_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "item_image" (
+    "id" TEXT NOT NULL,
+    "item_id" TEXT NOT NULL,
+    "uri" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_by" TEXT NOT NULL DEFAULT 'system',
+    "updated_by" TEXT NOT NULL DEFAULT 'system',
+
+    CONSTRAINT "item_image_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "item_category" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_by" TEXT NOT NULL DEFAULT 'system',
+    "updated_by" TEXT NOT NULL DEFAULT 'system',
+
+    CONSTRAINT "item_category_pkey" PRIMARY KEY ("id")
+);
 
 -- AddForeignKey
 ALTER TABLE "user" ADD CONSTRAINT "user_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "role"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -102,3 +108,12 @@ ALTER TABLE "comment" ADD CONSTRAINT "comment_user_id_fkey" FOREIGN KEY ("user_i
 
 -- AddForeignKey
 ALTER TABLE "comment" ADD CONSTRAINT "comment_blog_id_fkey" FOREIGN KEY ("blog_id") REFERENCES "blog"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "item" ADD CONSTRAINT "item_item_category_id_fkey" FOREIGN KEY ("item_category_id") REFERENCES "item_category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "item" ADD CONSTRAINT "item_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "item_image" ADD CONSTRAINT "item_image_item_id_fkey" FOREIGN KEY ("item_id") REFERENCES "item"("id") ON DELETE CASCADE ON UPDATE CASCADE;
