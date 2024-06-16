@@ -63,6 +63,8 @@ export async function POST(
         const body = await req.json();
         const { name } = body;
 
+        const userId = await Auth(req);
+
         const validationError = [];
 
         const validation = RoleSchema.safeParse({
@@ -84,7 +86,9 @@ export async function POST(
 
         await db.role.create({
             data: {
-                name: name
+                name: name,
+                created_by: userId,
+                updated_by: userId
             }
         });
 
@@ -106,6 +110,8 @@ export async function PATCH(
     try {
         const url = new URL(req.url);
         const searchParams = url.searchParams;
+
+        const userId = await Auth(req);
 
         if (!searchParams.get('id')) {
             return Response.json(badRequestResponse("ID is required"), { status: 400 });
@@ -149,7 +155,8 @@ export async function PATCH(
                 id: id
             },
             data: {
-                name: name
+                name: name,
+                updated_by: userId
             }
         });
 

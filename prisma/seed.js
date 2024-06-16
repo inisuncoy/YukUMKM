@@ -17,7 +17,7 @@ async function main() {
 
   console.log('SEEDING ROLE USER SUCCESS!');
 
-  await db.role.createMany({
+  await db.itemCategory.createMany({
     data: [
         {
             name: 'Aksesoris',
@@ -32,7 +32,7 @@ async function main() {
     skipDuplicates: true,
   });
 
-  console.log('SEEDING ROLE USER SUCCESS!');
+  console.log('SEEDING ITEM CATEGORY SUCCESS!');
 }
 
 main()
