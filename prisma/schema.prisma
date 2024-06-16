@@ -46,13 +46,12 @@ model user {
   comments comment[]
 }
 
-
-
 model blog {
   id String @id @default(uuid())
   title String
   content String
   user_id String
+  image_uri String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   created_by String @default("system")
