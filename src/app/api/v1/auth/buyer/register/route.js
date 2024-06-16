@@ -8,6 +8,8 @@ import { internalErrorResponse, validationErrorResponse, notFoundResponse } from
 import hashPass from "@/lib/hash";
 import { jwtSign } from "@/lib/jwtTokenControl";
 
+import logger from "@/services/logger";
+
 const BuyerSchema = z.object({
     name: z
         .string()
@@ -109,10 +111,15 @@ export async function POST(
             token : token,
         }
 
+        logger.info(req)
+
         return Response.json(createdResponse(resp), { status: 201 });
 
     } catch (error) {
-        console.log('[REGISTER_POST]', error);
+        logger.error(req, {
+            stack: error,
+        });
+        console.log('[REGISTER_BUYER]', error);
         return Response.json(internalErrorResponse(error), { status: 500 });
     }
 }

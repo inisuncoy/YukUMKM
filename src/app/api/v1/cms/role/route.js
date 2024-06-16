@@ -5,6 +5,8 @@ import { z } from "zod";
 import { successResponse, createdResponse } from "@/lib/genericResponse";
 import { internalErrorResponse, validationErrorResponse, notFoundResponse, badRequestResponse } from "@/lib/errorException";
 
+import logger from "@/services/logger";
+
 const RoleSchema = z.object({
     name: z
         .string()

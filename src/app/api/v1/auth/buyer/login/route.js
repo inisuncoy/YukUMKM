@@ -5,14 +5,12 @@ import { compare } from 'bcrypt';
 import { successResponse } from '@/lib/genericResponse';
 import { jwtSign } from '@/lib/jwtTokenControl';
 
-import { logger } from '@/logger';
+import logger from "@/services/logger";
 
 export async function POST(
     req
 ) {
     try {
-        logger.info(`POST /api/v1/auth/buyer/login ${req}`);
-
         const body = await req.json();
         const { email, password } = body
 
@@ -35,7 +33,7 @@ export async function POST(
         const passwordMatch = await compare(password, user.password);
 
         if (!passwordMatch) {
-            return Response.json(notAuthorizedResponse("Password is incorrect"), { status: 401 })
+            return Response.json(notFoundResponse("Password is incorrect"), { status: 401 })
         }
 
         const payload = {
@@ -50,11 +48,15 @@ export async function POST(
             token : token,
         }
 
+        logger.info(req);
+
         return Response.json(successResponse(resp), { status: 200 })
 
 
     } catch (error) {
-        logger.info(`POST /api/v1/auth/buyer/login ${req}`);
+        logger.error(req, {
+            stack: error,
+        });
         console.log('[LOGIN_BUYER]', error);
         return Response.json(internalErrorResponse(error), { status: 500 });
     }
