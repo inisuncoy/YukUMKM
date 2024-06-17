@@ -23,7 +23,7 @@ export async function isSeller(request) {
             return false;
         }
 
-        return payload;
+        return true;
     } catch (error) {
         console.error('Authentication error:', error);
         return false;
@@ -50,7 +50,7 @@ export async function isBuyer(request) {
             return false;
         }
 
-        return !!payload;
+        return true;
     } catch (error) {
         console.error('Authentication error:', error);
         return false;

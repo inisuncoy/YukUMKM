@@ -7,12 +7,12 @@ import { internalErrorResponse, validationErrorResponse, notFoundResponse } from
 
 import { writeFile } from "fs/promises";
 import path from "path";
+import { unlink } from "fs";
 import { createFilename } from "@/utils/filename";
 import { Auth } from "@/lib/jwtTokenControl";
 
 
 import logger from "@/services/logger";
-import { unlink } from "fs";
 
 const MAX_FILE_SIZE = 2000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -64,13 +64,34 @@ export async function GET(
         const searchParams = url.searchParams;
         const userId = await Auth(req);
 
+        const userExist = !!await db.user.findFirst({
+            where: {
+                id: userId,
+                role: {
+                    name: "seller"
+                }
+            }
+        });
+
+        if (!userExist) {
+            return Response.json(notFoundResponse(), { status: 404 });
+        }
+
         if (searchParams.get('id')) {
             const id = searchParams.get('id');
         
-            const data = await db.blog.findUnique({
+            const data = await db.blog.findFirst({
                 where: {
                     id: id,
                     user_id: userId
+                },
+                include: {
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                        }
+                    }
                 }
             });
 
@@ -89,6 +110,14 @@ export async function GET(
             },
             orderBy: {
                 created_at: 'desc'
+            },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                    }
+                }
             }
         };
 
@@ -139,6 +168,19 @@ export async function GET(
 export async function POST(req) {
     try {
         const userId = await Auth(req);
+
+        const userExist = !!await db.user.findFirst({
+            where: {
+                id: userId,
+                role: {
+                    name: "seller"
+                }
+            }
+        });
+
+        if (!userExist) {
+            return Response.json(notFoundResponse(), { status: 404 });
+        }
 
         const formData = await req.formData();
 
@@ -211,13 +253,27 @@ export async function PATCH(req) {
 
         const userId = await Auth(req);
 
-        const existingBlog = await db.blog.findUnique({
+        const userExist = !!await db.user.findFirst({
             where: {
-                id: id
+                id: userId,
+                role: {
+                    name: "seller"
+                }
             }
         });
 
-        if (!existingBlog || existingBlog.user_id !== userId) {
+        if (!userExist) {
+            return Response.json(notFoundResponse(), { status: 404 });
+        }
+
+        const existingBlog = await db.blog.findFirst({
+            where: {
+                id: id,
+                user_id: userId
+            }
+        });
+
+        if (!existingBlog) {
             return Response.json(notFoundResponse(), { status: 404 });
         }
 
@@ -298,14 +354,28 @@ export async function DELETE(req) {
         }
 
         const userId = await Auth(req);
+
+        const userExist = !!await db.user.findFirst({
+            where: {
+                id: userId,
+                role: {
+                    name: "seller"
+                }
+            }
+        });
+
+        if (!userExist) {
+            return Response.json(notFoundResponse(), { status: 404 });
+        }
         
-        const data = await db.blog.findUnique({
+        const data = await db.blog.findFirst({
             where: {
                 id: id,
+                user_id: userId
             }
         });
         
-        if (!data || data.user_id !== userId) {
+        if (!data) {
             return Response.json(notFoundResponse(), { status: 404 });
         }
         // return Response.json(data);

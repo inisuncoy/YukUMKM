@@ -38,3 +38,7 @@ next-env.d.ts
 
 # log
 logs
+
+# migration
+prisma/migrations
+

@@ -44,6 +44,21 @@ model user {
   items item[]
   blogs blog[]
   comments comment[]
+  detail_seller detailSeller?
+}
+
+model detailSeller {
+  id String @id @default(uuid())
+  user_id String @unique
+  phone_number String?
+  description String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by String @default("system")
+  updated_by String @default("system")
+
+  user user @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  @@map("detail_seller")
 }
 
 model blog {
