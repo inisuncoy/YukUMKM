@@ -33,7 +33,7 @@ export async function POST(
         const passwordMatch = await compare(password, user.password);
 
         if (!passwordMatch) {
-            return Response.json(notFoundResponse("Password is incorrect"), { status: 401 })
+            return Response.json(notFoundResponse("Password is incorrect"), { status: 404 })
         }
 
         const payload = {
