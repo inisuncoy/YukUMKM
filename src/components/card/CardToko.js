@@ -1,5 +1,5 @@
 import React from 'react';
-import Logo from '../../../public/assets/uploads/toko/logoUMKM.png';
+import Logo from '../../../public/assets/logo/logoUMKM.png';
 import iconToko from '../../../public/assets/icon/icon-toko.png';
 import Image from 'next/image';
 import Link from 'next/link';
