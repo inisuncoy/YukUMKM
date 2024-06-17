@@ -2,7 +2,7 @@
 'use client';
 import Image from 'next/image';
 import React, { useCallback, useEffect, useState } from 'react';
-import defaultProfile from '../../../../public/assets/uploads/profile/defaultProfile.png';
+import defaultProfile from '../../../../public/assets/icon/defaultProfile.png';
 import InputField from '@/components/forms/InputField';
 import request from '@/utils/request';
 import { GiCancel } from 'react-icons/gi';

@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import product1 from '../../../public/assets/uploads/product/product1.png';
+import product1 from '../../../public/assets/img/product/product1.png';
 import iconToko from '../../../public/assets/icon/icon-toko.png';
 import Image from 'next/image';
 import Link from 'next/link';

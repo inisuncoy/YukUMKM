@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
 import { IoTrashOutline } from 'react-icons/io5';
 import { RiSendPlaneLine } from 'react-icons/ri';
