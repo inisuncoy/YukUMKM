@@ -2,7 +2,7 @@
 import NextBreadcrumb from '@/components/NextBreadcrumb';
 import Image from 'next/image';
 import React from 'react';
-import thumnail from '../../../../../public/assets/uploads/blog/blog1.png';
+import thumnail from '../../../../../public/assets/img/blog/blog1.png';
 
 export async function generateStaticParams() {
   return [
