@@ -23,6 +23,8 @@ export async function GET(req) {
       if (!data) {
         return Response.json(notFoundResponse(), { status: 404 });
       }
+      
+      logger.info(req)
 
       return Response.json(successResponse(data, 1), { status: 200 });
     }

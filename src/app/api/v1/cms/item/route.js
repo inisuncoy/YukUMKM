@@ -51,10 +51,23 @@ export async function GET(
         const searchParams = url.searchParams;
         const userId = await Auth(req);
 
+        const userExist = !!await db.user.findFirst({
+            where: {
+                id: userId,
+                role: {
+                    name: "seller"
+                }
+            }
+        });
+
+        if (!userExist) {
+            return Response.json(notFoundResponse(), { status: 404 });
+        }
+
         if (searchParams.get('id')) {
             const id = searchParams.get('id');
         
-            const data = await db.item.findUnique({
+            const data = await db.item.findFirst({
                 where: {
                     id: id,
                     user_id: userId
@@ -81,7 +94,8 @@ export async function GET(
             },
             include: {
                 item_image: true,
-                item_category: true
+                item_category: true,
+                user: true
             },
             orderBy: {
                 created_at: 'desc'
@@ -150,6 +164,19 @@ export async function GET(
 export async function POST(req) {
     try {
         const userId = await Auth(req);
+
+        const userExist = !!await db.user.findFirst({
+            where: {
+                id: userId,
+                role: {
+                    name: "seller"
+                }
+            }
+        });
+
+        if (!userExist) {
+            return Response.json(notFoundResponse(), { status: 404 });
+        }
 
         const formData = await req.formData();
 
@@ -251,6 +278,19 @@ export async function DELETE(req) {
         }
 
         const userId = await Auth(req);
+
+        const userExist = !!await db.user.findFirst({
+            where: {
+                id: userId,
+                role: {
+                    name: "seller"
+                }
+            }
+        });
+
+        if (!userExist) {
+            return Response.json(notFoundResponse(), { status: 404 });
+        }
 
         const data = await db.item.findUnique({
             where: {
