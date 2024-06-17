@@ -1,20 +1,26 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import Image from 'next/image';
 import { useState, useRef } from 'react';
+import { FaEdit } from 'react-icons/fa';
 
-const DragDropFiles = () => {
-  const [files, setFiles] = useState(null);
-  const inputRef = useRef();
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    setFiles(event.dataTransfer.files);
-  };
-
+const DragDropFiles = ({
+  id,
+  name,
+  type,
+  value,
+  onChange,
+  placeholder,
+  multiple = false,
+  required = false,
+  label = null,
+  disabled = false,
+  readOnly = false,
+  handleDrop,
+  handleDeleteImg,
+  imgDefault,
+  validations,
+}) => {
   const icon = (
     <svg
       width="170"
@@ -106,83 +112,111 @@ const DragDropFiles = () => {
     </svg>
   );
 
-  // send files to the server // learn from my other video
-  const handleUpload = () => {
-    const formData = new FormData();
-    formData.append('Files', files);
-    console.log(formData.getAll());
-    // fetch(
-    //   "link", {
-    //     method: "POST",
-    //     body: formData
-    //   }
-    // )
+  const handleDragOver = (event) => {
+    event.preventDefault();
   };
 
-  console.log(files);
+  // if (value || imgDefault)
+  //   return (
+  //     <div className="relative flex flex-col gap-[12px]">
+  //       <label
+  //         htmlFor="password"
+  //         className="after:content[' '] pointer-events-none  flex h-full w-full  select-none !overflow-visible truncate text-[16px] font-bold  leading-tight text-gray-500 transition-all  after:bottom-0 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500"
+  //       >
+  //         {label} <span className="text-[#FE6D00]">*</span>
+  //       </label>
+  //       <div className="w-full border h-[400px] flex flex-col justify-center items-center gap-[24px] border-gray-400 rounded-lg ">
+  //         <img
+  //           width={0}
+  //           height={0}
+  //           alt="img-blog"
+  //           src={
+  //             value
+  //               ? URL.createObjectURL(value)
+  //               : 'http://localhost:3000' + imgDefault
+  //           }
+  //           className="w-full h-full object-cover rounded-lg"
+  //         />
+  //       </div>
+  //       <label
+  //         htmlFor={value ? id : ''}
+  //         className="absolute bottom-3 right-3  w-[56px] h-[56px] flex justify-center items-center em bg-[#4C50FF] text-white text-center text-[12px] font-bold rounded-lg cursor-pointer"
+  //       >
+  //         <FaEdit clasName="text-white test-3xl" />
+  //       </label>
+  //     </div>
+  //   );
 
-  if (files)
-    return (
-      // <div className="uploads">
-      //   <ul>
-      //     {Array.from(files).map((file, idx) => (
-      //       <li key={idx}>{file.name}</li>
-      //     ))}
-      //   </ul>
-
-      //
-      // </div>
-      <div>
-        <div className="flex flex-col gap-[12px]">
+  return (
+    <div>
+      {value || imgDefault ? (
+        <div className="relative flex flex-col gap-[12px]">
           <label
             htmlFor="password"
             className="after:content[' '] pointer-events-none  flex h-full w-full  select-none !overflow-visible truncate text-[16px] font-bold  leading-tight text-gray-500 transition-all  after:bottom-0 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500"
           >
-            Gambar Blog <span className="text-[#FE6D00]">*</span>
+            {label} <span className="text-[#FE6D00]">*</span>
           </label>
           <div className="w-full border h-[400px] flex flex-col justify-center items-center gap-[24px] border-gray-400 rounded-lg ">
-            <Image
+            <img
               width={0}
               height={0}
               alt="img-blog"
-              src={URL.createObjectURL(files[0])}
+              src={
+                value
+                  ? URL.createObjectURL(value)
+                  : 'http://localhost:3000' + imgDefault
+              }
               className="w-full h-full object-cover rounded-lg"
             />
           </div>
+          <label
+            htmlFor={id}
+            className="absolute bottom-3 right-3  w-[56px] h-[56px] flex justify-center items-center em bg-[#4C50FF] text-white text-center text-[12px] font-bold rounded-lg cursor-pointer"
+          >
+            <FaEdit clasName="text-white test-3xl" />
+          </label>
         </div>
-        <button
-          className="mt-5 w-[72px] py-[14px] bg-[#FF0000] text-white text-center text-[12px] font-bold rounded-lg"
-          onClick={() => setFiles(null)}
-        >
-          Cancel
-        </button>
-      </div>
-    );
-
-  return (
-    <div className="flex flex-col gap-[12px]">
-      <label
-        htmlFor="password"
-        className="after:content[' '] pointer-events-none  flex h-full w-full  select-none !overflow-visible truncate text-[16px] font-bold  leading-tight text-gray-500 transition-all  after:bottom-0 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500"
-      >
-        Gambar Blog <span className="text-[#FE6D00]">*</span>
-      </label>
-      <div
-        className="w-full border h-[400px] flex flex-col justify-center items-center gap-[24px] border-gray-400 rounded-lg "
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-        onClick={() => inputRef.current.click()}
-      >
-        {icon}
-        <input
-          type="file"
-          onChange={(event) => setFiles(event.target.files)}
-          hidden
-          accept="image/png, image/jpeg"
-          ref={inputRef}
-        />
-        <p className="text-[24px] text-gray-300">Masukan gambar</p>
-      </div>
+      ) : (
+        <div className="flex flex-col gap-[12px]">
+          <label className="after:content[' '] pointer-events-none  flex h-full w-full  select-none !overflow-visible truncate text-[16px] font-bold  leading-tight text-gray-500 transition-all  after:bottom-0 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
+            {label} <span className="text-[#FE6D00]">*</span>
+          </label>
+          <label
+            htmlFor={id}
+            className="w-full border h-[400px] flex flex-col justify-center items-center gap-[24px] border-gray-400 rounded-lg "
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+          >
+            {icon}
+            <p className="text-[24px] text-gray-300">Masukan gambar</p>
+          </label>
+        </div>
+      )}
+      <input
+        id={id}
+        name={name}
+        // value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        multiple={multiple}
+        required={required}
+        disabled={disabled}
+        readOnly={readOnly}
+        type="file"
+        hidden
+        accept="image/png, image/jpeg"
+      />
+      {validations &&
+        validations.map(
+          (validation, index) =>
+            (validation.name === name ||
+              (validation.name === 'media_uri' && type === 'image')) && (
+              <p key={index} className="text-sm text-red-500 mt-2">
+                {validation.message}
+              </p>
+            )
+        )}
     </div>
   );
 };

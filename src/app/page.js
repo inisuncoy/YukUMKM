@@ -6,8 +6,8 @@ export default function Index() {
   const router = useRouter();
 
   useEffect(() => {
-    router.push('/beranda'); // Mengarahkan pengguna dari / ke /login
-  }, [router]); // Komponen ini hanya dijalankan sekali setelah mounting
+    router.push('/beranda');
+  }, [router]);
 
-  return null; // Atau tampilkan pesan atau komponen lain jika perlu
+  return null;
 }

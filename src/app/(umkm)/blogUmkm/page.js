@@ -1,5 +1,6 @@
+'use client';
 import Image from 'next/image';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { IoIosSearch } from 'react-icons/io';
 import { GoDotFill } from 'react-icons/go';
@@ -10,7 +11,28 @@ import CardBlogLarge from '@/components/card/CardBlogLarge';
 import CardBlogSmall from '@/components/card/CardBlogSmall';
 import NextBreadcrumb from '@/components/NextBreadcrumb';
 import { MdOutlineAdd } from 'react-icons/md';
+import request from '@/utils/request';
 export default function BlogUmkmPage() {
+  const [blogDatas, setBlogDatas] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchBlogs = useCallback(async () => {
+    request
+      .get(`/cms/blog`)
+      .then(function (response) {
+        setBlogDatas(response.data.data);
+        setRecordsTotal(response.data.recordsTotal);
+        setLoading(false);
+      })
+      .catch(function (error) {
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetchBlogs();
+  }, [fetchBlogs]);
+
   return (
     <div className=" w-full flex flex-col gap-[30px]">
       <div className="w-full h-[390px] inline-flex flex-nowrap overflow-hidden ">
@@ -42,14 +64,17 @@ export default function BlogUmkmPage() {
           </div>
           <div className=" flex flex-col gap-[30px]">
             <div className="flex flex-col gap-[30px]">
-              <CardBlogSmall />
-              <CardBlogSmall />
-              <CardBlogSmall />
-              <CardBlogSmall />
-              <CardBlogSmall />
-              <CardBlogSmall />
-              <CardBlogSmall />
-              <CardBlogSmall />
+              {blogDatas &&
+                blogDatas.map((data, i) => (
+                  <CardBlogSmall
+                    key={i}
+                    src={data.image_uri}
+                    title={data.title}
+                    date={data.created_at}
+                    content={data.content}
+                    href={`/blogUmkm/editBlogUmkm?id=${data.id}`}
+                  />
+                ))}
             </div>
           </div>
         </div>
