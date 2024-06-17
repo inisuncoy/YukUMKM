@@ -25,6 +25,9 @@ const SelectionField = ({
           disabled={disabled}
           className="  peer pl-0 h-full w-full border-b border-x-0 border-t-0 border-blue-gray-200 bg-transparent pt-7 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline-none transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:border-x-0  focus:outline-none disabled:border-0 "
         >
+          <option className="text-sm text-red-500 mt-2" value={''}>
+            {''}
+          </option>
           {options &&
             options.map((option, index) => (
               <option

@@ -51,12 +51,7 @@ const ProdukPage = () => {
   const [category, setCategory] = useState();
   const [status, setStatus] = useState();
   const [price, setPrice] = useState();
-  const [imagesUri, setImagesUri] = useState([]);
-  const [img1, setImg1] = useState();
-  const [img2, setImg2] = useState();
-  const [img3, setImg3] = useState();
-  const [img4, setImg4] = useState();
-  const [img5, setImg5] = useState();
+  const [itemImages, setItemImages] = useState([]);
   const [description, setDescription] = useState();
 
   const [menuActive, setMenuActive] = useState(false);
@@ -119,16 +114,21 @@ const ProdukPage = () => {
     { name: 'Tidak Tersedia', value: false },
   ];
 
-  const optionCategory = categoryDatas.map((category) => ({
-    name: category.name,
-    value: category.id,
-  }));
-  images.forEach((img) => {
-    if (img != null) {
-      console.log(img);
-    }
-  });
-  console.log(images);
+  const onDelete = async (e, id) => {
+    setLoading(true);
+    toast.loading('Deleting data...');
+    e.preventDefault();
+
+    request.delete(`/cms/item?id=${id}`).then(function (response) {
+      if (response.data?.code === 200 || response.data?.code === 201) {
+        toast.dismiss();
+        toast.success(response.data.data.message);
+        setIsProductAdded(true);
+      }
+      setLoading(false);
+    });
+  };
+
   const onSubmit = async (e) => {
     setValidations([]);
     setLoading(true);
@@ -137,7 +137,6 @@ const ProdukPage = () => {
 
     const validation = formSchema.safeParse({
       name: name,
-      // imagesUri: imagesUri,
       price: price,
       description: description,
     });
@@ -155,23 +154,9 @@ const ProdukPage = () => {
       setLoading(false);
       toast.dismiss();
       toast.error('Invalid Input.');
-      console.log(validations);
+
       return;
     }
-    // let data = {
-    //   name: name,
-    //   itemCategory: category,
-    //   price: price,
-    //   description: description,
-    // };
-
-    // // Collect all images into the imagesUri array
-    // images.forEach((img) => {
-    //   if (img != null) {
-    //     data.imagesUri = img;
-    //   }
-    // });
-
     let data = {
       name: name,
       itemCategory: category,
@@ -187,11 +172,9 @@ const ProdukPage = () => {
       }
     });
 
-    console.log(data);
     request
       .post('/cms/item', data)
       .then(function (response) {
-        console.log('Response received:', response); // Tambahkan log untuk melihat response
         if (response.data?.code === 200 || response.data?.code === 201) {
           toast.dismiss();
           toast.success('Success Add Product');
@@ -201,7 +184,6 @@ const ProdukPage = () => {
         setLoading(false);
       })
       .catch(function (error) {
-        console.log(error);
         if (
           (error.response?.data?.code === 400 ||
             error.response?.data?.code === 422) &&
@@ -214,11 +196,9 @@ const ProdukPage = () => {
           error.response?.data?.code === 404 &&
           error.response?.data.status == 'NOT_FOUND'
         ) {
-          console.error('NOT_FOUND');
           toast.dismiss();
           toast.error(error.response?.data.error?.message);
         } else if (error.response?.data?.code === 500) {
-          console.error('INTERNAL_SERVER_ERROR');
           toast.dismiss();
           toast.error(error.response?.data.error.message);
         }
@@ -236,7 +216,8 @@ const ProdukPage = () => {
       setStatus(response.data.data.is_active);
       setPrice(response.data.data.price);
       setDescription(response.data.data.description);
-      setImgLength(response.data.data.item_image.length);
+      setItemImages(response.data.data.item_image);
+      setImgLength(1);
     } catch (error) {
       console.log(error);
     } finally {
@@ -254,6 +235,7 @@ const ProdukPage = () => {
       setPrice();
       setDescription('');
       setImages([]);
+      setItemImages([]);
       setImgLength(5);
     }
   }, [id, fetchProductsById]);
@@ -267,7 +249,6 @@ const ProdukPage = () => {
         setLoading(false);
       })
       .catch(function (error) {
-        console.log(error);
         setLoading(false);
       });
   }, []);
@@ -284,15 +265,13 @@ const ProdukPage = () => {
   }, [isProductAdded, fetchProducts]);
 
   const fetchCategory = useCallback(async () => {
-    request
+    await request
       .get(`/cms/itemCategory`)
       .then(function (response) {
         setCategoryDatas(response.data.data);
-        setRecordsTotal(response.data.recordsTotal);
         setLoading(false);
       })
       .catch(function (error) {
-        console.log(error);
         setLoading(false);
       });
   }, []);
@@ -301,7 +280,10 @@ const ProdukPage = () => {
     fetchCategory();
   }, [fetchCategory]);
 
-  console.log(productDataById);
+  const optionCategory = categoryDatas.map((category) => ({
+    name: category.name,
+    value: category.id,
+  }));
 
   return (
     <>
@@ -365,7 +347,10 @@ const ProdukPage = () => {
                         <td className="px-6 py-4">Rp {data.price}</td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex justify-end items-center gap-[12px]">
-                            <button className="w-[72px] py-[14px] bg-[#FF0000] text-white text-center text-[12px] font-bold rounded-lg">
+                            <button
+                              onClick={(e) => onDelete(e, data.id)}
+                              className="w-[72px] py-[14px] bg-[#FF0000] text-white text-center text-[12px] font-bold rounded-lg"
+                            >
                               Hapus
                             </button>
                             <Link
@@ -395,6 +380,7 @@ const ProdukPage = () => {
           setDescription('');
           setImgLength(5);
           setImages([]);
+          setItemImages([]);
           router.push('/produk');
         }}
         className={`fixed w-full h-full overflow-y-scroll backdrop-blur-sm bg-black/20  top-0 left-0 z-50 flex justify-center  ${
@@ -463,6 +449,24 @@ const ProdukPage = () => {
                     Gambar Produk<span className="text-[#FE6D00]">*</span>
                   </h1>
                   <div className="flex gap-[15px] flex-wrap">
+                    {itemImages &&
+                      itemImages.map((data, i) => (
+                        <div key={i} className="relative">
+                          <>
+                            <Image
+                              width={0}
+                              height={0}
+                              src={`${data.uri}`}
+                              className="rounded-lg w-[75px] h-[75px] object-cover"
+                              alt={`product-img-${i}`}
+                            />
+                            <GiCancel
+                              className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full"
+                              // onClick={() => handleRemoveImage(i)}
+                            />
+                          </>
+                        </div>
+                      ))}
                     {[...Array(imgLength)].map((_, i) => (
                       <div key={i} className="relative">
                         {images[i] ? (
