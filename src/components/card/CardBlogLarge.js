@@ -1,5 +1,5 @@
 import React from 'react';
-import blog from '../../../public/assets/uploads/blog/blog1.png';
+import blog from '../../../public/assets/img/blog/blog1.png';
 import Image from 'next/image';
 import Link from 'next/link';
 import { GoDotFill } from 'react-icons/go';

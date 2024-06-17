@@ -108,7 +108,7 @@ const UmkmLayout = ({ children }) => {
             <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-700 rounded-lg  md:flex-row md:items-center md:gap-[69px]  md:mt-0 md:border-0 ">
               <li>
                 <Link
-                  href="/beranda"
+                  href="/produk"
                   className="block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
                 >
                   Produk
@@ -124,7 +124,7 @@ const UmkmLayout = ({ children }) => {
               </li>
               <li>
                 <Link
-                  href="/chat"
+                  href="/chatUmkm"
                   className="block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
                 >
                   Chat
@@ -184,7 +184,7 @@ const UmkmLayout = ({ children }) => {
                   <div className="absolute -right-[26px] top-3 shadow-lg w-48 h-24 bg-white rounded-lg flex flex-col">
                     <div className="flex-1 text-center flex justify-center items-center border-b-2 ">
                       <Link
-                        href="/profile"
+                        href="/profileUmkm"
                         className="block py-2 px-3  rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
                       >
                         Profile

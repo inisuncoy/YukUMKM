@@ -104,8 +104,8 @@ export default function BlogPAge() {
               <CardBlogLarge />
             </div>
             <div className="flex flex-col gap-[30px]">
-              <CardBlogSmall />
-              <CardBlogSmall />
+              {/* <CardBlogSmall />
+              <CardBlogSmall /> */}
             </div>
           </div>
         </div>
