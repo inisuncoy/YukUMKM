@@ -5,10 +5,10 @@ import { z } from "zod";
 import { createdResponse } from "@/lib/genericResponse";
 import { internalErrorResponse, validationErrorResponse, notFoundResponse } from "@/lib/errorException";
 
-import exclude from "@/utils/exclude";
-
 import hashPass from "@/lib/hash";
 import { jwtSign } from "@/lib/jwtTokenControl";
+
+import logger from "@/services/logger";
 
 const SellerSchema = z.object({
     name: z
@@ -72,7 +72,7 @@ export async function POST(
             where:{
                 email: email,
                 role: {
-                    name: "buyer"
+                    name: "seller"
                 }
             }
         })
@@ -111,10 +111,15 @@ export async function POST(
             token : token,
         }
 
+        logger.info(req);
+
         return Response.json(createdResponse(resp), { status: 201 });
 
     } catch (error) {
-        console.log('[REGISTER_POST]', error);
+        console.log('[REGISTER_SELLER]', error);
+        logger.error(req, {
+            stack: error,
+        });
         return Response.json(internalErrorResponse(error), { status: 500 });
     }
 }
