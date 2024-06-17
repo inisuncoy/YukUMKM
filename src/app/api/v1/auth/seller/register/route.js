@@ -99,6 +99,12 @@ export async function POST(
             }
         });
 
+        await db.detailSeller.create({
+            data: {
+                user_id: user.id
+            }
+        });
+
         const payload = {
             id: user.id,
             email: user.email,
