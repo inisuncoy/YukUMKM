@@ -41,6 +41,8 @@ const ItemSchema = z.object({
         .string()
         .min(3, { message: 'Description must be at least 3 characters long' })
         .max(255, { message: "Description must be at most 255 characters long."}),
+    isActive : z
+        .boolean()
 });
 
 export async function GET(
@@ -185,6 +187,7 @@ export async function POST(req) {
         const price = formData.get('price');
         const itemCategory = formData.get('itemCategory');
         const description = formData.get('description');
+        const isActive = formData.get('isActive')
 
         const validationError = [];
 
@@ -194,7 +197,7 @@ export async function POST(req) {
             price: Number(price),
             itemCategory: itemCategory,
             description: description,
-            is_active: false,
+            isActive: isActive,
         });
 
         if (!validation.success) {
