@@ -187,7 +187,7 @@ export async function POST(req) {
         const price = formData.get('price');
         const itemCategory = formData.get('itemCategory');
         const description = formData.get('description');
-        const isActive = formData.get('isActive')
+        const isActive = formData.get('isActive').toLowerCase() === 'true';
 
         const validationError = [];
 
@@ -246,6 +246,7 @@ export async function POST(req) {
                 price: Number(price),
                 item_category_id: itemCategory,
                 description: description,
+                is_active: isActive,
                 created_by: userId,
                 updated_by: userId
             }
