@@ -23,27 +23,30 @@ const ACCEPTED_IMAGE_TYPES = [
 const formSchema = z.object({
   title: z
     .string()
-    .min(3, { message: 'Title must be at least 3 characters long' })
-    .max(30, { message: 'Title must be at most 30 characters long.' }),
+    .min(3, { message: 'Name must be at least 3 characters long' })
+    .max(100, { message: 'Name must be at most 100 characters long.' })
+    .optional(),
   imageUri: z
     .any()
+    .optional()
     .refine(
-      (file) => file?.size <= MAX_FILE_SIZE,
+      (file) => !file || file.size <= MAX_FILE_SIZE,
       `The maximum file size that can be uploaded is 2MB`
     )
     .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+      (file) => !file || ACCEPTED_IMAGE_TYPES.includes(file.type),
       'Only .jpg, .jpeg, .png and .webp formats are supported.'
     ),
   content: z
     .string()
-    .min(10, { message: 'Description must be at least 10 characters long' })
-    .max(255, { message: 'Description must be at most 255 characters long.' }),
+    .min(3, { message: 'Description must be at least 3 characters long' })
+    .max(255, { message: 'Description must be at most 255 characters long.' })
+    .optional(),
 });
 
 const EditBlogPage = () => {
   const [title, setTitle] = useState();
-  const [imageUri, setImageUri] = useState();
+  const [imageUri, setImageUri] = useState(null);
   const [imageBlogUrl, setImageBlogUrl] = useState();
   const [content, setContent] = useState();
 
@@ -104,42 +107,46 @@ const EditBlogPage = () => {
     toast.loading('Saving data...');
     e.preventDefault();
 
-    const validation = formSchema.safeParse({
-      title: title,
-      imageUri: imageUri,
-      content: content,
-    });
-
-    if (!validation.success) {
-      validation.error.errors.map((validation) => {
-        const key = [
-          {
-            name: validation.path[0],
-            message: validation.message,
-          },
-        ];
-        setValidations((validations) => [...validations, ...key]);
-      });
-      setLoading(false);
-      toast.dismiss();
-      toast.error('Invalid Input.');
-
-      return;
-    }
+    // Inisialisasi objek data dengan title dan content
     let data = {
       title: title,
-      imageUri: imageUri,
       content: content,
     };
 
-    console.log(data);
+    // Tambahkan imageUri ke data jika imageUri tidak null atau undefined
+    if (imageUri != null) {
+      data.imageUri = imageUri;
+    }
 
+    // Buat validasi hanya jika imageUri tidak null atau undefined
+    if (imageUri != null) {
+      const validation = formSchema.safeParse(data);
+
+      if (!validation.success) {
+        validation.error.errors.map((validation) => {
+          const key = [
+            {
+              name: validation.path[0],
+              message: validation.message,
+            },
+          ];
+          setValidations((validations) => [...validations, ...key]);
+        });
+        setLoading(false);
+        toast.dismiss();
+        toast.error('Invalid Input.');
+
+        return;
+      }
+    }
+
+    // Lakukan request patch hanya jika validasi berhasil atau jika tidak ada imageUri
     request
-      .post('/cms/blog', data)
+      .patch(`/cms/blog?id=${id}`, data)
       .then(function (response) {
         if (response.data?.code === 200 || response.data?.code === 201) {
           toast.dismiss();
-          toast.success('Success Add Blog');
+          toast.success('Success Update Blog');
           router.push('/blogUmkm');
         }
         setLoading(false);
@@ -172,8 +179,6 @@ const EditBlogPage = () => {
     event.preventDefault();
     setImageUri(event.dataTransfer.files[0]);
   };
-
-  console.log(imageUri);
 
   return (
     <>
@@ -231,7 +236,6 @@ const EditBlogPage = () => {
                   setImageUri(img);
                 }
               }}
-              required
               validations={validations}
             />
             <TextareaField
@@ -241,7 +245,6 @@ const EditBlogPage = () => {
               label={'Deskripsi Blog'}
               placeholder={'Tulis disini ...'}
               onChange={(e) => setContent(e.target.value)}
-              required
               validations={validations}
             />
             <button className="bg-[#4DBB8D] text-[16px] font-bold text-white py-[10px] w-full rounded-lg flex items-center justify-center gap-4">

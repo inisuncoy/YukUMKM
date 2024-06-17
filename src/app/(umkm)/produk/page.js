@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -68,10 +69,9 @@ const ProdukPage = () => {
   const [productDataById, setProductDataById] = useState();
   const [categoryDatas, setCategoryDatas] = useState([]);
   const [isProductAdded, setIsProductAdded] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const [recordsTotal, setRecordsTotal] = useState(0);
-
+  const [searchQuery, setSearchQuery] = useState('');
   const [debounceValue] = useDebounce(searchQuery, 500);
 
   const [images, setImages] = useState([]);
@@ -241,8 +241,11 @@ const ProdukPage = () => {
   }, [id, fetchProductsById]);
 
   const fetchProducts = useCallback(async () => {
+    const payload = {
+      name_insensitive: debounceValue,
+    };
     request
-      .get(`/cms/item`)
+      .get(`/cms/item`, payload)
       .then(function (response) {
         setProductDatas(response.data.data);
         setRecordsTotal(response.data.recordsTotal);
@@ -251,16 +254,26 @@ const ProdukPage = () => {
       .catch(function (error) {
         setLoading(false);
       });
-  }, []);
+  }, [debounceValue]);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
 
   useEffect(() => {
+    if (debounceValue !== '') {
+      router.push('/produk');
+    } else {
+      fetchProducts();
+    }
+  }, [debounceValue, fetchProducts, router]);
+
+  useEffect(() => {
     if (isProductAdded) {
       fetchProducts();
       setIsProductAdded(false);
+      setItemImages(null);
+      setCategory('');
     }
   }, [isProductAdded, fetchProducts]);
 
@@ -290,8 +303,15 @@ const ProdukPage = () => {
       <div className="flex flex-col gap-[30px]">
         <div className="w-full relative">
           <input
+            id={'search'}
+            name={'search'}
+            placeholder={'Search for member'}
+            type={'text'}
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+            }}
             className=" w-full py-[20px] pl-[53px] rounded-[8px]"
-            placeholder="Search here..."
           />
           <button className="absolute z-50 top-0 left-0 bottom-0 m-auto ml-[15px] ">
             <IoIosSearch className="text-[24px] text-black " />
@@ -335,11 +355,14 @@ const ProdukPage = () => {
                       <tr key={index} className="bg-white  ">
                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                           <div className="flex  items-center gap-[12px]">
-                            <Image
+                            <img
                               width={78}
                               height={78}
                               alt="product"
-                              src={product}
+                              src={
+                                process.env.NEXT_PUBLIC_HOST +
+                                data.item_image[0].uri
+                              }
                             />
                             <h1>{data.name}</h1>
                           </div>
@@ -453,10 +476,10 @@ const ProdukPage = () => {
                       itemImages.map((data, i) => (
                         <div key={i} className="relative">
                           <>
-                            <Image
+                            <img
                               width={0}
                               height={0}
-                              src={`${data.uri}`}
+                              src={process.env.NEXT_PUBLIC_HOST + data.uri}
                               className="rounded-lg w-[75px] h-[75px] object-cover"
                               alt={`product-img-${i}`}
                             />

@@ -165,7 +165,7 @@ const DragDropFiles = ({
               src={
                 value
                   ? URL.createObjectURL(value)
-                  : 'http://localhost:3000' + imgDefault
+                  : process.env.NEXT_PUBLIC_HOST + imgDefault
               }
               className="w-full h-full object-cover rounded-lg"
             />
@@ -205,13 +205,12 @@ const DragDropFiles = ({
         readOnly={readOnly}
         type="file"
         hidden
-        accept="image/png, image/jpeg"
       />
       {validations &&
         validations.map(
           (validation, index) =>
             (validation.name === name ||
-              (validation.name === 'media_uri' && type === 'image')) && (
+              (validation.name === 'imageUri' && type === 'image')) && (
               <p key={index} className="text-sm text-red-500 mt-2">
                 {validation.message}
               </p>

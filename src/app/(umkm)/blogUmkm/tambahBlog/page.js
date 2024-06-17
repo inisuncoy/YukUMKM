@@ -84,8 +84,6 @@ const TambahBlogPage = () => {
       content: content,
     };
 
-    console.log(data);
-
     request
       .post('/cms/blog', data)
       .then(function (response) {
@@ -124,8 +122,6 @@ const TambahBlogPage = () => {
     event.preventDefault();
     setImageUri(event.dataTransfer.files[0]);
   };
-
-  console.log(imageUri);
 
   return (
     <div className="flex flex-col gap-[30px]">
