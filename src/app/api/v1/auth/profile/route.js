@@ -7,6 +7,8 @@ import logger from "@/services/logger";
 import { successResponse } from "@/lib/genericResponse";
 import { internalErrorResponse, notFoundResponse } from "@/lib/errorException";
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(
     req
 ) {
