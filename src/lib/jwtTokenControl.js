@@ -65,10 +65,8 @@ export async function isBuyer(request) {
     }
 }
 
-export async function Auth(request) {
+export async function Auth(authHeader) {
     try {
-
-        const authHeader = request.headers.get('Authorization');
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return false;
