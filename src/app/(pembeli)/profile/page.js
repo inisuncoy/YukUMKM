@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import React, { useState } from 'react';
-import defaultProfile from '../../../../public/assets/uploads/profile/defaultProfile.png';
+import defaultProfile from '../../../../public/assets/icon/defaultProfile.png';
 import InputField from '@/components/forms/InputField';
 
 const ProfilePage = () => {

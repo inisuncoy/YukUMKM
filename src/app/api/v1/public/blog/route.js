@@ -10,10 +10,16 @@ export async function GET(
     req
 ) {
     try {
-        const url = new URL(req.url);
+        if (req.nextUrl) {
+            return Response.json(notFoundResponse(), { status: 404 });
+        }
+        
+        const url = req.nextUrl
         const searchParams = url.searchParams;
 
+
         if (searchParams.get('id')) {
+            
             const id = searchParams.get('id');
         
             const data = await db.blog.findFirst({

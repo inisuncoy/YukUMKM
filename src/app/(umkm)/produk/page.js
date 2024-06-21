@@ -13,7 +13,6 @@ import request from '@/utils/request';
 import InputField from '@/components/forms/InputField';
 import TextareaField from '@/components/forms/TextareaField';
 import SelectionField from '@/components/forms/SelectionField';
-import product from '../../../../public/assets/uploads/product/product1.png';
 import Link from 'next/link';
 import { MdAddCircleOutline } from 'react-icons/md';
 

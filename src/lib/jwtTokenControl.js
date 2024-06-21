@@ -5,6 +5,10 @@ const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export async function isSeller(request) {
     try {
+        if (request.headers.get('Authorization') === null) {
+            return false;
+        }
+
         const authHeader = request.headers.get('Authorization');
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -32,6 +36,10 @@ export async function isSeller(request) {
 
 export async function isBuyer(request) {
     try {
+        if (request.headers.get('Authorization') === null) {
+            return false;
+        }
+
         const authHeader = request.headers.get('Authorization');
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -59,6 +67,7 @@ export async function isBuyer(request) {
 
 export async function Auth(request) {
     try {
+
         const authHeader = request.headers.get('Authorization');
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -75,7 +84,7 @@ export async function Auth(request) {
 
         return payload.id;
     } catch (error) {
-        console.error('Authentication error:', error);
+        console.error('Auth error:', error);
         return false;
     }
 }

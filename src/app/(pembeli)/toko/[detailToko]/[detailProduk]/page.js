@@ -2,7 +2,7 @@ import NextBreadcrumb from '@/components/NextBreadcrumb';
 import Image from 'next/image';
 import React from 'react';
 import { IoIosSearch } from 'react-icons/io';
-import preview from '../../../../../../public/assets/uploads/product/product1.png';
+import preview from '../../../../../../public/assets/img/product/product1.png';
 import instagram from '../../../../../../public/assets/icon/instagram.png';
 import whatshapp from '../../../../../../public/assets/icon/whatshapp.png';
 import facebook from '../../../../../../public/assets/icon/facebook.png';

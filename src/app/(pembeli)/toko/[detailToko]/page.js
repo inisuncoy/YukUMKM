@@ -3,7 +3,7 @@ import React from 'react';
 import { IoIosSearch } from 'react-icons/io';
 import { MdLocationOn } from 'react-icons/md';
 
-import LogoUMKM from '../../../../../public/assets/uploads/toko/logoUMKM.png';
+import LogoUMKM from '../../../../../public/assets/logo/logoUMKM.png';
 import CardProduct from '@/components/card/CardProduct';
 import NextBreadcrumb from '@/components/NextBreadcrumb';
 export async function generateStaticParams() {
