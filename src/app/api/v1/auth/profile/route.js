@@ -10,8 +10,12 @@ import { internalErrorResponse, notFoundResponse } from "@/lib/errorException";
 export async function GET(
     req
 ) {
+    if (!req.headers.get('Authorization')) {
+        return Response.json(notFoundResponse(), { status: 404 });
+    }
+
     try {
-        const userId = await Auth(req);
+        const userId = await Auth(req.headers.get('Authorization'));
 
         if (!userId) {
             return Response.json(notFoundResponse(), { status: 404 });
