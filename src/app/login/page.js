@@ -10,13 +10,14 @@ import toast from 'react-hot-toast';
 import request from '@/utils/request';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
+import Loading from '@/components/Loading';
 
 function Login() {
   const router = useRouter();
   const [menu, setMenu] = useState(true);
 
   const [validations, setValidations] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -24,7 +25,7 @@ function Login() {
   const onSubmit = async (e) => {
     setValidations([]);
     setLoading(true);
-    toast.loading('Loading...');
+    // toast.loading('Loading...');
     e.preventDefault();
 
     try {
@@ -62,15 +63,14 @@ function Login() {
           })
         )
         .then(function (response) {
-          console.log('Response received:', response); // Tambahkan log untuk melihat response
+          setLoading(true);
           if (response.data?.code === 200 || response.data?.code === 201) {
-            toast.dismiss();
-            setTimeout(() => {
-              setLoading(false); // Set loading to false before redirecting
-              router.push('/beranda');
-              toast.success('Success Login');
-            }, 2000);
+            // toast.dismiss();
             Cookies.set('token', response.data.data.token);
+            toast.success('Success Login');
+            router.push('/beranda').then(() => {
+              setLoading(false); // Set loading to false after redirecting
+            });
           } else {
             setLoading(false);
           }
@@ -159,6 +159,7 @@ function Login() {
   };
   return (
     <>
+      {loading && <Loading />}
       <div className="px-[32px] flex">
         <div className="relative ">
           <div className=" h-screen w-[605px] overflow-hidden">

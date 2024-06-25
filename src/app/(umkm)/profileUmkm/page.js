@@ -57,6 +57,7 @@ const ProfileUmkmPage = () => {
   const [defaultProfileUri, setDefaultProfileUri] = useState();
 
   const [updatedProfile, setUpdatedProfile] = useState(false);
+  const [alertLogout, setAlertLogout] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [validations, setValidations] = useState([]);
@@ -282,10 +283,7 @@ const ProfileUmkmPage = () => {
                   Ubah Biodata
                 </button>
                 <button
-                  onClick={() => {
-                    Cookies.remove('token');
-                    router.push('/login');
-                  }}
+                  onClick={() => setAlertLogout(!alertLogout)}
                   className="bg-[#FF3D00] text-[16px] font-bold text-white py-[10px] w-full  rounded-lg"
                 >
                   Keluar Akun
@@ -351,6 +349,35 @@ const ProfileUmkmPage = () => {
               </button>
             </div>
           </form>
+        </div>
+      </div>
+      <div
+        className={`fixed w-full h-full overflow-y-scroll backdrop-blur-sm bg-black/20  top-0 left-0 z-50 flex justify-center  ${
+          alertLogout ? '' : 'hidden'
+        }`}
+        onClick={() => {
+          setAlertLogout(!alertLogout);
+        }}
+      >
+        <div
+          className="rounded-lg w-[694px] h-[279px] flex flex-col justify-center items-center gap-[14px] bg-white m-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <p className="text-center text-[26px]">
+            Apakah anda yakin ingin
+            <br />
+            <span className="text-red-500 font-semibold">“Keluar”</span> dari
+            akun ini?
+          </p>
+          <button
+            onClick={() => {
+              Cookies.remove('token');
+              router.push('/login');
+            }}
+            className="w-[120px] text-[23px] font-semibold text-white bg-red-500 py-2 text-center rounded-lg"
+          >
+            Keluar
+          </button>
         </div>
       </div>
     </>

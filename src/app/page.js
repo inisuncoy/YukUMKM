@@ -6,7 +6,11 @@ export default function Index() {
   const router = useRouter();
 
   useEffect(() => {
-    router.push('/beranda');
+    const redirect = async () => {
+      router.push('/beranda');
+    };
+
+    redirect();
   }, [router]);
 
   return null;
