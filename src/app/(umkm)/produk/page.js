@@ -15,6 +15,7 @@ import TextareaField from '@/components/forms/TextareaField';
 import SelectionField from '@/components/forms/SelectionField';
 import Link from 'next/link';
 import { MdAddCircleOutline } from 'react-icons/md';
+import { FiEdit3 } from 'react-icons/fi';
 
 const ORDERING = 'updatedAt';
 const SORT = 'desc';
@@ -53,6 +54,9 @@ const ProdukPage = () => {
   const [price, setPrice] = useState();
   const [itemImages, setItemImages] = useState([]);
   const [description, setDescription] = useState();
+  const [imageUri, setImageUri] = useState();
+  const [thumbnail, setThumbnail] = useState();
+  const [thumbnailUri, setThumbnailUri] = useState();
 
   const [menuActive, setMenuActive] = useState(false);
   const [validations, setValidations] = useState([]);
@@ -156,29 +160,118 @@ const ProdukPage = () => {
 
       return;
     }
-    let data = {
-      name: name,
-      itemCategory: category,
-      price: price,
-      description: description,
-      imagesUri: [], // Initialize imagesUri as an empty array
-    };
 
-    // Collect all images into the imagesUri array
+    let data = new FormData();
+    data.append('name', name);
+    data.append('itemCategory', category);
+    data.append('price', price);
+    data.append('description', description);
+    data.append('status', status);
+    data.append('imageUri', thumbnail);
+
+    let dataItemImages = new FormData();
     images.forEach((img) => {
       if (img != null) {
-        data.imagesUri.push(img);
+        dataItemImages.append('imagesUri[]', img);
       }
     });
 
     request
-      .post('/cms/item', data)
+      .post('/cms/item', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(function (response) {
+        dataItemImages.append('itemId', response.data.data.id);
+        request
+          .post('/cms/itemImage', dataItemImages, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          })
+          .then(function (response) {
+            if (response.data?.code === 200 || response.data?.code === 201) {
+              toast.dismiss();
+              toast.success('Success Add Product');
+              setIsProductAdded(true);
+              setMenuActive(!menuActive);
+              setImages([]);
+              setImgLength(5);
+            }
+            setLoading(false);
+          });
+      })
+      .catch(function (error) {
+        if (
+          (error.response?.data?.code === 400 ||
+            error.response?.data?.code === 422) &&
+          error.response?.data.status == 'VALIDATION_ERROR'
+        ) {
+          setValidations(error.response?.data.error?.validation);
+          toast.dismiss();
+          toast.error(error.response?.data.error?.message);
+          setImages([]);
+        } else if (
+          error.response?.data?.code === 404 &&
+          error.response?.data.status == 'NOT_FOUND'
+        ) {
+          toast.dismiss();
+          toast.error(error.response?.data.error?.message);
+        } else if (error.response?.data?.code === 500) {
+          toast.dismiss();
+          toast.error(error.response?.data.error.message);
+        }
+        setLoading(false);
+      });
+  };
+
+  const onUpdate = async (e) => {
+    setValidations([]);
+    setLoading(true);
+    toast.loading('Saving data...');
+    e.preventDefault();
+
+    let data = new FormData();
+    data.append('name', name);
+    data.append('itemCategory', category);
+    data.append('price', price);
+    data.append('description', description);
+    data.append('status', status);
+
+    if (imageUri != null) {
+      data.imageUri = imageUri;
+    }
+
+    // Buat validasi hanya jika imageUri tidak null atau undefined
+    if (imageUri != null) {
+      const validation = formSchema.safeParse(data);
+
+      if (!validation.success) {
+        validation.error.errors.map((validation) => {
+          const key = [
+            {
+              name: validation.path[0],
+              message: validation.message,
+            },
+          ];
+          setValidations((validations) => [...validations, ...key]);
+        });
+        setLoading(false);
+        toast.dismiss();
+        toast.error('Invalid Input.');
+
+        return;
+      }
+    }
+
+    request
+      .patch(`/cms/blog?id=${id}`, data)
       .then(function (response) {
         if (response.data?.code === 200 || response.data?.code === 201) {
           toast.dismiss();
-          toast.success('Success Add Product');
-          setIsProductAdded(true);
-          setMenuActive(!menuActive);
+          toast.success('Success Update Blog');
+          router.push('/blogUmkm');
         }
         setLoading(false);
       })
@@ -191,6 +284,7 @@ const ProdukPage = () => {
           setValidations(error.response?.data.error?.validation);
           toast.dismiss();
           toast.error(error.response?.data.error?.message);
+          setImageUri('');
         } else if (
           error.response?.data?.code === 404 &&
           error.response?.data.status == 'NOT_FOUND'
@@ -216,6 +310,7 @@ const ProdukPage = () => {
       setPrice(response.data.data.price);
       setDescription(response.data.data.description);
       setItemImages(response.data.data.item_image);
+      setThumbnailUri(response.data.data.image_uri);
       setImgLength(1);
     } catch (error) {
       console.log(error);
@@ -272,13 +367,14 @@ const ProdukPage = () => {
       fetchProducts();
       setIsProductAdded(false);
       setItemImages(null);
+      setImages([]);
       setCategory('');
     }
   }, [isProductAdded, fetchProducts]);
 
   const fetchCategory = useCallback(async () => {
     await request
-      .get(`/cms/itemCategory`)
+      .get(`/public/itemCategory`)
       .then(function (response) {
         setCategoryDatas(response.data.data);
         setLoading(false);
@@ -359,8 +455,7 @@ const ProdukPage = () => {
                               height={78}
                               alt="product"
                               src={
-                                process.env.NEXT_PUBLIC_HOST +
-                                data.item_image[0].uri
+                                process.env.NEXT_PUBLIC_HOST + data.image_uri
                               }
                             />
                             <h1>{data.name}</h1>
@@ -403,6 +498,8 @@ const ProdukPage = () => {
           setImgLength(5);
           setImages([]);
           setItemImages([]);
+          setThumbnail('');
+          setThumbnailUri('');
           router.push('/produk');
         }}
         className={`fixed w-full h-full overflow-y-scroll backdrop-blur-sm bg-black/20  top-0 left-0 z-50 flex justify-center  ${
@@ -466,64 +563,143 @@ const ProdukPage = () => {
                   required
                   validations={validations}
                 />
-                <div className="flex flex-col gap-5">
-                  <h1 className="text-[16px] font-bold leading-tight text-gray-500">
-                    Gambar Produk<span className="text-[#FE6D00]">*</span>
-                  </h1>
-                  <div className="flex gap-[15px] flex-wrap">
-                    {itemImages &&
-                      itemImages.map((data, i) => (
-                        <div key={i} className="relative">
-                          <>
+                <div className="flex flex-col gap-5 items-start">
+                  <div className="flex-[0.7] flex flex-col gap-5">
+                    <h1 className="text-[16px] font-bold leading-tight text-gray-500">
+                      Thumbnail Produk<span className="text-[#FE6D00]">*</span>
+                    </h1>
+                    <div className="flex gap-[15px] flex-wrap">
+                      {thumbnailUri ? (
+                        <div className="relative">
+                          <div>
                             <img
                               width={0}
                               height={0}
-                              src={process.env.NEXT_PUBLIC_HOST + data.uri}
+                              src={
+                                thumbnail
+                                  ? URL.createObjectURL(thumbnail)
+                                  : process.env.NEXT_PUBLIC_HOST + thumbnailUri
+                              }
                               className="rounded-lg w-[75px] h-[75px] object-cover"
-                              alt={`product-img-${i}`}
+                              alt={`thumbnail-img`}
                             />
-                            <GiCancel
-                              className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full"
-                              // onClick={() => handleRemoveImage(i)}
-                            />
-                          </>
+                            {thumbnail ? (
+                              <GiCancel
+                                className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full"
+                                onClick={() => setThumbnail('')}
+                              />
+                            ) : (
+                              <label
+                                className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full border-[1px] border-red-500 text-xl p-1"
+                                htmlFor="thumbnail_img"
+                              >
+                                <FiEdit3 className=" text-red-500 text-[12px]" />
+                              </label>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="relative">
+                          {thumbnail ? (
+                            <>
+                              <Image
+                                width={0}
+                                height={0}
+                                src={URL.createObjectURL(thumbnail)}
+                                className="rounded-lg w-[75px] h-[75px] object-cover"
+                                alt={`thumbnail-img`}
+                              />
+                              <GiCancel
+                                className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full"
+                                onClick={() => setThumbnail('')}
+                              />
+                            </>
+                          ) : (
+                            <label
+                              htmlFor={`thumbnail_img`}
+                              className="cursor-pointer"
+                            >
+                              {icon}
+                            </label>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <input
+                      id={`thumbnail_img`}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          const img = e.target.files[0];
+                          setThumbnail(img);
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="flex-[2] flex flex-col gap-5">
+                    <h1 className="text-[16px] font-bold leading-tight text-gray-500">
+                      Gambar Produk<span className="text-[#FE6D00]">*</span>
+                    </h1>
+                    <div className="flex gap-[15px] flex-wrap">
+                      {itemImages &&
+                        itemImages.map((data, i) => (
+                          <div key={i} className="relative">
+                            <>
+                              <img
+                                width={0}
+                                height={0}
+                                src={process.env.NEXT_PUBLIC_HOST + data.uri}
+                                className="rounded-lg w-[75px] h-[75px] object-cover"
+                                alt={`product-img-${i}`}
+                              />
+                              <GiCancel
+                                className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full"
+                                // onClick={() => handleRemoveImage(i)}
+                              />
+                            </>
+                          </div>
+                        ))}
+                      {[...Array(imgLength ?? 5)].map((_, i) => (
+                        <div key={i} className="relative">
+                          {images[i] ? (
+                            <>
+                              <Image
+                                width={0}
+                                height={0}
+                                src={URL.createObjectURL(images[i])}
+                                className="rounded-lg w-[75px] h-[75px] object-cover"
+                                alt={`product-img-${i}`}
+                              />
+                              <GiCancel
+                                className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full"
+                                onClick={() => handleRemoveImage(i)}
+                              />
+                            </>
+                          ) : (
+                            <label
+                              htmlFor={`img${i}`}
+                              className="cursor-pointer"
+                            >
+                              {icon}
+                            </label>
+                          )}
+                          <input
+                            id={`img${i}`}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => handleImageChange(e, i)}
+                          />
                         </div>
                       ))}
-                    {[...Array(imgLength)].map((_, i) => (
-                      <div key={i} className="relative">
-                        {images[i] ? (
-                          <>
-                            <Image
-                              width={0}
-                              height={0}
-                              src={URL.createObjectURL(images[i])}
-                              className="rounded-lg w-[75px] h-[75px] object-cover"
-                              alt={`product-img-${i}`}
-                            />
-                            <GiCancel
-                              className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full"
-                              onClick={() => handleRemoveImage(i)}
-                            />
-                          </>
-                        ) : (
-                          <label htmlFor={`img${i}`} className="cursor-pointer">
-                            {icon}
-                          </label>
-                        )}
-                        <input
-                          id={`img${i}`}
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => handleImageChange(e, i)}
+                      <div className="flex justify-center items-center h-[75px]">
+                        <MdAddCircleOutline
+                          className="text-2xl cursor-pointer"
+                          onClick={() => setImgLength(imgLength + 1)}
                         />
                       </div>
-                    ))}
-                    <div className="flex justify-center items-center h-[75px]">
-                      <MdAddCircleOutline
-                        className="text-2xl cursor-pointer"
-                        onClick={() => setImgLength(imgLength + 1)}
-                      />
                     </div>
                   </div>
                 </div>
@@ -532,6 +708,18 @@ const ProdukPage = () => {
                     <div>{URL.createObjectURL(img)}</div>;
                   }
                 })} */}
+                {/* <input
+                  id={`img`}
+                  type="file"
+                  accept="image/*"
+                  className=""
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      const img = e.target.files[0];
+                      setImageUri(img);
+                    }
+                  }}
+                /> */}
                 <TextareaField
                   id={'description'}
                   name={'description'}

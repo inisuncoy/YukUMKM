@@ -53,15 +53,13 @@ function Login() {
     } catch (error) {
       console.error(error);
     }
+    let data = new FormData();
+    data.append('email', email);
+    data.append('password', password);
+
     if (menu) {
       request
-        .post(
-          '/auth/buyer/login',
-          JSON.stringify({
-            email: email,
-            password: password,
-          })
-        )
+        .post('/auth/buyer/login', data)
         .then(function (response) {
           setLoading(true);
           if (response.data?.code === 200 || response.data?.code === 201) {
@@ -105,13 +103,7 @@ function Login() {
         });
     } else {
       request
-        .post(
-          '/auth/seller/login',
-          JSON.stringify({
-            email: email,
-            password: password,
-          })
-        )
+        .post('/auth/seller/login', data)
         .then(function (response) {
           console.log('Response received:', response); // Tambahkan log untuk melihat response
           if (response.data?.code === 200 || response.data?.code === 201) {

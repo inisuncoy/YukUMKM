@@ -140,7 +140,6 @@ const EditBlogPage = () => {
       }
     }
 
-    // Lakukan request patch hanya jika validasi berhasil atau jika tidak ada imageUri
     request
       .patch(`/cms/blog?id=${id}`, data)
       .then(function (response) {

@@ -16,7 +16,7 @@ const CardBlogSmall = ({ src, title, date, content, href }) => {
         width={0}
         height={0}
         alt=""
-        src={'http://localhost:3000' + src}
+        src={process.env.NEXT_PUBLIC_HOST + src}
         className=" lg:max-w-[301px] lg:max-h-[144px]  md:w-[200px] md:h-[200px] w-[120px] h-[120px] object-cover  rounded-t-lg md:rounded-none md:rounded-s-lg"
       />
       <div className="flex flex-col justify-between lg:pl-[25px] md:pl-[20px] pl-[12px] md:pr-[12px] md:gap-[14px] gap-[4px] leading-normal">
