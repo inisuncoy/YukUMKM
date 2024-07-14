@@ -1,14 +1,14 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-// Variabel untuk menyimpan respons error terakhir
 let lastErrorResponse = null;
 
 const request = axios.create({
-  baseURL: `/api/v1`,
+  baseURL: `https://api.yukumkm.my.id/api/v1`,
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json, multipart/form-data',
+    // 'Content-Type': ' application/json',
+    'Content-Type': ' multipart/form-data',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': '*',
     'Access-Control-Allow-Methods': '*',
@@ -37,15 +37,13 @@ const expiredTokenHandler = () => {
 };
 
 const errorHandler = (error) => {
-  // Simpan respons error terakhir ke variabel global
   lastErrorResponse = error.response;
 
-  console.log(error.response);
   if (error.response && error.response.status === 401) {
     expiredTokenHandler();
   } else if (error.code === 'ERR_NETWORK') {
     window.history.pushState({}, 'Redirect Network Error', '/login');
-    console.log(error);
+
     if (error.response?.status === 401) {
       expiredTokenHandler();
     }

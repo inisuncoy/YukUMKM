@@ -68,17 +68,18 @@ function Register() {
       console.log(validations);
       return;
     }
+    let data = new FormData();
+    data.append('name', name);
+    data.append('email', email);
+    data.append('password', password);
 
     if (menu) {
       request
-        .post(
-          '/auth/buyer/register',
-          JSON.stringify({
-            name: name,
-            email: email,
-            password: password,
-          })
-        )
+        .post('/auth/buyer/register', data, {
+          headers: {
+            'Content-Type': ' application/json',
+          },
+        })
         .then(function (response) {
           console.log('Response received:', response); // Tambahkan log untuk melihat response
           if (response.data?.code === 200 || response.data?.code === 201) {
@@ -92,37 +93,34 @@ function Register() {
         .catch(function (error) {
           console.log(error);
           if (
-            (error.response.data?.code === 400 ||
-              error.response.data?.code === 422) &&
-            error.response.data.status == 'VALIDATION_ERROR'
+            (error.response?.data?.code === 400 ||
+              error.response?.data?.code === 422) &&
+            error.response?.data.status == 'VALIDATION_ERROR'
           ) {
-            setValidations(error.response.data.error?.validation);
+            setValidations(error.response?.data.error?.validation);
             toast.dismiss();
-            toast.error(error.response.data.error?.message);
+            toast.error(error.response?.data.error?.message);
           } else if (
-            error.response.data?.code === 404 &&
-            error.response.data.status == 'NOT_FOUND'
+            error.response?.data?.code === 404 &&
+            error.response?.data.status == 'NOT_FOUND'
           ) {
             console.error('NOT_FOUND');
             toast.dismiss();
-            toast.error(error.response.data.error?.message);
-          } else if (error.response.data?.code === 500) {
+            toast.error(error.response?.data.error?.message);
+          } else if (error.response?.data?.code === 500) {
             console.error('INTERNAL_SERVER_ERROR');
             toast.dismiss();
-            toast.error(error.response.data.error.message);
+            toast.error(error.response?.data.error.message);
           }
           setLoading(false);
         });
     } else {
       request
-        .post(
-          '/auth/seller/register',
-          JSON.stringify({
-            name: name,
-            email: email,
-            password: password,
-          })
-        )
+        .post('/auth/seller/register', data, {
+          headers: {
+            'Content-Type': ' application/json',
+          },
+        })
         .then(function (response) {
           if (response.data?.code === 200 || response.data?.code === 201) {
             toast.dismiss();
@@ -135,24 +133,24 @@ function Register() {
         .catch(function (error) {
           console.log(error);
           if (
-            (error.response.data?.code === 400 ||
-              error.response.data?.code === 422) &&
-            error.response.data.status == 'VALIDATION_ERROR'
+            (error.response?.data?.code === 400 ||
+              error.response?.data?.code === 422) &&
+            error.response?.data.status == 'VALIDATION_ERROR'
           ) {
-            setValidations(error.response.data.error?.validation);
+            setValidations(error.response?.data.error?.validation);
             toast.dismiss();
-            toast.error(error.response.data.error?.message);
+            toast.error(error.response?.data.error?.message);
           } else if (
-            error.response.data?.code === 404 &&
-            error.response.data.status == 'NOT_FOUND'
+            error.response?.data?.code === 404 &&
+            error.response?.data.status == 'NOT_FOUND'
           ) {
             console.error('NOT_FOUND');
             toast.dismiss();
-            toast.error(error.response.data.error?.message);
-          } else if (error.response.data?.code === 500) {
+            toast.error(error.response?.data.error?.message);
+          } else if (error.response?.data?.code === 500) {
             console.error('INTERNAL_SERVER_ERROR');
             toast.dismiss();
-            toast.error(error.response.data.error.message);
+            toast.error(error.response?.data.error.message);
           }
           setLoading(false);
         });
