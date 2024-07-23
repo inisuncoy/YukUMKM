@@ -64,7 +64,7 @@ const ProdukPage = () => {
 
   const searchParams = useSearchParams();
   const router = useRouter();
-  const id = searchParams.get('id') ? searchParams.get('id') : '';
+  const id = searchParams.get('id') ?? '';
 
   const page = searchParams.get('page') ?? '1';
 
@@ -93,6 +93,7 @@ const ProdukPage = () => {
     const newImages = [...images];
     newImages.splice(index, 1);
     setImages(newImages);
+    document.getElementById(`img${index}`).value = '';
   };
 
   const icon = (
@@ -123,6 +124,21 @@ const ProdukPage = () => {
     e.preventDefault();
 
     request.delete(`/cms/item?id=${id}`).then(function (response) {
+      if (response.data?.code === 200 || response.data?.code === 201) {
+        toast.dismiss();
+        toast.success(response.data.data.message);
+        setIsProductAdded(true);
+      }
+      setLoading(false);
+    });
+  };
+
+  const onDeleteImg = async (e, id) => {
+    setLoading(true);
+    toast.loading('Deleting data...');
+    e.preventDefault();
+
+    request.delete(`/cms/itemImage?id=${id}`).then(function (response) {
       if (response.data?.code === 200 || response.data?.code === 201) {
         toast.dismiss();
         toast.success(response.data.data.message);
@@ -239,39 +255,73 @@ const ProdukPage = () => {
     data.append('description', description);
     data.append('status', status);
 
-    if (imageUri != null) {
-      data.imageUri = imageUri;
+    if (thumbnail != '') {
+      data.append('imageUri', thumbnail);
     }
+
+    let dataItemImages = new FormData();
+    images.forEach((img) => {
+      if (img != null) {
+        dataItemImages.append('imagesUri[]', img);
+      }
+    });
 
     // Buat validasi hanya jika imageUri tidak null atau undefined
-    if (imageUri != null) {
-      const validation = formSchema.safeParse(data);
+    // if (thumbnail != null) {
+    const validation = formSchema.safeParse({
+      name: name,
+      price: price,
+      description: description,
+    });
 
-      if (!validation.success) {
-        validation.error.errors.map((validation) => {
-          const key = [
-            {
-              name: validation.path[0],
-              message: validation.message,
-            },
-          ];
-          setValidations((validations) => [...validations, ...key]);
-        });
-        setLoading(false);
-        toast.dismiss();
-        toast.error('Invalid Input.');
+    if (!validation.success) {
+      validation.error.errors.map((validation) => {
+        const key = [
+          {
+            name: validation.path[0],
+            message: validation.message,
+          },
+        ];
+        setValidations((validations) => [...validations, ...key]);
+      });
+      setLoading(false);
+      toast.dismiss();
+      toast.error('Invalid Input.');
 
-        return;
-      }
+      return;
     }
+    // }
 
     request
-      .patch(`/cms/blog?id=${id}`, data)
+      .patch(`/cms/item?id=${id}`, data)
       .then(function (response) {
         if (response.data?.code === 200 || response.data?.code === 201) {
+          if (images != null) {
+            dataItemImages.append('itemId', id);
+            request
+              .post('/cms/itemImage', dataItemImages, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                },
+              })
+              .then(function (response) {
+                toast.dismiss();
+                toast.success('Success Update Product');
+                setIsProductAdded(true);
+                setMenuActive(!menuActive);
+                setImages([]);
+                setThumbnail('');
+                setImgLength(5);
+              });
+          }
           toast.dismiss();
-          toast.success('Success Update Blog');
-          router.push('/blogUmkm');
+          toast.success('Success Update Product');
+          setIsProductAdded(true);
+          setMenuActive(!menuActive);
+          setImages([]);
+          setThumbnail('');
+          setImgLength(5);
+          // }
         }
         setLoading(false);
       })
@@ -318,11 +368,14 @@ const ProdukPage = () => {
       setLoading(false);
     }
   }, [id]);
+  // useEffect(() => {
+  //   fetchProductsById();
+  // }, [fetchProductsById]);
 
   useEffect(() => {
-    if (id) {
+    if (id !== '') {
       fetchProductsById();
-    } else {
+    } else if (id === '') {
       setName('');
       setCategory('');
       setStatus('');
@@ -365,12 +418,13 @@ const ProdukPage = () => {
   useEffect(() => {
     if (isProductAdded) {
       fetchProducts();
+      fetchProductsById();
       setIsProductAdded(false);
-      setItemImages(null);
+      setItemImages([]);
       setImages([]);
-      setCategory('');
+      // setCategory('');
     }
-  }, [isProductAdded, fetchProducts]);
+  }, [isProductAdded, fetchProducts, fetchProductsById]);
 
   const fetchCategory = useCallback(async () => {
     await request
@@ -400,7 +454,7 @@ const ProdukPage = () => {
           <input
             id={'search'}
             name={'search'}
-            placeholder={'Search for member'}
+            placeholder={'Search for product'}
             type={'text'}
             value={searchQuery}
             onChange={(e) => {
@@ -427,6 +481,7 @@ const ProdukPage = () => {
               className="flex justify-center items-center gap-[19px] text-[#2D76E5] text-[16px] pl-[15px] pr-[21px] py-3 shadow-lg rounded-lg "
             >
               <FaPlus />
+              {/* <h1>{id ? 'Update Produk' : 'Tambah Produk'}</h1> */}
               <h1>Tambah Produk</h1>
             </Link>
           </div>
@@ -518,7 +573,7 @@ const ProdukPage = () => {
               </h1>
             </div>
           </div>
-          <form onSubmit={onSubmit}>
+          <form onSubmit={id ? onUpdate : onSubmit}>
             <div className=" w-full bg-white rounded-lg relative p-[20px] flex flex-col gap-[43px]">
               <div className="grid grid-cols-1 gap-[32px]">
                 <InputField
@@ -656,7 +711,7 @@ const ProdukPage = () => {
                               />
                               <GiCancel
                                 className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full"
-                                // onClick={() => handleRemoveImage(i)}
+                                onClick={(e) => onDeleteImg(e, data.id)}
                               />
                             </>
                           </div>
@@ -732,7 +787,7 @@ const ProdukPage = () => {
                 />
               </div>
               <button className="bg-[#4DBB8D] text-[16px] font-bold text-white py-[10px] w-full rounded-lg">
-                Konfirmasi
+                {id ? 'Update' : 'Konfirmasi'}
               </button>
             </div>
           </form>

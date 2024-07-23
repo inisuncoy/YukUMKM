@@ -1,8 +1,7 @@
 'use client';
-import { Button } from 'flowbite-react';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 import { FaUser } from 'react-icons/fa6';
@@ -12,6 +11,9 @@ const PembeliLayout = ({ children }) => {
   const [active, setActive] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [hasToken, setHasToken] = useState(false);
+
+  const pathname = usePathname();
+  // const isActive ((href)=>return pathname.startsWith(href))
 
   const router = useRouter();
 
@@ -24,11 +26,11 @@ const PembeliLayout = ({ children }) => {
 
   return (
     <div className="w-full">
-      <nav className="bg-[#1D1D1D] border-gray-200 fixed w-full top-0 z-50 ">
+      <nav className="bg-[#1D1D1D] border-gray-200 fixed w-full top-0 z-[60] ">
         <div className="max-w-full flex flex-wrap items-center justify-between  py-4 px-[26px]">
           <Link
             href="/beranda"
-            className="flex items-center space-x-3 rtl:space-x-reverse"
+            className={`flex items-center space-x-3 rtl:space-x-reverse`}
           >
             <svg
               width="39"
@@ -109,7 +111,11 @@ const PembeliLayout = ({ children }) => {
               <li>
                 <Link
                   href="/beranda"
-                  className="block py-2 px-3 text-white rounded  md:hover:bg-transparent md:border-0 md:p-0 "
+                  className={`block py-2 px-3 ${
+                    pathname.startsWith('/beranda')
+                      ? 'text-[#FE6D00]'
+                      : 'text-white'
+                  } rounded focus:outline-none focus:ring focus:ring-transparent md:hover:bg-transparent md:border-0 md:p-0`}
                 >
                   Beranda
                 </Link>
@@ -117,7 +123,11 @@ const PembeliLayout = ({ children }) => {
               <li>
                 <Link
                   href="/toko"
-                  className="block py-2 px-3 text-white rounded  md:hover:bg-transparent md:border-0 md:p-0 "
+                  className={`block py-2 px-3 ${
+                    pathname.startsWith('/toko')
+                      ? 'text-[#FE6D00]'
+                      : 'text-white'
+                  } rounded focus:outline-none focus:ring focus:ring-transparent md:hover:bg-transparent md:border-0 md:p-0`}
                 >
                   Toko
                 </Link>
@@ -125,7 +135,11 @@ const PembeliLayout = ({ children }) => {
               <li>
                 <Link
                   href="/blog"
-                  className="block py-2 px-3 text-white rounded  md:hover:bg-transparent md:border-0 md:p-0 "
+                  className={`block py-2 px-3 ${
+                    pathname.startsWith('/blog')
+                      ? 'text-[#FE6D00]'
+                      : 'text-white'
+                  } rounded focus:outline-none focus:ring focus:ring-transparent md:hover:bg-transparent md:border-0 md:p-0`}
                 >
                   Blog
                 </Link>
@@ -133,7 +147,11 @@ const PembeliLayout = ({ children }) => {
               <li>
                 <Link
                   href="/chat"
-                  className="block py-2 px-3 text-white rounded  md:hover:bg-transparent md:border-0 md:p-0 "
+                  className={`block py-2 px-3 ${
+                    pathname.startsWith('/chat')
+                      ? 'text-[#FE6D00]'
+                      : 'text-white'
+                  } rounded focus:outline-none focus:ring focus:ring-transparent md:hover:bg-transparent md:border-0 md:p-0`}
                 >
                   Chat
                 </Link>
@@ -144,14 +162,14 @@ const PembeliLayout = ({ children }) => {
                     <button
                       type="button"
                       onClick={() => setActive(!active)}
-                      className="hidden py-2 px-3 text-white rounded  md:block md:hover:bg-transparent md:border-0 md:p-0 "
+                      className="hidden py-2 px-3 text-white rounded focus:outline-none focus:ring focus:ring-transparent md:block md:hover:bg-transparent md:border-0 md:p-0 "
                     >
                       <FaUser className="text-[#FE6D00]" />
                     </button>
                   ) : (
                     <Link
                       href="/login"
-                      className="hidden md:block py-2 px-3 text-white rounded  md:hover:bg-transparent md:border-0 md:p-0 "
+                      className="hidden md:block py-2 px-3 text-white rounded focus:outline-none focus:ring focus:ring-transparent md:hover:bg-transparent md:border-0 md:p-0 "
                     >
                       Login
                     </Link>
@@ -159,7 +177,7 @@ const PembeliLayout = ({ children }) => {
                 ) : (
                   <Link
                     href="/login"
-                    className="hidden md:block py-2 px-3 text-white rounded  md:hover:bg-transparent md:border-0 md:p-0 "
+                    className="hidden md:block py-2 px-3 text-white rounded focus:outline-none focus:ring focus:ring-transparent md:hover:bg-transparent md:border-0 md:p-0 "
                   >
                     Login
                   </Link>
@@ -170,12 +188,16 @@ const PembeliLayout = ({ children }) => {
                     <>
                       <Link
                         href="/profile"
-                        className="block w-full py-2 px-3 text-white  rounded md:hidden"
+                        className={`block py-2 px-3 ${
+                          pathname.startsWith('/profile')
+                            ? 'text-[#FE6D00]'
+                            : 'text-white'
+                        } rounded focus:outline-none focus:ring focus:ring-transparent md:hover:bg-transparent md:border-0 md:p-0 md:hidden`}
                       >
                         Profile
                       </Link>
                       <button
-                        className="block w-full py-2 px-3 text-white bg-[#FE6D00] rounded md:hidden "
+                        className="block w-full py-2 px-3 text-white bg-[#FE6D00] rounded focus:outline-none focus:ring focus:ring-transparent md:hidden "
                         onClick={() => {
                           Cookies.remove('token');
                           router.push('/login');
@@ -187,7 +209,7 @@ const PembeliLayout = ({ children }) => {
                   ) : (
                     <Link
                       href="/login"
-                      className="block w-full py-2 px-3 text-white bg-[#FE6D00] rounded md:hidden "
+                      className="block w-full py-2 px-3 text-white bg-[#FE6D00] rounded focus:outline-none focus:ring focus:ring-transparent md:hidden "
                     >
                       Login
                     </Link>
@@ -200,14 +222,14 @@ const PembeliLayout = ({ children }) => {
                     <div className="flex-1 text-center flex justify-center items-center border-b-2 ">
                       <Link
                         href="/profile"
-                        className="block py-2 px-3  rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
+                        className="block py-2 px-3  rounded hover:bg-gray-100 md:hover:bg-transparent focus:outline-none focus:ring focus:ring-transparent md:border-0 md:p-0 "
                       >
                         Profile
                       </Link>
                     </div>
                     <div className="flex-1 text-center flex justify-center items-center">
                       <button
-                        className="block py-2 px-3  rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
+                        className="block py-2 px-3  rounded focus:outline-none focus:ring focus:ring-transparent hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
                         onClick={() => {
                           Cookies.remove('token');
                           router.push('/login');

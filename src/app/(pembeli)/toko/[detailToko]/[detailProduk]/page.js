@@ -1,18 +1,61 @@
+/* eslint-disable @next/next/no-img-element */
+'use client';
 import NextBreadcrumb from '@/components/NextBreadcrumb';
 import Image from 'next/image';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
 import preview from '../../../../../../public/assets/img/product/product1.png';
 import instagram from '../../../../../../public/assets/icon/instagram.png';
-import whatshapp from '../../../../../../public/assets/icon/whatshapp.png';
+import whatsapp from '../../../../../../public/assets/icon/whatshapp.png';
 import facebook from '../../../../../../public/assets/icon/facebook.png';
 import { GoDotFill } from 'react-icons/go';
 import CardProduct from '@/components/card/CardProduct';
-export async function generateStaticParams() {
-  return [{ detailToko: 'Inod’s Crafthouse', detailProduk: 'Keranjang kayu' }];
-}
+import request from '@/utils/request';
+// export async function generateStaticParams() {
+//   return [{ detailToko: 'Sayur Mayur', detailProduk: 'Kacang Panjang' }];
+// }
 
 const DetailProdukPage = ({ params }) => {
+  const { detailToko, detailProduk } = params;
+  const [productSellerById, setProductSellerById] = useState();
+  const [productSallerDatas, setProductSallerDatas] = useState();
+  const [idSeller, setIdSeller] = useState();
+  const [loading, setLoading] = useState(true);
+
+  console.log(decodeURIComponent(detailProduk));
+
+  const fetchProductSallerById = useCallback(async () => {
+    await request
+      .get(`/public/item?name_sensitive=${detailProduk}`)
+      .then(function (response) {
+        setProductSellerById(response.data.data);
+        setLoading(false);
+      })
+      .catch(function (error) {
+        setLoading(false);
+      });
+  }, [detailProduk]);
+
+  useEffect(() => {
+    fetchProductSallerById();
+  }, [fetchProductSallerById]);
+
+  const fetchProductSaller = useCallback(async () => {
+    await request
+      .get(`/public/item`)
+      .then(function (response) {
+        setProductSallerDatas(response.data.data);
+        setLoading(false);
+      })
+      .catch(function (error) {
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetchProductSaller();
+  }, [fetchProductSaller]);
+
   return (
     <div className="flex flex-col gap-[19px]">
       <div className="w-full relative ">
@@ -49,100 +92,102 @@ const DetailProdukPage = ({ params }) => {
           </h1>
         </div>
         <div className="h-[52px]"></div>
-        <div className="flex lg:flex-row flex-col gap-[24px] items-center bg-white  rounded-lg ">
-          <div className="flex flex-col gap-[25px] lg:max-w-[210px] w-full items-center ">
-            <Image
-              width={0}
-              height={0}
-              alt=""
-              src={preview}
-              className="lg:max-w-[210px] lg:max-h-[210px] w-full object-cover"
-            />
-            <div className="flex justify-between w-full lg:gap-0 md:gap-[54px]">
-              <Image
-                width={0}
-                height={0}
-                alt=""
-                src={preview}
-                className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
-              />
-              <Image
-                width={0}
-                height={0}
-                alt=""
-                src={preview}
-                className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
-              />
-              <Image
-                width={0}
-                height={0}
-                alt=""
-                src={preview}
-                className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
-              />
-            </div>
-          </div>
-          <div className="h-full w-full flex flex-col  lg:pl-[58px] md:pl-[20px] pl-[12px] md:pr-[12px] md:gap-[14px] gap-[16px] leading-normal">
-            <div className="grow">
-              <div>
-                <h1 className="text-[24px] font-semibold">Keranjang Kayu</h1>
-                <h1 className="text-[30px] font-semibold">Rp200.000</h1>
-              </div>
-              <div>
-                <p className="xl:text-[16px] lg:text-[15px] md:text-[12px] text-[13px]">
-                  Deskripsi Produk
-                </p>
-                <p className="xl:text-[16px] lg:text-[15px] md:text-[12px] text-[13px]">
-                  Keranjang kayu serbaguna ini menambah nuansa alami dan elegan.
-                  Terbuat dari kayu solid berkualitas, ideal untuk menyimpan
-                  berbagai barang. Ukuran 40x30x25 cm, ramah lingkungan, dan
-                  buatan tangan. Harga Rp 200.000,-. Tambahkan sentuhan alami ke
-                  rumah Anda!
-                </p>
-              </div>
-              <div className="text-[14px] font-bold text-[#FE6D00]">
-                Lihat selengkapnya
-              </div>
-            </div>
-            <div className="grow-0 ">
-              <button className="w-full text-center bg-[#1D1D1D] text-white text-[16px] font-semibold py-[14px] rounded-lg">
-                Hubungi Penjual
-              </button>
-            </div>
-            <div className="flex md:flex-row flex-col xl:gap-[41px] lg:gap-[31px] md:gap-[21px] gap-[11px] ">
-              <div className="flex gap-[28px]  items-center">
-                <Image
+        {productSellerById &&
+          productSellerById.map((data, i) => (
+            <div
+              key={i}
+              className="flex lg:flex-row flex-col gap-[24px] items-center bg-white  rounded-lg "
+            >
+              <div className="flex flex-col gap-[25px] lg:max-w-[210px] w-full items-center ">
+                <img
                   width={0}
                   height={0}
-                  alt="instagram"
-                  src={instagram}
-                  className="max-w-[27px] max-h-[27px] "
+                  alt=""
+                  src={process.env.NEXT_PUBLIC_HOST + data.image_uri}
+                  className="lg:max-w-[210px] lg:max-h-[210px] w-full object-cover"
                 />
-                <h1>@inodcrafthouse</h1>
+                <div className="flex justify-between w-full lg:gap-0 md:gap-[54px]">
+                  <Image
+                    width={0}
+                    height={0}
+                    alt=""
+                    src={preview}
+                    className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
+                  />
+                  <Image
+                    width={0}
+                    height={0}
+                    alt=""
+                    src={preview}
+                    className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
+                  />
+                  <Image
+                    width={0}
+                    height={0}
+                    alt=""
+                    src={preview}
+                    className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
+                  />
+                </div>
               </div>
-              <div className="flex gap-[28px] items-center">
-                <Image
-                  width={0}
-                  height={0}
-                  alt="whatshapp"
-                  src={whatshapp}
-                  className="max-w-[27px] max-h-[27px] "
-                />
-                <h1>082132986374</h1>
-              </div>
-              <div className="flex gap-[28px] items-center">
-                <Image
-                  width={0}
-                  height={0}
-                  alt="facebook"
-                  src={facebook}
-                  className="max-w-[27px] max-h-[27px] "
-                />
-                <h1>Inod Crafthouse</h1>
+              <div className="h-full w-full flex flex-col  lg:pl-[58px] md:pl-[20px] pl-[12px] md:pr-[12px] md:gap-[14px] gap-[16px] leading-normal">
+                <div className="grow">
+                  <div>
+                    <h1 className="text-[24px] font-semibold">{data.name}</h1>
+                    <h1 className="text-[30px] font-semibold">{data.price}</h1>
+                  </div>
+                  <div>
+                    <p className="xl:text-[16px] lg:text-[15px] md:text-[12px] text-[13px]">
+                      Deskripsi Produk
+                    </p>
+                    <p className="xl:text-[16px] lg:text-[15px] md:text-[12px] text-[13px]">
+                      {data.description}
+                    </p>
+                  </div>
+                  <div className="text-[14px] font-bold text-[#FE6D00]">
+                    Lihat selengkapnya
+                  </div>
+                </div>
+                <div className="grow-0 ">
+                  <button className="w-full text-center bg-[#1D1D1D] text-white text-[16px] font-semibold py-[14px] rounded-lg">
+                    Hubungi Penjual
+                  </button>
+                </div>
+                <div className="flex md:flex-row flex-col xl:gap-[41px] lg:gap-[31px] md:gap-[21px] gap-[11px] ">
+                  <div className="flex gap-[28px]  items-center">
+                    <Image
+                      width={0}
+                      height={0}
+                      alt="instagram"
+                      src={instagram}
+                      className="max-w-[27px] max-h-[27px] "
+                    />
+                    <h1>@{data.user.detail_seller.instagram}</h1>
+                  </div>
+                  <div className="flex gap-[28px] items-center">
+                    <Image
+                      width={0}
+                      height={0}
+                      alt="whatsapp"
+                      src={whatsapp}
+                      className="max-w-[27px] max-h-[27px] "
+                    />
+                    <h1>{data.user.detail_seller.whatsapp}</h1>
+                  </div>
+                  <div className="flex gap-[28px] items-center">
+                    <Image
+                      width={0}
+                      height={0}
+                      alt="facebook"
+                      src={facebook}
+                      className="max-w-[27px] max-h-[27px] "
+                    />
+                    <h1>{data.user.detail_seller.facebook}</h1>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          ))}
 
         <div className="h-[58px]" />
         <div className="flex gap-[17px] bg-white rounded-[8px]">
@@ -152,52 +197,23 @@ const DetailProdukPage = ({ params }) => {
           </h1>
         </div>
         <div className="h-[15px]" />
+
         <div className="grid  xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 xl:gap-x-[16px] xl:gap-y-[46px] lg:gap-x-[30px] lg:gap-y-[46px] md:gap-12 gap-8  lg:px-[62px] pb-4">
-          <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-            <CardProduct />
-          </div>
-          <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-            <CardProduct />
-          </div>
-          <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-            <CardProduct />
-          </div>
-          <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-            <CardProduct />
-          </div>
-          <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-            <CardProduct />
-          </div>
-          <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-            <CardProduct />
-          </div>
-          <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-            <CardProduct />
-          </div>
-          <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-            <CardProduct />
-          </div>
-          <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-            <CardProduct />
-          </div>
-          <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-            <CardProduct />
-          </div>
-          <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-            <CardProduct />
-          </div>
-          <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-            <CardProduct />
-          </div>
-          <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-            <CardProduct />
-          </div>
-          <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-            <CardProduct />
-          </div>
-          <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-            <CardProduct />
-          </div>
+          {productSallerDatas &&
+            productSallerDatas.map((data, i) => (
+              <div
+                key={i}
+                className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg"
+              >
+                <CardProduct
+                  name={data.name}
+                  thumbnail={data.image_uri}
+                  price={data.price}
+                  saller={data.user.name}
+                  href={`${decodeURIComponent(detailToko)}/${data.name}`}
+                />
+              </div>
+            ))}
         </div>
       </div>
     </div>

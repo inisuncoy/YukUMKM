@@ -1,10 +1,32 @@
+'use client';
 import NextBreadcrumb from '@/components/NextBreadcrumb';
 import CardToko from '@/components/card/CardToko';
-import React from 'react';
+import request from '@/utils/request';
+import React, { useCallback, useEffect, useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
 
 const TokoPage = ({ params }) => {
   const { detailProduk } = params;
+
+  const [sallerDatas, setSallerDatas] = useState();
+  const [loading, setLoading] = useState(true);
+
+  const fetchSaller = useCallback(async () => {
+    await request
+      .get(`/public/seller`)
+      .then(function (response) {
+        setSallerDatas(response.data.data);
+        setLoading(false);
+      })
+      .catch(function (error) {
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetchSaller();
+  }, [fetchSaller]);
+
   return (
     <div className="flex flex-col gap-[19px]">
       <div className="w-full relative ">
@@ -41,18 +63,19 @@ const TokoPage = ({ params }) => {
           </h1>
         </div>
         <div className="xl:px-[60px] lg:px[50px] md:px-[40px] px-[30px] grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-x-[16px] gap-y-[30px]">
-          <CardToko />
-          <CardToko />
-          <CardToko />
-          <CardToko />
-          <CardToko />
-          <CardToko />
-          <CardToko />
-          <CardToko />
-          <CardToko />
-          <CardToko />
-          <CardToko />
-          <CardToko />
+          {loading ? (
+            <div>Loading</div>
+          ) : (
+            sallerDatas &&
+            sallerDatas.map((data, i) => (
+              <CardToko
+                key={i}
+                href={`/toko/${data.name}`}
+                logo={data.profile_uri}
+                name={data.name}
+              />
+            ))
+          )}
         </div>
       </div>
     </div>

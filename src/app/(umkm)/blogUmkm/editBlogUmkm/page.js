@@ -24,7 +24,7 @@ const formSchema = z.object({
   title: z
     .string()
     .min(3, { message: 'Name must be at least 3 characters long' })
-    .max(100, { message: 'Name must be at most 100 characters long.' })
+    .max(190, { message: 'Name must be at most 190 characters long.' })
     .optional(),
   imageUri: z
     .any()
@@ -39,8 +39,7 @@ const formSchema = z.object({
     ),
   content: z
     .string()
-    .min(3, { message: 'Description must be at least 3 characters long' })
-    .max(255, { message: 'Description must be at most 255 characters long.' })
+    .min(10, { message: 'Description must be at least 3 characters long' })
     .optional(),
 });
 

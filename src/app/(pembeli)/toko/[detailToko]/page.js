@@ -1,16 +1,111 @@
+/* eslint-disable @next/next/no-img-element */
+'use client';
 import Image from 'next/image';
-import React from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
 import { MdLocationOn } from 'react-icons/md';
 
-import LogoUMKM from '../../../../../public/assets/logo/logoUMKM.png';
+import LogoUMKM from '../../../../../public/assets/icon/store.jpeg';
 import CardProduct from '@/components/card/CardProduct';
 import NextBreadcrumb from '@/components/NextBreadcrumb';
-export async function generateStaticParams() {
-  return [{ detailToko: 'Inod’s Crafthouse' }];
-}
+//import { usePathname } from 'next/navigation';
+import request from '@/utils/request';
+import InputField from '@/components/forms/InputField';
+
+//export async function generateStaticParams() {
+//  return [{ detailToko: 'Sayur Mayur' }];
+//}
 
 const DetailTokoPage = ({ params }) => {
+  const { detailToko } = params;
+  const [sallerDatas, setSallerDatas] = useState();
+  const [productSallerDatas, setProductSallerDatas] = useState();
+  const [idSeller, setIdSeller] = useState();
+  const [categoryDatas, setCategoryDatas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [minPrice, setMinPrice] = useState();
+  const [maxPrice, setMaxPrice] = useState();
+  const checkboxRefs = useRef([]);
+
+  const handleCheckboxChange = (event, data) => {
+    if (event.target.checked) {
+      setSelectedItems([...selectedItems, data.id]);
+    } else {
+      setSelectedItems(selectedItems.filter((item) => item !== data.id));
+    }
+  };
+
+  const handleReset = () => {
+    setSelectedItems([]);
+    checkboxRefs.current.forEach((checkbox) => {
+      if (checkbox) checkbox.checked = false;
+    });
+  };
+
+  const fetchSaller = useCallback(async () => {
+    await request
+      .get(`/public/seller?name_sensitive=${decodeURIComponent(detailToko)}`)
+      .then(function (response) {
+        setSallerDatas(response.data.data);
+        setIdSeller(response.data.data[0].id);
+        setLoading(false);
+      })
+      .catch(function (error) {
+        setLoading(false);
+      });
+  }, [detailToko]);
+
+  useEffect(() => {
+    fetchSaller();
+  }, [fetchSaller]);
+
+  const fetchProductSaller = useCallback(async () => {
+    const payload = {
+      userId: idSeller,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+    };
+
+    // Construct query string for itemCategoryIds
+    const queryParams = new URLSearchParams();
+    selectedItems.forEach((id) => {
+      queryParams.append('itemCategoryIds[]', id);
+    });
+
+    const url = `/public/item?${queryParams.toString()}`;
+
+    await request
+      .get(`/public/item?${queryParams.toString()}`, payload)
+      .then(function (response) {
+        setProductSallerDatas(response.data.data);
+        setLoading(false);
+      })
+      .catch(function (error) {
+        setLoading(false);
+      });
+  }, [idSeller, selectedItems, minPrice, maxPrice]);
+
+  useEffect(() => {
+    fetchProductSaller();
+  }, [fetchProductSaller]);
+
+  const fetchCategory = useCallback(async () => {
+    await request
+      .get(`/public/itemCategory`)
+      .then(function (response) {
+        setCategoryDatas(response.data.data);
+        setLoading(false);
+      })
+      .catch(function (error) {
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetchCategory();
+  }, [fetchCategory]);
+
   return (
     <div className="flex flex-col gap-[19px]">
       <div className="w-full relative">
@@ -39,42 +134,51 @@ const DetailTokoPage = ({ params }) => {
         }
         capitalizeLinks
       />
-      <div className="w-full p-[17px] bg-white rounded-lg flex md:flex-row flex-col  gap-[16px]">
-        <Image
-          width={0}
-          height={0}
-          alt="profile-toko"
-          src={LogoUMKM}
-          className="md:w-[281px] md:h-[296px] object-cover rounded-lg"
-        />
-        <div className="flex flex-col lg:gap-0 gap-5">
-          <div className="flex flex-col gap-[12px] grow">
-            <div>
-              <h1 className="font-semibold text-[40px]">Inod’s Crafthouse</h1>
-              <div className="flex gap-[9px] items-center">
-                <MdLocationOn className="text-[#E21B1B] text-[22px]" />
-                <p className="text-[16px] font-bold">Klaten, Jawa Tengah</p>
+      {sallerDatas &&
+        sallerDatas.map((data, i) => (
+          <div
+            key={i}
+            className="w-full p-[17px] bg-white rounded-lg flex md:flex-row flex-col  gap-[16px]"
+          >
+            {data.profile_uri ? (
+              <img
+                width={0}
+                height={0}
+                alt="profile-toko"
+                src={process.env.NEXT_PUBLIC_HOST + data.profile_uri}
+                className="md:w-[281px] md:h-[296px] object-cover rounded-lg"
+              />
+            ) : (
+              <Image
+                width={0}
+                height={0}
+                alt="profile-toko"
+                src={LogoUMKM}
+                className="md:w-[281px] md:h-[296px] object-cover rounded-lg"
+              />
+            )}
+            <div className="w-full flex flex-col lg:gap-0 gap-5">
+              <div className="flex flex-col gap-[12px] grow">
+                <div>
+                  <h1 className="font-semibold text-[40px]">{data.name}</h1>
+                  <div className="flex gap-[9px] items-center">
+                    <MdLocationOn className="text-[#E21B1B] text-[22px]" />
+                    <p className="text-[16px] font-bold">{data.address}</p>
+                  </div>
+                </div>
+                <p className="text-[13px] ">{data.detail_seller.description}</p>
+              </div>
+              <div className="grow-0 flex">
+                <button className="w-full text-center bg-[#1D1D1D] text-white text-[16px] font-semibold py-[14px] rounded-lg">
+                  Hubungi Penjual
+                </button>
+                <button className="w-full text-center bg-white border-2 border-black text-black text-[16px] font-semibold py-[14px] rounded-lg">
+                  Beri Penilaian
+                </button>
               </div>
             </div>
-            <p className="text-[13px] ">
-              Oki mart merupakan perusahaan teknologi Indonesia dengan misi
-              pemerataan ekonomi secara digital di Indonesia. Visi perusahaan
-              adalah untuk menciptakan ekosistem di mana siapa pun bisa memulai
-              dan menemukan apa pun. Hingga saat ini, Tokopedia termasuk
-              marketplace yang paling banyak dikunjungi oleh masyarakat
-              Indonesia.
-            </p>
           </div>
-          <div className="grow-0 flex">
-            <button className="w-full text-center bg-[#1D1D1D] text-white text-[16px] font-semibold py-[14px] rounded-lg">
-              Hubungi Penjual
-            </button>
-            <button className="w-full text-center bg-white border-2 border-black text-black text-[16px] font-semibold py-[14px] rounded-lg">
-              Beri Penilaian
-            </button>
-          </div>
-        </div>
-      </div>
+        ))}
 
       <div className="xl:pl-[148px] lg:pl-[258px] md:pl-[] lg:pr-[20px] w-full lg:bg-white rounded-lg relative flex flex-col-reverse gap-5">
         <div className="bg-white rounded-lg">
@@ -86,51 +190,21 @@ const DetailTokoPage = ({ params }) => {
           </div>
           <div className="h-[15px]" />
           <div className="grid  xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 xl:gap-[16px] lg:gap-[8px] md:gap-12 gap-8  px-4 pb-4">
-            <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-              <CardProduct />
-            </div>
-            <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-              <CardProduct />
-            </div>
-            <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-              <CardProduct />
-            </div>
-            <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-              <CardProduct />
-            </div>
-            <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-              <CardProduct />
-            </div>
-            <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-              <CardProduct />
-            </div>
-            <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-              <CardProduct />
-            </div>
-            <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-              <CardProduct />
-            </div>
-            <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-              <CardProduct />
-            </div>
-            <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-              <CardProduct />
-            </div>
-            <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-              <CardProduct />
-            </div>
-            <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-              <CardProduct />
-            </div>
-            <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-              <CardProduct />
-            </div>
-            <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-              <CardProduct />
-            </div>
-            <div className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg">
-              <CardProduct />
-            </div>
+            {productSallerDatas &&
+              productSallerDatas.map((data, i) => (
+                <div
+                  key={i}
+                  className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg"
+                >
+                  <CardProduct
+                    name={data.name}
+                    thumbnail={data.image_uri}
+                    price={data.price}
+                    saller={data.user.name}
+                    href={`${decodeURIComponent(detailToko)}/${data.name}`}
+                  />
+                </div>
+              ))}
           </div>
         </div>
         <div className="lg:w-[280px] lg:h-[520px] bg-white lg:shadow-2xl lg:absolute lg:top-0 xl:-left-[134px] lg:-left-[24px] rounded-lg lg:pb-0 md:pb-5">
@@ -143,56 +217,33 @@ const DetailTokoPage = ({ params }) => {
           <div className="flex lg:flex-col flex-row  lg:gap-[8px] ">
             <fieldset className="w-full">
               <legend className="block w-full bg-gray-50 px-5 py-3 text-xs font-medium">
-                Type
+                Kategori
               </legend>
 
               <div className="space-y-2 px-5 py-6">
-                <div className="flex items-center">
-                  <input
-                    id="New"
-                    type="checkbox"
-                    name="type[New]"
-                    className="h-5 w-5 rounded border-gray-300"
-                  />
-
-                  <label for="New" className="ml-3 text-sm font-medium">
-                    {' '}
-                    New{' '}
-                  </label>
-                </div>
-
-                <div className="flex items-center">
-                  <input
-                    id="Used"
-                    type="checkbox"
-                    name="type[Used]"
-                    className="h-5 w-5 rounded border-gray-300"
-                  />
-
-                  <label for="Used" className="ml-3 text-sm font-medium">
-                    {' '}
-                    Used{' '}
-                  </label>
-                </div>
-
-                <div className="flex items-center">
-                  <input
-                    id="Branded"
-                    type="checkbox"
-                    name="type[Branded]"
-                    className="h-5 w-5 rounded border-gray-300"
-                  />
-
-                  <label for="Branded" className="ml-3 text-sm font-medium">
-                    {' '}
-                    Branded{' '}
-                  </label>
-                </div>
-
+                {categoryDatas.map((data, i) => (
+                  <div key={i} className="flex items-center">
+                    <input
+                      ref={(el) => (checkboxRefs.current[i] = el)}
+                      id={`checkbox-${i}`}
+                      type="checkbox"
+                      name={`type[${data.name}]`}
+                      className="h-5 w-5 rounded border-gray-300"
+                      onChange={(event) => handleCheckboxChange(event, data)}
+                    />
+                    <label
+                      htmlFor={`checkbox-${i}`}
+                      className="ml-3 text-sm font-medium"
+                    >
+                      {data.name}
+                    </label>
+                  </div>
+                ))}
                 <div className="pt-2">
                   <button
                     type="button"
                     className="text-xs text-gray-500 underline"
+                    onClick={handleReset}
                   >
                     Reset Type
                   </button>
@@ -201,56 +252,57 @@ const DetailTokoPage = ({ params }) => {
             </fieldset>
             <fieldset className="w-full">
               <legend className="block w-full bg-gray-50 px-5 py-3 text-xs font-medium">
-                Type
+                Harga
               </legend>
 
               <div className="space-y-2 px-5 py-6">
-                <div className="flex items-center">
-                  <input
-                    id="New"
-                    type="checkbox"
-                    name="type[New]"
-                    className="h-5 w-5 rounded border-gray-300"
-                  />
-
-                  <label for="New" className="ml-3 text-sm font-medium">
-                    {' '}
-                    New{' '}
-                  </label>
-                </div>
-
-                <div className="flex items-center">
-                  <input
-                    id="Used"
-                    type="checkbox"
-                    name="type[Used]"
-                    className="h-5 w-5 rounded border-gray-300"
-                  />
-
-                  <label for="Used" className="ml-3 text-sm font-medium">
-                    {' '}
-                    Used{' '}
-                  </label>
-                </div>
-
-                <div className="flex items-center">
-                  <input
-                    id="Branded"
-                    type="checkbox"
-                    name="type[Branded]"
-                    className="h-5 w-5 rounded border-gray-300"
-                  />
-
-                  <label for="Branded" className="ml-3 text-sm font-medium">
-                    {' '}
-                    Branded{' '}
-                  </label>
+                <div className="flex gap-5 items-center">
+                  <div className="max-w-sm mx-auto">
+                    <label
+                      for="number-input"
+                      className="block w-full pb-2 text-xs font-medium"
+                    >
+                      MIN
+                    </label>
+                    <input
+                      type="number"
+                      id="number-input"
+                      aria-describedby="helper-text-explanation"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder=""
+                      required
+                      value={minPrice}
+                      onChange={(e) => setMinPrice(e.target.value)}
+                    />
+                  </div>
+                  <h1 className="block text-xs font-medium">To</h1>
+                  <div className="max-w-sm mx-auto">
+                    <label
+                      for="number-input"
+                      className="block w-full pb-2 text-xs font-medium"
+                    >
+                      Max
+                    </label>
+                    <input
+                      type="number"
+                      id="number-input"
+                      aria-describedby="helper-text-explanation"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder=""
+                      required
+                      value={maxPrice}
+                      onChange={(e) => setMaxPrice(e.target.value)}
+                    />
+                  </div>
                 </div>
 
                 <div className="pt-2">
                   <button
                     type="button"
                     className="text-xs text-gray-500 underline"
+                    onClick={() => {
+                      setMinPrice(''), setMaxPrice('');
+                    }}
                   >
                     Reset Type
                   </button>

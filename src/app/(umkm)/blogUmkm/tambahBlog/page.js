@@ -21,7 +21,7 @@ const formSchema = z.object({
   title: z
     .string()
     .min(3, { message: 'Title must be at least 3 characters long' })
-    .max(30, { message: 'Title must be at most 30 characters long.' }),
+    .max(190, { message: 'Title must be at most 190 characters long.' }),
   imageUri: z
     .any()
     .refine(
@@ -34,8 +34,7 @@ const formSchema = z.object({
     ),
   content: z
     .string()
-    .min(10, { message: 'Description must be at least 10 characters long' })
-    .max(255, { message: 'Description must be at most 255 characters long.' }),
+    .min(10, { message: 'Description must be at least 10 characters long' }),
 });
 
 const TambahBlogPage = () => {

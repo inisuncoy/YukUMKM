@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import React from 'react';
 import product1 from '../../../public/assets/img/product/product1.png';
@@ -6,29 +7,29 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-const CardProduct = () => {
+const CardProduct = ({ name, thumbnail, price, saller, href }) => {
   const router = useRouter();
   return (
     <Link
-      href={'/toko/Inod’s Crafthouse/Keranjang kayu'}
+      href={href}
       className="bg-[#faeced] px-3 py-2 xl:w-[164px] lg:w-[154px] md:[164px] w-[154px] max-w-[164px] max-h-[230px] rounded-lg"
     >
-      <Image
+      <img
         width={0}
         height={0}
         alt="product"
-        src={product1}
+        src={process.env.NEXT_PUBLIC_HOST + thumbnail}
         className=" xl:w-[145px] xl:h-[145px] lg:w-[135px] lg:h-[135px] md:w-[145px] md:h-[145px] w-[135px] h-[135px]  object-cover m-auto"
       />
       <div className="flex flex-col gap-[25px] mt-[3px]">
         <div className="text-[10px] grow">
-          <h1>Keranjang Kayu</h1>
-          <h2 className="font-black">Rp.200.000,00</h2>
+          <h1>{name}</h1>
+          <h2 className="font-black">{price}</h2>
         </div>
         <div
           onClick={(e) => {
             e.preventDefault();
-            router.push('/toko/detailToko');
+            router.push(`/toko/${saller}`);
           }}
           className="flex items-center gap-[7px] text-[10px]"
         >
@@ -39,7 +40,7 @@ const CardProduct = () => {
             src={iconToko}
             className="w-[12px] h-[12px] object-cover"
           />
-          <p>Inod’s Crafthouse</p>
+          <p>{saller}</p>
         </div>
       </div>
     </Link>
