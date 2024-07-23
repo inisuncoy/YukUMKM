@@ -1,19 +1,31 @@
+/* eslint-disable @next/next/no-img-element */
 import React from 'react';
-import Logo from '../../../public/assets/logo/logoUMKM.png';
-import iconToko from '../../../public/assets/icon/icon-toko.png';
+// import Logo from '../../../public/assets/logo/logoUMKM.png';
+import iconToko from '../../../public/assets/icon/store.jpeg';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaStar } from 'react-icons/fa6';
-const CardToko = () => {
+const CardToko = ({ logo, name, href }) => {
   return (
-    <Link href={'/toko/Inod’s Crafthouse'} className="bg-[#faeced] rounded-lg">
-      <Image
-        width={0}
-        height={0}
-        alt="product"
-        src={Logo}
-        className=" xl:w-[145px] xl:h-[145px] lg:w-[145px] lg:h-[145px] md:w-[145px] md:h-[145px] w-[115px] h-[115px]  object-cover  m-auto mt-[10px]"
-      />
+    <Link href={href} className="bg-[#faeced] rounded-lg">
+      {logo ? (
+        <img
+          width={0}
+          height={0}
+          alt="product"
+          src={process.env.NEXT_PUBLIC_HOST + logo}
+          className=" xl:w-[145px] xl:h-[145px] lg:w-[145px] lg:h-[145px] md:w-[145px] md:h-[145px] w-[115px] h-[115px]  object-cover  m-auto mt-[10px]"
+        />
+      ) : (
+        <Image
+          width={0}
+          height={0}
+          alt="product"
+          src={iconToko}
+          className=" xl:w-[145px] xl:h-[145px] lg:w-[145px] lg:h-[145px] md:w-[145px] md:h-[145px] w-[115px] h-[115px]  object-cover  m-auto mt-[10px]"
+        />
+      )}
+
       <div className="flex flex-col mt-[24px] gap-[12px] justify-center  items-center grow">
         <div className="flex items-center gap-[7px] text-[14px] font-medium grow h-full">
           <Image
@@ -23,7 +35,7 @@ const CardToko = () => {
             src={iconToko}
             className="w-[12px] h-[12px] object-cover"
           />
-          <p>Inod’s Crafthouse</p>
+          <p>{name}</p>
         </div>
         <div className="w-full flex justify-end items-center grow-0 text-[14px] gap-1">
           <FaStar className="text-[#FEC810]" />

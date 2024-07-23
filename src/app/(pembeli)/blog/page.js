@@ -1,5 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
+'use client';
 import Image from 'next/image';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { IoIosSearch } from 'react-icons/io';
 import { GoDotFill } from 'react-icons/go';
@@ -9,10 +11,33 @@ import Link from 'next/link';
 import CardBlogLarge from '@/components/card/CardBlogLarge';
 import CardBlogSmall from '@/components/card/CardBlogSmall';
 import NextBreadcrumb from '@/components/NextBreadcrumb';
+import request from '@/utils/request';
+import moment from 'moment';
+
 export default function BlogPAge() {
+  const [blogDatas, setBlogDatas] = useState();
+  const [recordsTotal, setRecordsTotal] = useState();
+  const [loading, setLoading] = useState(true);
+
+  const fetchBlog = useCallback(async () => {
+    await request
+      .get(`/public/blog`)
+      .then(function (response) {
+        setBlogDatas(response.data.data);
+        setRecordsTotal(response.data.recordsTotal);
+        setLoading(false);
+      })
+      .catch(function (error) {
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetchBlog();
+  }, [fetchBlog]);
   return (
     <div className=" w-full">
-      <div className="absolute top-0 bottom-0 right-0 left-0 mx-auto -z-10  max-w-[1090px] h-[390px] mt-[94px] md:mt-[78px] inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_bottom,_black_0%,_black_calc(100%-400px),_transparent_100%)]">
+      <div className="w-full h-[390px] inline-flex flex-nowrap overflow-hidden ">
         <Image
           width={0}
           height={0}
@@ -22,7 +47,7 @@ export default function BlogPAge() {
         />
       </div>
 
-      <div className="mt-[255px] flex flex-col gap-[30px]">
+      <div className="mt-[20px] flex flex-col gap-[30px]">
         <div className="w-full relative">
           <input
             className=" w-full py-[20px] pl-[53px] rounded-[8px]"
@@ -57,55 +82,75 @@ export default function BlogPAge() {
             </h1>
           </div>
           <div className=" flex flex-col gap-[30px]">
-            <div className="rounded-lg shadow-xl flex lg:flex-row flex-col gap-[20px] lg:pr-[23px]">
-              <Image
-                width={0}
-                height={0}
-                alt="main-blog"
-                src={hero}
-                className="lg:max-w-[413px] max-h-[323px] lg:w-[413px] md:w-full lg:h-[323px]  object-cover lg:rounded-l-lg md:rounded-lg"
-              />
-              <div className="flex flex-col gap-[14px] justify-center lg:px-0 md:p-[12px] p-[12px]">
-                <div>
-                  <h1 className="font-semibold text-[16px]">
-                    PSSI Ungkap Alasan Harga Tiket Timnas Indonesia Melonjak
-                    Drastis
-                  </h1>
-                  <div className="text-[10px] flex gap-1 text-gray-400 items-center ">
-                    <p className="md:block hidden">
-                      <span>Syakirun Niam, </span>
-                      <span>Syakirun Niam, </span>
-                    </p>
-                    <GoDotFill className="lg:block hidden" />
-                    <span>16/05/2024, 15:07 WIB</span>
+            {recordsTotal >= 1 && (
+              <Link
+                href={`blog/${blogDatas[0].title}`}
+                className="rounded-lg shadow-xl flex lg:flex-row flex-col gap-[20px] lg:pr-[23px]"
+              >
+                <img
+                  width={0}
+                  height={0}
+                  alt="main-blog"
+                  src={process.env.NEXT_PUBLIC_HOST + blogDatas[0].image_uri}
+                  className="lg:max-w-[413px] max-h-[323px] lg:w-[413px] md:w-full lg:h-[323px]  object-cover lg:rounded-l-lg md:rounded-lg"
+                />
+                <div className="flex flex-col gap-[14px] justify-center lg:px-0 md:p-[12px] p-[12px]">
+                  <div>
+                    <h1 className="font-semibold text-[16px]">
+                      {blogDatas[0].title}
+                    </h1>
+                    <div className="text-[10px] flex gap-1 text-gray-400 items-center ">
+                      <p className="md:block hidden">
+                        <span>{blogDatas[0].user.name} </span>
+                      </p>
+                      <GoDotFill className="lg:block hidden" />
+                      <span>
+                        {moment(blogDatas[0].created_at).format(
+                          'DD/MM/YYYY, LT'
+                        )}
+                      </span>
+                    </div>
                   </div>
+                  <p className="xl:text-[13px] lg:text-[11px] md:text-[12px] ">
+                    {blogDatas[0].content.length > 1000
+                      ? `${blogDatas[0].content.substring(0, 1000)}...`
+                      : blogDatas[0].content}
+                  </p>
                 </div>
-                <p className="xl:text-[13px] lg:text-[11px] md:text-[12px] ">
-                  KOMPAS.com - Anggota Komite Eksekutif (Exco) PSSI, Arya
-                  Sinulingga, menjelaskan alasan adanya kenaikan signifikan
-                  harga tiket laga timnas Indonesia untuk ronde laga Kualifikasi
-                  Piala Dunia 2026 zona Asia. PSSI baru saja merilis harga tiket
-                  resmi laga timnas Indonesia di Kualifikasi Piala Dunia 2026
-                  yang diselenggarakan di Stadion Utama Gelora Bung Karno
-                  (SUGBK) Juni mendatang. Indonesia akan melakoni duel melawan
-                  Irak pada Kamis (6/6/2024) dan Filipina pada Selasa
-                  (11/6/2024). Harga tiket laga timnas melonjak sangat tinggi,
-                  bahkan hampir dua kali lipat dari laga terakhir timnas
-                  Indonesia saat menjamu Vietnam masih di Kualifikasi Piala
-                  Dunia 2022 pada 21 Maret lalu. Kala itu, kategori tiket
-                  termurah dapat dibeli dengan harga Rp 100.000, sedangkan untuk
-                  laga Indonesia vs Irak dan Filipina tiket termurah dijual
-                  seharga Rp 250.000.
-                </p>
-              </div>
-            </div>
+              </Link>
+            )}
             <div className="flex lg:gap-[33px] md:gap-[23px] gap-[13px] ">
-              <CardBlogLarge />
-              <CardBlogLarge />
+              {recordsTotal >= 3 &&
+                blogDatas &&
+                blogDatas
+                  .slice(1, 3)
+                  .map((data, i) => (
+                    <CardBlogLarge
+                      key={i}
+                      imageUri={data.image_uri}
+                      title={data.title}
+                      href={`blog/${data.title}`}
+                      saller={data.user.name}
+                      date={data.created_at}
+                    />
+                  ))}
             </div>
             <div className="flex flex-col gap-[30px]">
-              {/* <CardBlogSmall />
-              <CardBlogSmall /> */}
+              {recordsTotal >= 4 &&
+                blogDatas &&
+                blogDatas
+                  .slice(3, 99)
+                  .map((data, i) => (
+                    <CardBlogSmall
+                      key={i}
+                      name={data.user.name}
+                      src={data.image_uri}
+                      title={data.title}
+                      date={data.created_at}
+                      content={data.content}
+                      href={`blog/${data.title}`}
+                    />
+                  ))}
             </div>
           </div>
         </div>

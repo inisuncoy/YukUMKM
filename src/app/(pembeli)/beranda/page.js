@@ -11,7 +11,7 @@ import SwiperProduk from '@/components/swiper/SwiperProduk';
 export default function HomePage() {
   return (
     <div className=" w-full h-screen">
-      <div className="absolute top-0 bottom-0 right-0 left-0 mx-auto -z-10  max-w-[1090px] h-[390px] mt-[94px] md:mt-[78px] inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_bottom,_black_0%,_black_calc(100%-300px),_transparent_100%)]">
+      {/* <div className="absolute top-0 bottom-0 right-0 left-0 mx-auto -z-10  max-w-[1090px] h-[390px] mt-[94px] md:mt-[78px] inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_bottom,_black_0%,_black_calc(100%-300px),_transparent_100%)]">
         <Image
           width={0}
           height={0}
@@ -112,7 +112,7 @@ export default function HomePage() {
             <SwiperProduk />
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

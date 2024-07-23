@@ -68,6 +68,7 @@ export default function BlogUmkmPage() {
                 blogDatas.map((data, i) => (
                   <CardBlogSmall
                     key={i}
+                    name={data.user.name}
                     src={data.image_uri}
                     title={data.title}
                     date={data.created_at}

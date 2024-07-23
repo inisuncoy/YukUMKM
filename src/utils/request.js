@@ -4,7 +4,8 @@ import Cookies from 'js-cookie';
 let lastErrorResponse = null;
 
 const request = axios.create({
-  baseURL: `https://api.yukumkm.my.id/api/v1`,
+  baseURL: `http://203.145.34.121:8080/api/v1`,
+  // baseURL: `https://api.yukumkm.my.id/api/v1`,
   timeout: 10000,
   headers: {
     // 'Content-Type': ' application/json',

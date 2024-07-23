@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import TextareaField from '@/components/forms/TextareaField';
 import Cookies from 'js-cookie';
+import { FaWhatsapp } from 'react-icons/fa6';
 
 const MAX_FILE_SIZE = 2000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -55,6 +56,9 @@ const ProfileUmkmPage = () => {
   const [description, setDescription] = useState();
   const [profileUri, setProfileUri] = useState(null);
   const [defaultProfileUri, setDefaultProfileUri] = useState();
+  const [whatsapp, setWhatsapp] = useState();
+  const [facebook, setFacebook] = useState();
+  const [instagram, setInstagram] = useState();
 
   const [updatedProfile, setUpdatedProfile] = useState(false);
   const [alertLogout, setAlertLogout] = useState(false);
@@ -65,7 +69,7 @@ const ProfileUmkmPage = () => {
 
   const router = useRouter();
 
-  const onSubmit = async (e) => {
+  const onUpdate = async (e) => {
     setValidations([]);
     setLoading(true);
     toast.loading('Saving data...');
@@ -75,17 +79,26 @@ const ProfileUmkmPage = () => {
     let data = {};
 
     // Tambahkan imageUri ke data jika imageUri tidak null atau undefined
-    if (name != null) {
+    if (name != null || name != '') {
       data.name = name;
     }
-    if (address != null) {
+    if (address != null || address != '') {
       data.address = address;
     }
-    if (description != null) {
+    if (description != null || description != '') {
       data.description = description;
     }
-    if (profileUri != null) {
+    if (profileUri != null || profileUri != '') {
       data.profileUri = profileUri;
+    }
+    if (whatsapp != null || whatsapp != '') {
+      data.whatsapp = whatsapp;
+    }
+    if (instagram != null || instagram != '') {
+      data.instagram = instagram;
+    }
+    if (facebook != null || facebook != '') {
+      data.facebook = facebook;
     }
 
     // Buat validasi hanya jika profileUri tidak null atau undefined
@@ -93,7 +106,17 @@ const ProfileUmkmPage = () => {
       profileUri != null ||
       name != null ||
       address != null ||
-      description != null
+      description != null ||
+      whatsapp != null ||
+      facebook != null ||
+      instagram != null ||
+      name != '' ||
+      address != '' ||
+      description != '' ||
+      profileUri != '' ||
+      whatsapp != '' ||
+      instagram != '' ||
+      facebook != ''
     ) {
       const validation = formSchema.safeParse(data);
       console.log(validation);
@@ -117,7 +140,7 @@ const ProfileUmkmPage = () => {
 
     // Lakukan request patch hanya jika validasi berhasil atau jika tidak ada imageUri
     request
-      .patch(`/cms/profile`, data)
+      .patch(`/auth/profile`, data)
       .then(function (response) {
         if (response.data?.code === 200 || response.data?.code === 201) {
           toast.dismiss();
@@ -161,6 +184,9 @@ const ProfileUmkmPage = () => {
         setDefaultProfileUri(response.data.data.profile_uri);
         setAddress(response.data.data.address);
         setDescription(response.data.data.detail_seller.description);
+        setWhatsapp(response.data.data.detail_seller.whatsapp);
+        setFacebook(response.data.data.detail_seller.facebook);
+        setInstagram(response.data.data.detail_seller.instagram);
         setLoading(false);
       })
       .catch(function (error) {
@@ -192,7 +218,7 @@ const ProfileUmkmPage = () => {
         <div className="xl:px-[200px]">
           <div className="bg-white p-[20px] rounded-lg flex flex-col gap-[21px]">
             <div className="flex gap-[27px] lg:flex-row flex-col">
-              <form onSubmit={onSubmit}>
+              <form onSubmit={onUpdate}>
                 <div className="py-[20px] px-[40px] rounded-lg shadow-xl flex flex-col gap-[20px]">
                   <div className="relative lg:w-[185px]  flex justify-center items-center ">
                     <img
@@ -269,11 +295,33 @@ const ProfileUmkmPage = () => {
                 </div>
                 <div>
                   <h1 className="text-[13px] font-bold">Alamat Toko</h1>
-                  <p className="text-[13px] font-normal">{address}</p>
+                  <p className="text-[13px] font-normal">
+                    {address ?? 'Wajib ditulis'}
+                  </p>
+                </div>
+                <div>
+                  <h1 className="text-[13px] font-bold">WhatsApp</h1>
+                  <p className="text-[13px] font-normal">
+                    {whatsapp ?? 'Wajib ditulis'}
+                  </p>
+                </div>
+                <div>
+                  <h1 className="text-[13px] font-bold">Facebook</h1>
+                  <p className="text-[13px] font-normal">
+                    {facebook ?? 'Wajib ditulis'}
+                  </p>
+                </div>
+                <div>
+                  <h1 className="text-[13px] font-bold">Instagram</h1>
+                  <p className="text-[13px] font-normal">
+                    {instagram ? '@' + instagram : 'Wajib ditulis'}
+                  </p>
                 </div>
                 <div>
                   <h1 className="text-[13px] font-bold">Keterangan Toko</h1>
-                  <p className="text-[13px] font-normal">{description}</p>
+                  <p className="text-[13px] font-normal">
+                    {description ?? 'Wajib ditulis'}
+                  </p>
                 </div>
 
                 <button
@@ -294,7 +342,9 @@ const ProfileUmkmPage = () => {
         </div>
       </div>
       <div
-        onClick={() => setMenuActive(!menuActive)}
+        onClick={() => {
+          setMenuActive(!menuActive), setUpdatedProfile(true);
+        }}
         className={`fixed w-full h-screen backdrop-blur-sm bg-black/20  top-0 left-0 z-50 flex justify-center items-center ${
           menuActive ? '' : 'hidden'
         }`}
@@ -311,7 +361,7 @@ const ProfileUmkmPage = () => {
               </h1>
             </div>
           </div>
-          <form onSubmit={onSubmit}>
+          <form onSubmit={onUpdate}>
             <div className=" w-full bg-white rounded-lg relative p-[20px] flex flex-col gap-[43px]">
               <div className="grid grid-cols-1 gap-[32px]">
                 <InputField
@@ -333,6 +383,36 @@ const ProfileUmkmPage = () => {
                   type={'text'}
                   onChange={(e) => setAddress(e.target.value)}
                   validations={validations}
+                />
+                <InputField
+                  id={'whatsapp'}
+                  name={'whatsapp'}
+                  value={whatsapp}
+                  label={'WhatsApp'}
+                  placeholder={'0812345678'}
+                  onChange={(e) => setWhatsapp(e.target.value)}
+                  validations={validations}
+                  type={'text'}
+                />
+                <InputField
+                  id={'facebook'}
+                  name={'facebook'}
+                  value={facebook}
+                  label={'Facebook'}
+                  placeholder={'Facebook'}
+                  onChange={(e) => setFacebook(e.target.value)}
+                  validations={validations}
+                  type={'text'}
+                />
+                <InputField
+                  id={'instagram'}
+                  name={'instagram'}
+                  value={instagram}
+                  label={'Instagram'}
+                  placeholder={'Instagram'}
+                  onChange={(e) => setInstagram(e.target.value)}
+                  validations={validations}
+                  type={'text'}
                 />
                 <TextareaField
                   id={'description'}
