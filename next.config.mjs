@@ -1,30 +1,30 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  //  async headers() {
-  //   return [
-  //     {
-  //       source: '/:path*',
-  //       headers: [
-  //        {
-  //          key: 'Content-Security-Policy',
-  //          value: "upgrade-insecure-requests"
-  //        }
-  //       ],
-  //     },
-  //   ]
-  // },
-  images: {
-    remotePatterns: [
+   async headers() {
+    return [
       {
-        protocol: 'https',
-        hostname: '**',
+        source: '/:path*',
+        headers: [
+         {
+           key: 'Content-Security-Policy',
+           value: "upgrade-insecure-requests"
+         }
+        ],
       },
-      {
-        protocol: 'http',
-        hostname: '**',
-      },
-    ],
+    ]
   },
+  // images: {
+  //   remotePatterns: [
+  //     {
+  //       protocol: 'https',
+  //       hostname: '**',
+  //     },
+  //     {
+  //       protocol: 'http',
+  //       hostname: '**',
+  //     },
+  //   ],
+  // },
 };
 
 export default nextConfig;
