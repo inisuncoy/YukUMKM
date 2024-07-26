@@ -13,7 +13,7 @@ import SwiperProduk from '@/components/swiper/SwiperProduk';
 
 export default function HomePage() {
   const [loading, setLoading] = useState(true);
-  const [productSallerDatas, setProductSallerDatas] = useState();
+  const [productSallerDatas, setProductSallerDatas] = useState([]);
   const [sallerDatas, setSallerDatas] = useState();
 
   // const fetchProductSaller = useCallback(async () => {
