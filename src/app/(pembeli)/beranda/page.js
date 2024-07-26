@@ -1,5 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
+'use client';
 import Image from 'next/image';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import request from '@/utils/request';
 
 import { IoIosSearch } from 'react-icons/io';
 
@@ -9,9 +12,59 @@ import CardProduct from '@/components/card/CardProduct';
 import SwiperProduk from '@/components/swiper/SwiperProduk';
 
 export default function HomePage() {
+  const [loading, setLoading] = useState(true);
+  const [productSallerDatas, setProductSallerDatas] = useState();
+  const [sallerDatas, setSallerDatas] = useState();
+
+  // const fetchProductSaller = useCallback(async () => {
+  //   await request
+  //     .get(`/public/item`)
+  //     .then(function (response) {
+  //       setProductSallerDatas(response.data.data);
+  //       setLoading(false);
+  //     })
+  //     .catch(function (error) {
+  //       setLoading(false);
+  //     });
+  // }, []);
+
+  // useEffect(() => {
+  //   fetchProductSaller();
+  // }, [fetchProductSaller]);
+
+  const fetchProductSaller = useCallback(async () => {
+    try {
+      const response = await request.get(`/public/item`);
+      setProductSallerDatas(response.data.data);
+    } catch (error) {
+      console.error('Error fetching product saller data:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProductSaller();
+  }, [fetchProductSaller]);
+
+  const fetchSaller = useCallback(async () => {
+    await request
+      .get(`/public/seller`)
+      .then(function (response) {
+        setSallerDatas(response.data.data);
+        setLoading(false);
+      })
+      .catch(function (error) {
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetchSaller();
+  }, [fetchSaller]);
   return (
     <div className=" w-full h-screen">
-      {/* <div className="absolute top-0 bottom-0 right-0 left-0 mx-auto -z-10  max-w-[1090px] h-[390px] mt-[94px] md:mt-[78px] inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_bottom,_black_0%,_black_calc(100%-300px),_transparent_100%)]">
+      <div className="absolute top-0 bottom-0 right-0 left-0 mx-auto -z-10  max-w-[1090px] h-[390px] mt-[94px] md:mt-[78px] inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_bottom,_black_0%,_black_calc(100%-300px),_transparent_100%)]">
         <Image
           width={0}
           height={0}
@@ -46,52 +99,49 @@ export default function HomePage() {
           </div>
           <div className="px-[20px]  pb-[32px] flex">
             <div className="flex lg:flex-row flex-col w-full lg:gap-[52px] md:gap-[12px] gap-[12px]">
-              <div className="relative w-full flex md:flex-row items-end">
-                <div className="w-[218px] h-[269px]  ">
-                  <Image
-                    width={0}
-                    height={0}
-                    alt="product-bg"
-                    src={hero}
-                    className="w-full h-full object-cover object-bottom rounded-lg"
-                  />
-                </div>
-                <div className="absolute  right-0 flex flex-col gap-[11px]">
-                  <div className="flex justify-end gap-[16px] ">
-                    <CardProduct />
-                    <CardProduct />
-                  </div>
-                  <Link
-                    href={'#'}
-                    className="flex justify-end text-[#FE6D00] text-[13px] font-bold underline"
+              {sallerDatas &&
+                sallerDatas.slice(0, 2).map((saller, i) => (
+                  <div
+                    key={i}
+                    className="relative w-full flex md:flex-row items-end"
                   >
-                    Lihat toko
-                  </Link>
-                </div>
-              </div>
-              <div className="relative w-full flex items-end">
-                <div className="w-[218px] h-[269px]  ">
-                  <Image
-                    width={0}
-                    height={0}
-                    alt="product-bg"
-                    src={hero}
-                    className="w-full h-full object-cover object-bottom rounded-lg"
-                  />
-                </div>
-                <div className="absolute  right-0 flex flex-col gap-[11px]">
-                  <div className="flex justify-end gap-[16px] ">
-                    <CardProduct />
-                    <CardProduct />
+                    <div className="w-[218px] h-[269px]  ">
+                      <img
+                        width={0}
+                        height={0}
+                        alt="product-bg"
+                        src={process.env.NEXT_PUBLIC_HOST + saller.profile_uri}
+                        className="w-full h-full object-cover object-bottom rounded-lg"
+                      />
+                    </div>
+                    <div className="absolute  right-0 flex flex-col gap-[11px]">
+                      <div className="flex justify-end gap-[16px] ">
+                        {productSallerDatas
+                          .filter((product) => saller.id === product.user_id)
+                          .slice(0, 2)
+                          .map(
+                            (product, x) =>
+                              saller.id === product.user_id && (
+                                <CardProduct
+                                  key={x}
+                                  name={product.name}
+                                  thumbnail={product.image_uri}
+                                  price={product.price}
+                                  saller={product.user.name}
+                                  href={`/toko/${product.user.name}/${product.name}`}
+                                />
+                              )
+                          )}
+                      </div>
+                      <Link
+                        href={'#'}
+                        className="flex justify-end text-[#FE6D00] text-[13px] font-bold underline"
+                      >
+                        Lihat toko
+                      </Link>
+                    </div>
                   </div>
-                  <Link
-                    href={'#'}
-                    className="flex justify-end text-[#FE6D00] text-[13px] font-bold underline"
-                  >
-                    Lihat toko
-                  </Link>
-                </div>
-              </div>
+                ))}
             </div>
           </div>
         </div>
@@ -109,10 +159,10 @@ export default function HomePage() {
             </h1>
           </div>
           <div className="px-[20px]  pb-[32px] flex">
-            <SwiperProduk />
+            {<SwiperProduk datas={productSallerDatas} />}
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 }
