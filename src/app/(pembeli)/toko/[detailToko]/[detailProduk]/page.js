@@ -11,6 +11,7 @@ import facebook from '../../../../../../public/assets/icon/facebook.png';
 import { GoDotFill } from 'react-icons/go';
 import CardProduct from '@/components/card/CardProduct';
 import request from '@/utils/request';
+import { NumberFormat } from '@/utils/numberFormat';
 // export async function generateStaticParams() {
 //   return [{ detailToko: 'Sayur Mayur', detailProduk: 'Kacang Panjang' }];
 // }
@@ -134,7 +135,9 @@ const DetailProdukPage = ({ params }) => {
                 <div className="grow">
                   <div>
                     <h1 className="text-[24px] font-semibold">{data.name}</h1>
-                    <h1 className="text-[30px] font-semibold">{data.price}</h1>
+                    <h1 className="text-[30px] font-semibold">
+                      {NumberFormat(data.price)}
+                    </h1>
                   </div>
                   <div>
                     <p className="xl:text-[16px] lg:text-[15px] md:text-[12px] text-[13px]">
@@ -154,36 +157,42 @@ const DetailProdukPage = ({ params }) => {
                   </button>
                 </div>
                 <div className="flex md:flex-row flex-col xl:gap-[41px] lg:gap-[31px] md:gap-[21px] gap-[11px] ">
-                  <div className="flex gap-[28px]  items-center">
-                    <Image
-                      width={0}
-                      height={0}
-                      alt="instagram"
-                      src={instagram}
-                      className="max-w-[27px] max-h-[27px] "
-                    />
-                    <h1>@{data.user.detail_seller.instagram}</h1>
-                  </div>
-                  <div className="flex gap-[28px] items-center">
-                    <Image
-                      width={0}
-                      height={0}
-                      alt="whatsapp"
-                      src={whatsapp}
-                      className="max-w-[27px] max-h-[27px] "
-                    />
-                    <h1>{data.user.detail_seller.whatsapp}</h1>
-                  </div>
-                  <div className="flex gap-[28px] items-center">
-                    <Image
-                      width={0}
-                      height={0}
-                      alt="facebook"
-                      src={facebook}
-                      className="max-w-[27px] max-h-[27px] "
-                    />
-                    <h1>{data.user.detail_seller.facebook}</h1>
-                  </div>
+                  {data.user.detail_seller.instagram && (
+                    <div className="flex gap-[28px]  items-center">
+                      <Image
+                        width={0}
+                        height={0}
+                        alt="instagram"
+                        src={instagram}
+                        className="max-w-[27px] max-h-[27px] "
+                      />
+                      <h1>@{data.user.detail_seller.instagram}</h1>
+                    </div>
+                  )}
+                  {data.user.detail_seller.whatsapp && (
+                    <div className="flex gap-[28px] items-center">
+                      <Image
+                        width={0}
+                        height={0}
+                        alt="whatsapp"
+                        src={whatsapp}
+                        className="max-w-[27px] max-h-[27px] "
+                      />
+                      <h1>{data.user.detail_seller.whatsapp}</h1>
+                    </div>
+                  )}
+                  {data.user.detail_seller.facebook && (
+                    <div className="flex gap-[28px] items-center">
+                      <Image
+                        width={0}
+                        height={0}
+                        alt="facebook"
+                        src={facebook}
+                        className="max-w-[27px] max-h-[27px] "
+                      />
+                      <h1>{data.user.detail_seller.facebook}</h1>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -210,7 +219,7 @@ const DetailProdukPage = ({ params }) => {
                   thumbnail={data.image_uri}
                   price={data.price}
                   saller={data.user.name}
-                  href={`${decodeURIComponent(detailToko)}/${data.name}`}
+                  href={`/toko/${decodeURIComponent(detailToko)}/${data.name}`}
                 />
               </div>
             ))}

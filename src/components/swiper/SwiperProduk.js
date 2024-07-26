@@ -1,68 +1,3 @@
-// 'use client';
-// import React, { useRef, useState } from 'react';
-// // Import Swiper React components
-// import { Swiper, SwiperSlide } from 'swiper/react';
-
-// // Import Swiper styles
-// import 'swiper/css';
-// import 'swiper/css/navigation';
-
-// // import required modules
-// import { Navigation } from 'swiper/modules';
-// import CardProduct from '../card/CardProduct';
-// import { IoIosArrowForward } from 'react-icons/io';
-
-// export default function App() {
-//   return (
-//     <div className="w-full">
-//       <div className="w-full [mask-image:_linear-gradient(to_right,_black_0%,_black_calc(100%-100px),_transparent_100%)]">
-//         <Swiper
-//           slidesPerView={5.5}
-//           spaceBetween={30}
-//           navigation={{
-//             nextEl: '.next',
-//           }}
-//           modules={[Navigation]}
-//           className="mySwiper "
-//         >
-//           <SwiperSlide>
-//             <CardProduct />
-//           </SwiperSlide>
-//           <SwiperSlide>
-//             <CardProduct />
-//           </SwiperSlide>
-//           <SwiperSlide>
-//             <CardProduct />
-//           </SwiperSlide>
-//           <SwiperSlide>
-//             <CardProduct />
-//           </SwiperSlide>
-//           <SwiperSlide>
-//             <CardProduct />
-//           </SwiperSlide>
-//           <SwiperSlide>
-//             <CardProduct />
-//           </SwiperSlide>
-//           <SwiperSlide>
-//             <CardProduct />
-//           </SwiperSlide>
-//           <SwiperSlide>
-//             <CardProduct />
-//           </SwiperSlide>
-//           <SwiperSlide>
-//             <CardProduct />
-//           </SwiperSlide>
-//         </Swiper>
-//       </div>
-//       <div className="absolute z-20 right-[-3%] top-0 bottom-0 flex items-center justify-center">
-//         <button className="bg-white rounded-full xl:w-[54px] w-[80px] xl:h-[54px] h-[80px] flex items-center justify-center shadow-lg next">
-//           <IoIosArrowForward className="text-[#FE6D00] text-[24px]" />
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }
-
 'use client';
 import React from 'react';
 // Import Swiper React components
@@ -77,7 +12,7 @@ import { Navigation } from 'swiper/modules';
 import CardProduct from '../card/CardProduct';
 import { IoIosArrowForward } from 'react-icons/io';
 
-export default function App() {
+export default function SwiperProduk({ datas }) {
   const iconArrow = (
     <svg
       className="xl:w-[55px] md:w-[40px]"
@@ -93,6 +28,10 @@ export default function App() {
       />
     </svg>
   );
+  if (!Array.isArray(datas)) {
+    console.error('The "datas" prop should be an array');
+    return null; // or return some fallback UI
+  }
 
   return (
     <div className="w-full relative">
@@ -123,33 +62,32 @@ export default function App() {
             },
           }}
         >
-          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
-            <CardProduct />
-          </SwiperSlide>
-          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
-            <CardProduct />
-          </SwiperSlide>
-          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
-            <CardProduct />
-          </SwiperSlide>
-          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
-            <CardProduct />
-          </SwiperSlide>
-          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
-            <CardProduct />
-          </SwiperSlide>
-          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
-            <CardProduct />
-          </SwiperSlide>
-          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
-            <CardProduct />
-          </SwiperSlide>
-          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
-            <CardProduct />
-          </SwiperSlide>
-          <SwiperSlide className="bg-[#faeced] px-[12px] rounded-lg">
-            <CardProduct />
-          </SwiperSlide>
+          {/* {datas &&
+            datas.map((data, i) => (
+              <SwiperSlide
+                key={i}
+                className="bg-[#faeced] px-[12px] rounded-lg"
+              >
+                <CardProduct
+                  name={data.name}
+                  thumbnail={data.image_uri}
+                  price={data.price}
+                  saller={data.user.name}
+                  href={`${data.user.name}/${data.name}`}
+                />
+              </SwiperSlide>
+            ))} */}
+          {datas.map((data, i) => (
+            <SwiperSlide key={i} className="bg-[#faeced] px-[12px] rounded-lg">
+              <CardProduct
+                name={data.name}
+                thumbnail={data.image_uri}
+                price={data.price}
+                saller={data.user.name}
+                href={`toko/${data.user.name}/${data.name}`}
+              />
+            </SwiperSlide>
+          ))}
         </Swiper>
       </div>
       <div className="absolute z-20 right-[-8%] md:right-[-2%] top-1/2 transform -translate-y-1/2 flex items-center justify-center">

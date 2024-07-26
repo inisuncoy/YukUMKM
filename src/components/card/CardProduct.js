@@ -6,6 +6,7 @@ import iconToko from '../../../public/assets/icon/icon-toko.png';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { NumberFormat } from '@/utils/numberFormat';
 
 const CardProduct = ({ name, thumbnail, price, saller, href }) => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const CardProduct = ({ name, thumbnail, price, saller, href }) => {
       <div className="flex flex-col gap-[25px] mt-[3px]">
         <div className="text-[10px] grow">
           <h1>{name}</h1>
-          <h2 className="font-black">{price}</h2>
+          <h2 className="font-black">{NumberFormat(price)}</h2>
         </div>
         <div
           onClick={(e) => {

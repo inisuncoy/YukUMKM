@@ -2,7 +2,7 @@
 import { Button } from 'flowbite-react';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 import { FaUser } from 'react-icons/fa6';
@@ -14,6 +14,7 @@ const UmkmLayout = ({ children }) => {
   const [hasToken, setHasToken] = useState(false);
 
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     // This will run only in the client
@@ -24,7 +25,7 @@ const UmkmLayout = ({ children }) => {
 
   return (
     <div className="w-full">
-      <nav className="bg-[#1D1D1D] border-gray-200 fixed w-full top-0 z-50 ">
+      <nav className="bg-[#1D1D1D] border-gray-200 fixed w-full top-0 z-[60] ">
         <div className="max-w-full flex flex-wrap items-center justify-between  py-4 px-[26px]">
           <Link
             href="/produk"
@@ -109,7 +110,11 @@ const UmkmLayout = ({ children }) => {
               <li>
                 <Link
                   href="/produk"
-                  className="block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
+                  className={`block py-2 px-3 ${
+                    pathname.startsWith('/produk')
+                      ? 'text-[#FE6D00]'
+                      : 'text-white'
+                  } rounded focus:outline-none focus:ring focus:ring-transparent md:hover:bg-transparent md:border-0 md:p-0`}
                 >
                   Produk
                 </Link>
@@ -117,7 +122,11 @@ const UmkmLayout = ({ children }) => {
               <li>
                 <Link
                   href="/blogUmkm"
-                  className="block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
+                  className={`block py-2 px-3 ${
+                    pathname.startsWith('/blogUmkm')
+                      ? 'text-[#FE6D00]'
+                      : 'text-white'
+                  } rounded focus:outline-none focus:ring focus:ring-transparent md:hover:bg-transparent md:border-0 md:p-0`}
                 >
                   Blog
                 </Link>
@@ -125,74 +134,61 @@ const UmkmLayout = ({ children }) => {
               <li>
                 <Link
                   href="/chatUmkm"
-                  className="block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
+                  className={`block py-2 px-3 ${
+                    pathname.startsWith('/chatUmkm')
+                      ? 'text-[#FE6D00]'
+                      : 'text-white'
+                  } rounded focus:outline-none focus:ring focus:ring-transparent md:hover:bg-transparent md:border-0 md:p-0`}
                 >
                   Chat
                 </Link>
               </li>
               <li>
+                <button
+                  type="button"
+                  onClick={() => setActive(!active)}
+                  className="hidden py-2 px-3 text-white rounded focus:outline-none focus:ring focus:ring-transparent hover:bg-gray-100 md:block md:hover:bg-transparent md:border-0 md:p-0 "
+                >
+                  <FaUser className="text-[#FE6D00]" />
+                </button>
                 {isClient ? (
-                  hasToken ? (
-                    <button
-                      type="button"
-                      onClick={() => setActive(!active)}
-                      className="hidden py-2 px-3 text-white rounded hover:bg-gray-100 md:block md:hover:bg-transparent md:border-0 md:p-0 "
-                    >
-                      <FaUser className="text-[#FE6D00]" />
-                    </button>
-                  ) : (
-                    <Link
-                      href="/login"
-                      className="block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
-                    >
-                      Login
-                    </Link>
-                  )
-                ) : (
-                  <Link
-                    href="/login"
-                    className="block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
-                  >
-                    Login
-                  </Link>
-                )}
-
-                {isClient ? (
-                  <Link
-                    href="/login"
-                    className="block w-full py-2 px-3 text-white bg-[#FE6D00] rounded md:hidden"
-                  >
-                    Login
-                  </Link>
-                ) : (
                   <>
                     <Link
-                      href="/login"
-                      className="block w-full py-2 px-3 text-white bg-[#FE6D00] rounded md:hidden"
+                      href="/profileUmkm"
+                      className={`block py-2 px-3 ${
+                        pathname.startsWith('/profileUmkm')
+                          ? 'text-[#FE6D00]'
+                          : 'text-white'
+                      } rounded focus:outline-none focus:ring focus:ring-transparent md:hover:bg-transparent md:border-0 md:p-0 md:hidden`}
                     >
-                      Sudah Login
+                      Profile
                     </Link>
-                    <Link
-                      href="/login"
-                      className="block w-full py-2 px-3 text-white bg-[#FE6D00] rounded md:hidden"
+                    <button
+                      className="block w-full py-2 px-3 text-white bg-[#FE6D00] rounded focus:outline-none focus:ring focus:ring-transparent md:hidden "
+                      onClick={() => {
+                        Cookies.remove('token');
+                        router.push('/login');
+                      }}
                     >
-                      Sudah Login
-                    </Link>
+                      Keluar
+                    </button>
                   </>
+                ) : (
+                  ''
                 )}
                 <div className={`relative ${active ? '' : 'hidden'}`}>
                   <div className="absolute -right-[26px] top-3 shadow-lg w-48 h-24 bg-white rounded-lg flex flex-col">
                     <div className="flex-1 text-center flex justify-center items-center border-b-2 ">
                       <Link
                         href="/profileUmkm"
-                        className="block py-2 px-3  rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
+                        className="block py-2 px-3  rounded hover:bg-gray-100 md:hover:bg-transparent focus:outline-none focus:ring focus:ring-transparent md:border-0 md:p-0 "
                       >
                         Profile
                       </Link>
                     </div>
                     <div className="flex-1 text-center flex justify-center items-center">
                       <button
-                        className="block py-2 px-3  rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
+                        className="block py-2 px-3  rounded focus:outline-none focus:ring focus:ring-transparent hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
                         onClick={() => {
                           Cookies.remove('token');
                           router.push('/login');
