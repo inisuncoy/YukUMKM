@@ -70,7 +70,7 @@ const TokoPage = ({ params }) => {
             sallerDatas.map((data, i) => (
               <CardToko
                 key={i}
-                href={`/toko/${data.name}`}
+                href={`/toko/${data.slug}`}
                 logo={data.profile_uri}
                 name={data.name}
               />

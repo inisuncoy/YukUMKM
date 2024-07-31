@@ -84,7 +84,7 @@ export default function BlogPAge() {
           <div className=" flex flex-col gap-[30px]">
             {recordsTotal >= 1 && (
               <Link
-                href={`blog/${blogDatas[0].title}`}
+                href={`blog/${blogDatas[0].slug}`}
                 className="rounded-lg shadow-xl flex lg:flex-row flex-col gap-[20px] lg:pr-[23px]"
               >
                 <img
@@ -129,7 +129,7 @@ export default function BlogPAge() {
                       key={i}
                       imageUri={data.image_uri}
                       title={data.title}
-                      href={`blog/${data.title}`}
+                      href={`blog/${data.slug}`}
                       saller={data.user.name}
                       date={data.created_at}
                     />
@@ -148,7 +148,7 @@ export default function BlogPAge() {
                       title={data.title}
                       date={data.created_at}
                       content={data.content}
-                      href={`blog/${data.title}`}
+                      href={`blog/${data.slug}`}
                     />
                   ))}
             </div>

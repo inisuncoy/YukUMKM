@@ -27,7 +27,7 @@ const DetailProdukPage = ({ params }) => {
 
   const fetchProductSallerById = useCallback(async () => {
     await request
-      .get(`/public/item?name_sensitive=${detailProduk}`)
+      .get(`/public/item?slug=${detailProduk}`)
       .then(function (response) {
         setProductSellerById(response.data.data);
         setLoading(false);
