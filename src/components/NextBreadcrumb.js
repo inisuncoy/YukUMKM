@@ -13,7 +13,29 @@ const NextBreadcrumb = ({
 }) => {
   const paths = usePathname();
   const pathNames = paths.split('/').filter((path) => path);
-  console.log(pathNames[pathNames.length - 1]);
+
+  function formatText(input) {
+    // Menghapus bagian kode unik jika ada
+    let baseText = input;
+    const uniqueCodeIndex = baseText.search(/\b[a-f0-9]{8}\b/);
+    if (uniqueCodeIndex !== -1) {
+      baseText = baseText.substring(0, uniqueCodeIndex - 1);
+    }
+
+    // Mengganti tanda hubung dengan spasi
+    let formattedText = baseText.replace(/-/g, ' ');
+
+    // Mengubah setiap kata menjadi kapital di awal
+    formattedText = formattedText
+      .split(' ')
+      .map((word) => {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      })
+      .join(' ');
+
+    return formattedText;
+  }
+
   return (
     <div className="">
       <nav className="flex " aria-label="Breadcrumb">
@@ -49,7 +71,9 @@ const NextBreadcrumb = ({
                           : 'text-[#FE6D00]'
                       } hover:text-primary-600 md:ml-2 md:text-[16px] text-[12px]`}
                     >
-                      {decodeURIComponent(itemLink)}
+                      {formatText(itemLink).length > 50
+                        ? `${formatText(itemLink).substring(0, 50)}...`
+                        : formatText(itemLink)}
                     </Link>
                   </div>
                 </li>

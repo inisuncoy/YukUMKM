@@ -12,6 +12,8 @@ import toast from 'react-hot-toast';
 import TextareaField from '@/components/forms/TextareaField';
 import Cookies from 'js-cookie';
 import { FaWhatsapp } from 'react-icons/fa6';
+import LineChart from '@/components/chart/lineChart';
+import moment from 'moment';
 
 const MAX_FILE_SIZE = 2000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -50,6 +52,11 @@ const formSchema = z.object({
     .optional(),
 });
 
+const formSchemaKeuangan = z.object({
+  // balance: z.number().int({ message: 'Price must be a number' }),
+  dateTime: z.string().datetime({ message: 'Date must be a date time' }),
+});
+
 const ProfileUmkmPage = () => {
   const [name, setName] = useState();
   const [address, setAddress] = useState();
@@ -60,12 +67,22 @@ const ProfileUmkmPage = () => {
   const [facebook, setFacebook] = useState();
   const [instagram, setInstagram] = useState();
 
+  const [financeType, setFinanceType] = useState();
+  const [balance, setBalance] = useState();
+  const [dateTime, setDateTime] = useState();
+  const [year, setYear] = useState(new Date());
+
+  const [income, setIncome] = useState([]);
+  const [expense, setExpense] = useState([]);
+
   const [updatedProfile, setUpdatedProfile] = useState(false);
-  const [alertLogout, setAlertLogout] = useState(false);
+  const [modalLogout, setModalLogout] = useState(false);
+  const [modalFormKeuangan, setModalFormKeuangan] = useState(false);
+  const [modalFormProfile, setModalFormProfile] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [validations, setValidations] = useState([]);
-  const [menuActive, setMenuActive] = useState(false);
+  const [isAction, setIsAction] = useState(false);
 
   const router = useRouter();
 
@@ -148,7 +165,7 @@ const ProfileUmkmPage = () => {
           router.push('/profileUmkm');
           setUpdatedProfile(true);
           setProfileUri(null);
-          setMenuActive(false);
+          setModalFormProfile(false);
         }
         setLoading(false);
       })
@@ -176,7 +193,103 @@ const ProfileUmkmPage = () => {
       });
   };
 
-  const fetchusers = useCallback(async () => {
+  const onSubmit = async (e) => {
+    setValidations([]);
+    setLoading(true);
+    toast.loading('Saving data...');
+    e.preventDefault();
+
+    // const validation = formSchemaKeuangan.safeParse({
+    //   // balance: balance,
+    //   dateTime: dateTime,
+    // });
+
+    // if (!validation.success) {
+    //   validation.error.errors.map((validation) => {
+    //     const key = [
+    //       {
+    //         name: validation.path[0],
+    //         message: validation.message,
+    //       },
+    //     ];
+    //     setValidations((validations) => [...validations, ...key]);
+    //   });
+    //   setLoading(false);
+    //   toast.dismiss();
+    //   toast.error('Invalid Input.');
+
+    //   return;
+    // }
+    let data = {
+      financeType: financeType,
+      balance: balance,
+      datetime: `${moment(dateTime).format('DD-MM-YYYY hh:mm:ss')}`,
+    };
+
+    request
+      .post('/cms/finance', data)
+      .then(function (response) {
+        if (response.data?.code === 200 || response.data?.code === 201) {
+          toast.dismiss();
+          toast.success('Success Add Blog');
+          setModalFormKeuangan(false);
+          setIsAction(true);
+        }
+        setLoading(false);
+        setDateTime('');
+        setBalance('');
+      })
+      .catch(function (error) {
+        if (
+          (error.response?.data?.code === 400 ||
+            error.response?.data?.code === 422) &&
+          error.response?.data.status == 'VALIDATION_ERROR'
+        ) {
+          setValidations(error.response?.data.error?.validation);
+          toast.dismiss();
+          toast.error(error.response?.data.error?.message);
+        } else if (
+          error.response?.data?.code === 404 &&
+          error.response?.data.status == 'NOT_FOUND'
+        ) {
+          toast.dismiss();
+          toast.error(error.response?.data.error?.message);
+        } else if (error.response?.data?.code === 500) {
+          toast.dismiss();
+          toast.error(error.response?.data.error.message);
+        }
+        setLoading(false);
+      });
+  };
+
+  const fetchChart = useCallback(async () => {
+    let payload = {
+      year: `${moment(year).format('YYYY')}`,
+    };
+    await request
+      .get(`/cms/finance/chart`, payload)
+      .then(function (response) {
+        setIncome(response.data.data.data.INCOME.map((item) => item.total));
+        setExpense(response.data.data.data.EXPENSE.map((item) => item.total));
+        setLoading(false);
+      })
+      .catch(function (error) {
+        setLoading(false);
+      });
+  }, [year]);
+
+  useEffect(() => {
+    if (isAction) {
+      fetchChart();
+    }
+    setIsAction(false);
+  }, [fetchChart, isAction]);
+
+  useEffect(() => {
+    fetchChart();
+  }, [fetchChart]);
+
+  const fetchUsers = useCallback(async () => {
     await request
       .get(`/auth/profile`)
       .then(function (response) {
@@ -195,15 +308,15 @@ const ProfileUmkmPage = () => {
   }, []);
 
   useEffect(() => {
-    fetchusers();
-  }, [fetchusers]);
+    fetchUsers();
+  }, [fetchUsers]);
 
   useEffect(() => {
     if (updatedProfile) {
-      fetchusers();
+      fetchUsers();
       setUpdatedProfile(false);
     }
-  }, [fetchusers, updatedProfile]);
+  }, [fetchUsers, updatedProfile]);
   return (
     <>
       <div className="flex flex-col gap-[30px]">
@@ -325,13 +438,13 @@ const ProfileUmkmPage = () => {
                 </div>
 
                 <button
-                  onClick={() => setMenuActive(!menuActive)}
+                  onClick={() => setModalFormProfile(!modalFormProfile)}
                   className="bg-[#6366F1] text-[16px] font-bold text-white py-[10px] w-full  rounded-lg"
                 >
                   Ubah Biodata
                 </button>
                 <button
-                  onClick={() => setAlertLogout(!alertLogout)}
+                  onClick={() => setModalLogout(!modalLogout)}
                   className="bg-[#FF3D00] text-[16px] font-bold text-white py-[10px] w-full  rounded-lg"
                 >
                   Keluar Akun
@@ -339,14 +452,50 @@ const ProfileUmkmPage = () => {
               </div>
             </div>
           </div>
+          <div className="bg-white p-[20px] rounded-lg flex flex-col gap-[21px] mt-[40px]">
+            <div className="flex gap-[27px] lg:flex-row flex-col">
+              <div className="w-full flex flex-col gap-[21px] pr-3">
+                <div className="flex gap-[17px] bg-white rounded-[8px]">
+                  <span className="border-2 rounded-full border-[#FE6D00]"></span>
+                  <h1 className="md:text-[20px] text-[16px] font-semibold items-center flex gap-5">
+                    Laporan Keuangan
+                  </h1>
+                </div>
+                <div className="flex gap-5">
+                  <button
+                    onClick={() => {
+                      setModalFormKeuangan(!modalFormKeuangan);
+                      setFinanceType('INCOME');
+                    }}
+                    className="bg-[#6366F1] text-[16px] font-bold text-white py-[10px] w-full  rounded-lg"
+                  >
+                    Tambah Pendapatan
+                  </button>
+                  <button
+                    onClick={() => {
+                      setModalFormKeuangan(!modalFormKeuangan);
+                      setFinanceType('EXPENSE');
+                    }}
+                    className="bg-[#FF3D00] text-[16px] font-bold text-white py-[10px] w-full  rounded-lg"
+                  >
+                    Tambah Pengeluaran
+                  </button>
+                </div>
+                <LineChart income={income} expense={expense} />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/*   MODAL VIEW */}
+
       <div
         onClick={() => {
-          setMenuActive(!menuActive), setUpdatedProfile(true);
+          setModalFormProfile(!modalFormProfile), setUpdatedProfile(true);
         }}
         className={`fixed w-full h-screen backdrop-blur-sm bg-black/20  top-0 left-0 z-50 flex justify-center items-center ${
-          menuActive ? '' : 'hidden'
+          modalFormProfile ? '' : 'hidden'
         }`}
       >
         <div
@@ -431,12 +580,71 @@ const ProfileUmkmPage = () => {
           </form>
         </div>
       </div>
+
+      <div
+        onClick={() => {
+          setModalFormKeuangan(!modalFormKeuangan);
+          setDateTime('');
+          setBalance('');
+        }}
+        className={`fixed w-full h-screen backdrop-blur-sm bg-black/20  top-0 left-0 z-50 flex justify-center items-center ${
+          modalFormKeuangan ? '' : 'hidden'
+        }`}
+      >
+        <div
+          className="w-[694px] flex flex-col gap-[14px]"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className=" w-full bg-white rounded-lg relative">
+            <div className="px-[22px] py-[18px] flex gap-[17px] bg-white rounded-[8px]">
+              <span className="border-2 rounded-full border-[#FE6D00]"></span>
+              <h1 className="md:text-[20px] text-[16px] font-semibold items-center flex gap-5">
+                {financeType == 'INCOME'
+                  ? 'Penambahan Pendapatan'
+                  : 'Penambahan Pengeluaran'}
+              </h1>
+            </div>
+          </div>
+          <form onSubmit={onSubmit}>
+            <div className=" w-full bg-white rounded-lg relative p-[20px] flex flex-col gap-[43px]">
+              <div className="grid grid-cols-1 gap-[32px]">
+                <InputField
+                  id={'datetime'}
+                  name={'datetime'}
+                  value={dateTime}
+                  label={'Bulan'}
+                  placeholder={'Bulan'}
+                  type={'date'}
+                  onChange={(e) => setDateTime(e.target.value)}
+                  validations={validations}
+                />
+                <InputField
+                  id={'balance'}
+                  name={'balance'}
+                  value={balance}
+                  label={'Jumlah Pemasukan'}
+                  placeholder={'Rp. 10.000'}
+                  type={'number'}
+                  onChange={(e) => {
+                    setBalance(e.target.value);
+                  }}
+                  validations={validations}
+                />
+              </div>
+              <button className="bg-[#4DBB8D] text-[16px] font-bold text-white py-[10px] w-full rounded-lg">
+                Konfirmasil
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
       <div
         className={`fixed w-full h-full overflow-y-scroll backdrop-blur-sm bg-black/20  top-0 left-0 z-50 flex justify-center  ${
-          alertLogout ? '' : 'hidden'
+          modalLogout ? '' : 'hidden'
         }`}
         onClick={() => {
-          setAlertLogout(!alertLogout);
+          setModalLogout(!modalLogout);
         }}
       >
         <div
