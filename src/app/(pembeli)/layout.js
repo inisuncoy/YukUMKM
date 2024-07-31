@@ -72,8 +72,8 @@ const PembeliLayout = ({ children }) => {
                 fill="white"
               />
               <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
+                fillRule="evenodd"
+                clipRule="evenodd"
                 d="M33.9528 0.549467L37.8709 4.46758C38.1114 4.70801 38.1114 5.09783 37.8709 5.33827L33.9528 9.25638C33.7124 9.49681 33.3226 9.49681 33.0821 9.25638C32.8417 9.01594 32.8417 8.62612 33.0821 8.38569L35.9492 5.51859H29.8013V4.28725H35.9492L33.0821 1.42016C32.8417 1.17972 32.8417 0.789901 33.0821 0.549467C33.3226 0.309032 33.7124 0.309032 33.9528 0.549467Z"
                 fill="#FE6D00"
               />
@@ -94,9 +94,9 @@ const PembeliLayout = ({ children }) => {
             >
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="M1 1h15M1 7h15M1 13h15"
               />
             </svg>

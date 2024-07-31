@@ -319,21 +319,22 @@ const DetailTokoPage = ({ params }) => {
               </h1>
             </div>
             <div className="h-[15px]" />
-            <div className="grid  xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 xl:gap-[16px] lg:gap-[8px] md:gap-12 gap-8  px-4 pb-4">
+            <div className="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 xl:gap-4 lg:gap-[8px] md:gap-12 gap-8 px-4 pb-4">
               {productSallerDatas &&
                 productSallerDatas.map((data, i) => (
-                  <div
-                    key={i}
-                    className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg"
-                  >
+                  // <div
+                  //   key={i}
+                  //   // className="w-full bg-red-400 flex justify-center rounded-lg"
+                  // >
+                  // </div>
                     <CardProduct
+                    key={i}
                       name={data.name}
                       thumbnail={data.image_uri}
                       price={data.price}
                       saller={data.user.name}
                       href={`${decodeURIComponent(detailToko)}/${data.slug}`}
                     />
-                  </div>
                 ))}
             </div>
           </div>
@@ -389,7 +390,7 @@ const DetailTokoPage = ({ params }) => {
                   <div className="flex gap-5 items-center">
                     <div className="max-w-sm mx-auto">
                       <label
-                        for="number-input"
+                        htmlFor="number-input"
                         className="block w-full pb-2 text-xs font-medium"
                       >
                         MIN
@@ -408,7 +409,7 @@ const DetailTokoPage = ({ params }) => {
                     <h1 className="block text-xs font-medium">To</h1>
                     <div className="max-w-sm mx-auto">
                       <label
-                        for="number-input"
+                        htmlFor="number-input"
                         className="block w-full pb-2 text-xs font-medium"
                       >
                         Max

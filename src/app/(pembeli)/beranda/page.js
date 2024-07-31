@@ -12,56 +12,45 @@ import CardProduct from '@/components/card/CardProduct';
 import SwiperProduk from '@/components/swiper/SwiperProduk';
 
 export default function HomePage() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [productSallerDatas, setProductSallerDatas] = useState([]);
   const [sallerDatas, setSallerDatas] = useState();
 
-  // const fetchProductSaller = useCallback(async () => {
-  //   await request
-  //     .get(`/public/item`)
-  //     .then(function (response) {
-  //       setProductSallerDatas(response.data.data);
-  //       setLoading(false);
-  //     })
-  //     .catch(function (error) {
-  //       setLoading(false);
-  //     });
-  // }, []);
-
-  // useEffect(() => {
-  //   fetchProductSaller();
-  // }, [fetchProductSaller]);
-
   const fetchProductSaller = useCallback(async () => {
+    setLoading(true);
     try {
       const response = await request.get(`/public/item`);
       setProductSallerDatas(response.data.data);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error('Error fetching product saller data:', error);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => {
-    fetchProductSaller();
-  }, [fetchProductSaller]);
-
   const fetchSaller = useCallback(async () => {
-    await request
-      .get(`/public/seller`)
-      .then(function (response) {
-        setSallerDatas(response.data.data);
-        setLoading(false);
-      })
-      .catch(function (error) {
-        setLoading(false);
-      });
+    setLoading(true);
+    try {
+      const response = await request.get(`/public/seller`)
+      setSallerDatas(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error('Error fetching saller data:', error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
-    fetchSaller();
-  }, [fetchSaller]);
+    Promise.all([
+      fetchSaller(), 
+      fetchProductSaller()
+    ]);
+  }, [fetchSaller, fetchProductSaller]);
+
   return (
     <div className=" w-full h-screen">
       <div className="absolute top-0 bottom-0 right-0 left-0 mx-auto -z-10  max-w-[1090px] h-[390px] mt-[94px] md:mt-[78px] inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_bottom,_black_0%,_black_calc(100%-300px),_transparent_100%)]">
@@ -70,6 +59,7 @@ export default function HomePage() {
           height={0}
           alt="hero"
           src={hero}
+          loading='lazy'
           className="w-full object-cover object-bottom lg:rounded-lg"
         />
       </div>
@@ -106,11 +96,13 @@ export default function HomePage() {
                     className="relative w-full flex md:flex-row items-end"
                   >
                     <div className="w-[218px] h-[269px]  ">
-                      <img
+                      <Image
+                        loading='lazy'
                         width={0}
                         height={0}
                         alt="product-bg"
-                        src={process.env.NEXT_PUBLIC_HOST + saller.profile_uri}
+                        sizes='100vw'
+                        src={(saller.profile_uri) ? (process.env.NEXT_PUBLIC_HOST + saller.profile_uri) : "/assets/logo/logoUMKM.png"}
                         className="w-full h-full object-cover object-bottom rounded-lg"
                       />
                     </div>
