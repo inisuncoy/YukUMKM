@@ -7,13 +7,13 @@ import { MdLocationOn } from 'react-icons/md';
 import { FaRegStar, FaStar } from 'react-icons/fa';
 
 import LogoUMKM from '../../../../../public/assets/icon/store.jpeg';
-import CardProduct from '@/components/card/CardProduct';
 import NextBreadcrumb from '@/components/NextBreadcrumb';
 //import { usePathname } from 'next/navigation';
 import request from '@/utils/request';
 import InputField from '@/components/forms/InputField';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
+import CardProductV2 from '@/components/card/CardProductV2';
 
 //export async function generateStaticParams() {
 //  return [{ detailToko: 'Sayur Mayur' }];
@@ -322,19 +322,14 @@ const DetailTokoPage = ({ params }) => {
             <div className="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 xl:gap-4 lg:gap-[8px] md:gap-12 gap-8 px-4 pb-4">
               {productSallerDatas &&
                 productSallerDatas.map((data, i) => (
-                  // <div
-                  //   key={i}
-                  //   // className="w-full bg-red-400 flex justify-center rounded-lg"
-                  // >
-                  // </div>
-                    <CardProduct
+                  <CardProductV2
                     key={i}
-                      name={data.name}
-                      thumbnail={data.image_uri}
-                      price={data.price}
-                      saller={data.user.name}
-                      href={`${decodeURIComponent(detailToko)}/${data.slug}`}
-                    />
+                    name={data.name}
+                    thumbnail={data.image_uri}
+                    price={data.price}
+                    seller={data.user.name}
+                    href={`${decodeURIComponent(detailToko)}/${data.slug}`}
+                  />
                 ))}
             </div>
           </div>

@@ -9,6 +9,10 @@ body {
   padding: 0;
 }
 
+h1{
+  @apply font-bold 
+}
+
 body {
   background: linear-gradient(
     rgba(246, 212, 200, 1) 0%,

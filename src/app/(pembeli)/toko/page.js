@@ -1,6 +1,6 @@
 'use client';
 import NextBreadcrumb from '@/components/NextBreadcrumb';
-import CardToko from '@/components/card/CardToko';
+import CardTokoV2 from '@/components/card/CardTokoV2';
 import request from '@/utils/request';
 import React, { useCallback, useEffect, useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
@@ -66,7 +66,7 @@ const TokoPage = () => {
           ) : (
             sallerDatas &&
             sallerDatas.map((data, i) => (
-              <CardToko
+              <CardTokoV2
                 key={i}
                 href={`/toko/${data.slug}`}
                 logo={data.profile_uri}

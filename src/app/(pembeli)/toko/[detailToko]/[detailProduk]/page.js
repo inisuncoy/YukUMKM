@@ -8,25 +8,22 @@ import preview from '../../../../../../public/assets/img/product/product1.png';
 import instagram from '../../../../../../public/assets/icon/instagram.png';
 import whatsapp from '../../../../../../public/assets/icon/whatshapp.png';
 import facebook from '../../../../../../public/assets/icon/facebook.png';
-import { GoDotFill } from 'react-icons/go';
-import CardProduct from '@/components/card/CardProduct';
 import request from '@/utils/request';
 import { NumberFormat } from '@/utils/numberFormat';
-import { redirect } from 'next/dist/server/api-utils';
 import { useRouter } from 'next/navigation';
-// export async function generateStaticParams() {
-//   return [{ detailToko: 'Sayur Mayur', detailProduk: 'Kacang Panjang' }];
-// }
+import CardProductV2 from '@/components/card/CardProductV2';
+
+
 
 const DetailProdukPage = ({ params }) => {
   const router = useRouter()
 
   const { detailToko, detailProduk } = params;
   const [productSellerById, setProductSellerById] = useState();
-  const [productSallerDatas, setProductSallerDatas] = useState();
-  const [idSeller, setIdSeller] = useState();
+  const [productSellerDatas, setProductSellerDatas] = useState();
   const [loading, setLoading] = useState(false);
-  const fetchProductSallerById = useCallback(async () => {
+
+  const fetchProductSellerById = useCallback(async () => {
     setLoading(true);
     try {
       const response = await request.get(`/public/item?slug=${detailProduk}`)
@@ -41,11 +38,11 @@ const DetailProdukPage = ({ params }) => {
     }
   }, [detailProduk, router]);
 
-  const fetchProductSaller = useCallback(async () => {
+  const fetchProductSeller = useCallback(async () => {
     setLoading(true);
     try {
       const response = await request.get(`/public/item`)
-      setProductSallerDatas(response.data.data);
+      setProductSellerDatas(response.data.data);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching product saller data:', error);
@@ -56,8 +53,8 @@ const DetailProdukPage = ({ params }) => {
   }, []);
 
   useEffect(() => {
-    Promise.all([fetchProductSaller(), fetchProductSallerById()]);
-  }, [fetchProductSaller, fetchProductSallerById]);
+    Promise.all([fetchProductSeller(), fetchProductSellerById()]);
+  }, [fetchProductSeller, fetchProductSellerById]);
 
   return (
     <div className="flex flex-col gap-[19px]">
@@ -97,41 +94,35 @@ const DetailProdukPage = ({ params }) => {
         <div className="h-[52px]"></div>
         {productSellerById && (
           <div
-            className="flex lg:flex-row flex-col gap-[24px] items-center bg-white  rounded-lg "
+            className="flex lg:flex-row flex-col items-center bg-white rounded-lg mx-3 gap-y-6 gap-x-12"
           >
             <div className="flex flex-col gap-[25px] lg:max-w-[210px] w-full items-center ">
-              <img
+              <Image
                 width={0}
                 height={0}
-                alt=""
-                src={process.env.NEXT_PUBLIC_HOST + productSellerById.image_uri}
-                className="lg:max-w-[210px] lg:max-h-[210px] w-full object-cover"
+                sizes='100vw'
+                loading='lazy'
+                alt="main-product-img"
+                src={productSellerById.image_uri ? (process.env.NEXT_PUBLIC_HOST + productSellerById.image_uri) : "/assets/img/product/product1.png"}
+                className="lg:max-w-[220px] lg:max-h-[220px] w-full object-cover rounded-lg"
               />
               <div className="flex justify-between w-full lg:gap-0 md:gap-[54px]">
-                <Image
-                  width={0}
-                  height={0}
-                  alt=""
-                  src={preview}
-                  className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
-                />
-                <Image
-                  width={0}
-                  height={0}
-                  alt=""
-                  src={preview}
-                  className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
-                />
-                <Image
-                  width={0}
-                  height={0}
-                  alt=""
-                  src={preview}
-                  className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
-                />
+                {productSellerById && productSellerById.item_image && (
+                  productSellerById?.item_image.map((data, i) => (
+                    <Image
+                      key={i}
+                      width={0}
+                      height={0}
+                      sizes='100vw'
+                      alt="detail-product-img"
+                      src={data.uri ? (process.env.NEXT_PUBLIC_HOST + data.uri) : "/assets/img/product/product1.png"}
+                      className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover rounded-lg"
+                    />
+                  ))
+                )}
               </div>
             </div>
-            <div className="h-full w-full flex flex-col  lg:pl-[58px] md:pl-[20px] pl-[12px] md:pr-[12px] md:gap-[14px] gap-[16px] leading-normal">
+            <div className="h-full w-full flex flex-col  md:gap-[14px] gap-[16px] leading-normal">
               <div className="grow">
                 <div>
                   <h1 className="text-[24px] font-semibold">{productSellerById.name}</h1>
@@ -147,7 +138,7 @@ const DetailProdukPage = ({ params }) => {
                     {productSellerById.description}
                   </p>
                 </div>
-                <div className="text-[14px] font-bold text-[#FE6D00]">
+                <div className="text-[14px] font-bold text-[#FE6D00] mt-[3px]">
                   Lihat selengkapnya
                 </div>
               </div>
@@ -205,23 +196,19 @@ const DetailProdukPage = ({ params }) => {
             Produk Lainnya
           </h1>
         </div>
-        <div className="h-[15px]" />
+        <div className="h-[24px] md:h-[36px] xl:h-[48px]" />
 
-        <div className="grid  xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 xl:gap-x-[16px] xl:gap-y-[46px] lg:gap-x-[30px] lg:gap-y-[46px] md:gap-12 gap-8  lg:px-[62px] pb-4">
-          {productSallerDatas &&
-            productSallerDatas.map((data, i) => (
-              <div
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-5 gap-y-10 md:pl-12 xl:pl-24 pr-4">
+          {productSellerDatas &&
+            productSellerDatas.map((data, i) => (
+              <CardProductV2
                 key={i}
-                className="m-auto bg-[#faeced] w-full flex justify-center rounded-lg"
-              >
-                <CardProduct
-                  name={data.name}
-                  thumbnail={data.image_uri}
-                  price={data.price}
-                  saller={data.user.name}
-                  href={`/toko/${decodeURIComponent(detailToko)}/${data.name}`}
-                />
-              </div>
+                name={data.name}
+                thumbnail={data.image_uri}
+                price={data.price}
+                seller={data.user.name}
+                href={`/toko/${decodeURIComponent(detailToko)}/${data.name}`}
+              />
             ))}
         </div>
       </div>
