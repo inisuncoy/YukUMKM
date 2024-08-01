@@ -11,6 +11,7 @@ import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import CardProduct from '../card/CardProduct';
 import { IoIosArrowForward } from 'react-icons/io';
+import CardProductV2 from '../card/CardProductV2';
 
 export default function SwiperProduk({ datas }) {
   const iconArrow = (
@@ -78,8 +79,8 @@ export default function SwiperProduk({ datas }) {
               </SwiperSlide>
             ))} */}
           {datas.map((data, i) => (
-            <SwiperSlide key={i} className="bg-[#faeced] px-[12px] rounded-lg">
-              <CardProduct
+            <SwiperSlide key={i} className="">
+              <CardProductV2
                 name={data.name}
                 thumbnail={data.image_uri}
                 price={data.price}
