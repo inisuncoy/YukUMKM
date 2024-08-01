@@ -21,7 +21,6 @@ const ChatPage = () => {
   const [hasToken, setHasToken] = useState(false);
   const [partnerDatas, setPartnerDatas] = useState([]);
   const [listMassage, setListMassage] = useState([]);
-  const [selectedPartnerId, setSelectedPartnerId] = useState(null);
 
   const router = useRouter();
 
@@ -44,29 +43,19 @@ const ChatPage = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (selectedPartnerId) {
-      socket.emit('join room', {
-        partnerId: selectedPartnerId,
-      });
-
-      const previousMessagesHandler = (response) => {
-        setListMassage(response);
-      };
-
-      socket.on('previous messages', previousMessagesHandler);
-
-      return () => {
-        socket.off('previous messages', previousMessagesHandler);
-      };
-    }
-  }, [selectedPartnerId]);
-
   const handlePartner = (partnerId) => {
-    setSelectedPartnerId(partnerId);
+    socket.emit('join room', {
+      partnerId: partnerId,
+    });
+    socket.emit('exit room', {
+      partnerId: partnerId,
+    });
+
+    socket.on('previous messages', (response) => {
+      setListMassage(response);
+    });
   };
 
-  console.log('Id partner : ', selectedPartnerId);
   console.log('partner : ', partnerDatas);
   console.log('massage : ', listMassage);
 
