@@ -10,6 +10,7 @@ import hero from '../../../../public/assets/img/hero/image.png';
 import Link from 'next/link';
 import CardProduct from '@/components/card/CardProduct';
 import SwiperProduk from '@/components/swiper/SwiperProduk';
+import CardProductV2 from '@/components/card/CardProductV2';
 
 export default function HomePage() {
   const [loading, setLoading] = useState(false);
@@ -95,42 +96,43 @@ export default function HomePage() {
                     key={i}
                     className="relative w-full flex md:flex-row items-end"
                   >
-                    <div className="w-[218px] h-[269px]  ">
+                    <div className="w-[218px] h-[269px] absolute">
                       <Image
                         loading='lazy'
                         width={0}
                         height={0}
                         alt="product-bg"
                         sizes='100vw'
-                        src={(saller.profile_uri) ? (process.env.NEXT_PUBLIC_HOST + saller.profile_uri) : "/assets/logo/logoUMKM.png"}
+                        // src={(saller.profile_uri) ? (process.env.NEXT_PUBLIC_HOST + saller.profile_uri) : "/assets/logo/logoUMKM.png"}
+                        src={"/assets/logo/logoUMKM.png"}
                         className="w-full h-full object-cover object-bottom rounded-lg"
                       />
                     </div>
-                    <div className="absolute  right-0 flex flex-col gap-[11px]">
-                      <div className="flex justify-end gap-[16px] ">
+                    <div className="flex gap-4 z-10 w-full justify-end">
+                      {/* <div> */}
                         {productSallerDatas
                           .filter((product) => saller.id === product.user_id)
                           .slice(0, 2)
                           .map(
                             (product, x) =>
                               saller.id === product.user_id && (
-                                <CardProduct
+                                <CardProductV2
                                   key={x}
                                   name={product.name}
                                   thumbnail={product.image_uri}
                                   price={product.price}
-                                  saller={product.user.name}
+                                  seller={product.user.name}
                                   href={`/toko/${product.user.name}/${product.name}`}
                                 />
                               )
                           )}
-                      </div>
-                      <Link
+                      {/* </div> */}
+                      {/* <Link
                         href={'#'}
                         className="flex justify-end text-[#FE6D00] text-[13px] font-bold underline"
                       >
                         Lihat toko
-                      </Link>
+                      </Link> */}
                     </div>
                   </div>
                 ))}
@@ -150,7 +152,7 @@ export default function HomePage() {
               </Link>
             </h1>
           </div>
-          <div className="px-[20px]  pb-[32px] flex">
+          <div className="px-[20px] pb-[32px] flex">
             {<SwiperProduk datas={productSallerDatas} />}
           </div>
         </div>
