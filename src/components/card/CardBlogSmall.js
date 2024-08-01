@@ -40,18 +40,18 @@ const CardBlogSmall = ({ src, name, title, date, content, href }) => {
     //     </p>
     //   </div>
     // </Link>
-    <Link href={href} class="w-full h-full ">
-      <div class="flex gap-3 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100  overflow-hidden items-center justify-start">
-        <div class="relative lg:w-[301px] lg:h-[144px] md:w-[200px] md:h-[200px] w-[120px] h-[120px] flex-shrink-0">
+    <Link href={href} className="w-full h-full ">
+      <div className="flex gap-3 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100  overflow-hidden items-center justify-start">
+        <div className="relative lg:w-[301px] lg:h-[144px] md:w-[200px] md:h-[200px] w-[120px] h-[120px] flex-shrink-0">
           <img
             alt=""
-            class="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
+            className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
             loading="lazy"
             src={process.env.NEXT_PUBLIC_HOST + src}
           />
         </div>
 
-        <div class="flex flex-col gap-2 py-2">
+        <div className="flex flex-col gap-2 py-2">
           <div>
             <h1 className="font-semibold xl:text-[16px] lg:text-[15px] md:text-[14px] text-[12px]">
               {title}

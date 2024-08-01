@@ -1,9 +1,15 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
-import Link from 'next/link';
+// import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
 import { IoTrashOutline } from 'react-icons/io5';
 import { RiSendPlaneLine } from 'react-icons/ri';
+
+import { io } from 'socket.io-client';
+const socket = io(
+  'https://api.yukumkm.my.id?userId=c6875c63-6738-4bf7-a4d6-0ac95482c5ab'
+);
 
 import icontoko from '../../../../public/assets/icon/icon-toko.png';
 import Image from 'next/image';
@@ -13,6 +19,9 @@ import Cookies from 'js-cookie';
 const ChatPage = () => {
   const [isClient, setIsClient] = useState(false);
   const [hasToken, setHasToken] = useState(false);
+  const [partnerDatas, setPartnerDatas] = useState([]);
+  const [listMassage, setListMassage] = useState([]);
+  const [selectedPartnerId, setSelectedPartnerId] = useState(null);
 
   const router = useRouter();
 
@@ -22,6 +31,45 @@ const ChatPage = () => {
     const token = Cookies.get('token');
     setHasToken(!!token);
   }, []);
+
+  useEffect(() => {
+    socket.on('chat partners', (response) => {
+      setPartnerDatas(response);
+    });
+    socket.emit('chat partners');
+
+    return () => {
+      socket.off('chat partners');
+      socket.off('previous messages');
+    };
+  }, []);
+
+  useEffect(() => {
+    if (selectedPartnerId) {
+      socket.emit('join room', {
+        partnerId: selectedPartnerId,
+      });
+
+      const previousMessagesHandler = (response) => {
+        setListMassage(response);
+      };
+
+      socket.on('previous messages', previousMessagesHandler);
+
+      return () => {
+        socket.off('previous messages', previousMessagesHandler);
+      };
+    }
+  }, [selectedPartnerId]);
+
+  const handlePartner = (partnerId) => {
+    setSelectedPartnerId(partnerId);
+  };
+
+  console.log('Id partner : ', selectedPartnerId);
+  console.log('partner : ', partnerDatas);
+  console.log('massage : ', listMassage);
+
   return (
     <div className="grid grid-cols-3 gap-[29px]  ">
       <div className=" h-full w-full flex flex-col gap-[29px]">
@@ -45,78 +93,50 @@ const ChatPage = () => {
         <div className="bg-white rounded-[8px] py-[26px]  h-[62vh]">
           <div className="flow-root">
             <ul role="list" className="divide-y divide-gray-200 ">
-              <li className="py-3 sm:py-4 px-3 sm:px-3 bg-[#FFECD1]">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <Image
-                      width={0}
-                      height={0}
-                      className="w-8 h-8 rounded-full"
-                      src={icontoko}
-                      alt="Michael image"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0 ms-4">
-                    <p className="text-sm font-medium text-gray-900 truncate ">
-                      Michael Gough
-                    </p>
-                    <p className="text-sm text-gray-500 truncate ">
-                      Gas dibeli kuy! ini sangat limited ba..{' '}
-                    </p>
-                  </div>
-                  <div className="ml-[10px] w-[30px] h-[30px] rounded-full border-2 border-[#FE6D00] flex justify-center items-center text-[#FE6D00]">
-                    <p>1</p>
-                  </div>
-                </div>
-              </li>
-              <li className="py-3 sm:py-4 px-3 sm:px-3">
-                <div className="flex items-center ">
-                  <div className="flex-shrink-0">
-                    <Image
-                      width={0}
-                      height={0}
-                      className="w-8 h-8 rounded-full"
-                      src={icontoko}
-                      alt="Lana image"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0 ms-4">
-                    <p className="text-sm font-medium text-gray-900 truncate ">
-                      Lana Byrd
-                    </p>
-                    <p className="text-sm text-gray-500 truncate ">
-                      Gas dibeli kuy! ini sangat limited ba..
-                    </p>
-                  </div>
-                  <div className="ml-[10px] w-[30px] h-[30px] rounded-full border-2 border-[#FE6D00] flex justify-center items-center text-[#FE6D00]">
-                    <p>3</p>
-                  </div>
-                </div>
-              </li>
-              <li className="pt-3 pb-0 sm:pt-4 px-3 sm:px-3">
-                <div className="flex items-center ">
-                  <div className="flex-shrink-0">
-                    <Image
-                      width={0}
-                      height={0}
-                      className="w-8 h-8 rounded-full"
-                      src={icontoko}
-                      alt="Thomas image"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0 ms-4">
-                    <p className="text-sm font-medium text-gray-900 truncate da">
-                      Thomes Lean
-                    </p>
-                    <p className="text-sm text-gray-500 truncate ">
-                      Gas dibeli kuy! ini sangat limited ba..
-                    </p>
-                  </div>
-                  <div className="ml-[10px] w-[30px] h-[30px] rounded-full border-2 border-[#FE6D00] flex justify-center items-center text-[#FE6D00]">
-                    <p>8</p>
-                  </div>
-                </div>
-              </li>
+              {partnerDatas &&
+                partnerDatas.map((data, i) => (
+                  <li
+                    key={i}
+                    className="py-3 sm:py-4 px-3 sm:px-3 cursor-pointer bg-red-500"
+                    onClick={() => handlePartner(data.receiver.id)}
+                  >
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        {data.receiver.profile_uri ? (
+                          <img
+                            width={0}
+                            height={0}
+                            className="w-8 h-8 rounded-full"
+                            src={
+                              process.env.NEXT_PUBLIC_HOST +
+                              data.receiver.profile_uri
+                            }
+                            alt="Michael image"
+                          />
+                        ) : (
+                          <Image
+                            width={0}
+                            height={0}
+                            className="w-8 h-8 rounded-full"
+                            src={icontoko}
+                            alt="Michael image"
+                          />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0 ms-4">
+                        <p className="text-sm font-medium text-gray-900 truncate ">
+                          {data.receiver.name}
+                        </p>
+                        <p className="text-sm text-gray-500 truncate ">
+                          {data.message}
+                        </p>
+                      </div>
+                      <div className="ml-[10px] w-[30px] h-[30px] rounded-full border-2 border-[#FE6D00] flex justify-center items-center text-[#FE6D00]">
+                        <p>1</p>
+                      </div>
+                    </div>
+                  </li>
+                ))}
             </ul>
           </div>
         </div>
@@ -141,150 +161,16 @@ const ChatPage = () => {
         </div>
         <div className="h-[64vh] px-[16px] pt-[12px] overflow-y-auto no-scrollbar">
           <div className="w-full">
-            <p className="text-center">20 apr 2024</p>
             <div className="flex w-full flex-col gap-4 mt-2">
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 md:max-w-[60%] ">
+              <div className="mr-auto rounded-r-xl rounded-tl-xl border border-[#C1BDBD] flex max-w-[80%] flex-col gap-2 p-4 md:max-w-[60%] ">
                 <div className="text-sm text-slate-700 ">
                   Hi there! How can I assist you today?
                 </div>
               </div>
 
-              <div className="ml-auto flex max-w-[80%] flex-col gap-2 rounded-l-xl rounded-tr-xl bg-slate-100 p-4 text-sm text-slate-700 md:max-w-[60%] ">
+              <div className="ml-auto bg-slate-100 rounded-l-xl rounded-tr-xl text-slate-700 flex max-w-[80%] flex-col gap-2 p-4 text-sm  md:max-w-[60%] ">
                 I accidentally deleted some important files. Can they be
                 recovered?
-              </div>
-
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 text-slate-700 md:max-w-[60%] ">
-                <div className="text-sm">
-                  Im sorry to hear that. Let me guide you through the process to
-                  resolve it. Could you please provide your username?
-                </div>
-              </div>
-
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 md:max-w-[60%] ">
-                <div className="text-sm text-slate-700 ">
-                  Hi there! How can I assist you today?
-                </div>
-              </div>
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 md:max-w-[60%] ">
-                <div className="text-sm text-slate-700 ">
-                  Hi there! How can I assist you today?
-                </div>
-              </div>
-
-              <div className="ml-auto flex max-w-[80%] flex-col gap-2 rounded-l-xl rounded-tr-xl bg-slate-100 p-4 text-sm text-slate-700 md:max-w-[60%] ">
-                I accidentally deleted some important files. Can they be
-                recovered?
-              </div>
-
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 text-slate-700 md:max-w-[60%] ">
-                <div className="text-sm">
-                  Im sorry to hear that. Let me guide you through the process to
-                  resolve it. Could you please provide your username?
-                </div>
-              </div>
-
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 md:max-w-[60%] ">
-                <div className="text-sm text-slate-700 ">
-                  Hi there! How can I assist you today?
-                </div>
-              </div>
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 md:max-w-[60%] ">
-                <div className="text-sm text-slate-700 ">
-                  Hi there! How can I assist you today?
-                </div>
-              </div>
-
-              <div className="ml-auto flex max-w-[80%] flex-col gap-2 rounded-l-xl rounded-tr-xl bg-slate-100 p-4 text-sm text-slate-700 md:max-w-[60%] ">
-                I accidentally deleted some important files. Can they be
-                recovered?
-              </div>
-
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 text-slate-700 md:max-w-[60%] ">
-                <div className="text-sm">
-                  Im sorry to hear that. Let me guide you through the process to
-                  resolve it. Could you please provide your username?
-                </div>
-              </div>
-
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 md:max-w-[60%] ">
-                <div className="text-sm text-slate-700 ">
-                  Hi there! How can I assist you today?
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="w-full mt-[16px]">
-            <p className="text-center">20 apr 2024</p>
-            <div className="flex w-full flex-col gap-4 mt-2">
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 md:max-w-[60%] ">
-                <div className="text-sm text-slate-700 ">
-                  Hi there! How can I assist you today?
-                </div>
-              </div>
-
-              <div className="ml-auto flex max-w-[80%] flex-col gap-2 rounded-l-xl rounded-tr-xl bg-slate-100 p-4 text-sm text-slate-700 md:max-w-[60%] ">
-                I accidentally deleted some important files. Can they be
-                recovered?
-              </div>
-
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 text-slate-700 md:max-w-[60%] ">
-                <div className="text-sm">
-                  Im sorry to hear that. Let me guide you through the process to
-                  resolve it. Could you please provide your username?
-                </div>
-              </div>
-
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 md:max-w-[60%] ">
-                <div className="text-sm text-slate-700 ">
-                  Hi there! How can I assist you today?
-                </div>
-              </div>
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 md:max-w-[60%] ">
-                <div className="text-sm text-slate-700 ">
-                  Hi there! How can I assist you today?
-                </div>
-              </div>
-
-              <div className="ml-auto flex max-w-[80%] flex-col gap-2 rounded-l-xl rounded-tr-xl bg-slate-100 p-4 text-sm text-slate-700 md:max-w-[60%] ">
-                I accidentally deleted some important files. Can they be
-                recovered?
-              </div>
-
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 text-slate-700 md:max-w-[60%] ">
-                <div className="text-sm">
-                  Im sorry to hear that. Let me guide you through the process to
-                  resolve it. Could you please provide your username?
-                </div>
-              </div>
-
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 md:max-w-[60%] ">
-                <div className="text-sm text-slate-700 ">
-                  Hi there! How can I assist you today?
-                </div>
-              </div>
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 md:max-w-[60%] ">
-                <div className="text-sm text-slate-700 ">
-                  Hi there! How can I assist you today?
-                </div>
-              </div>
-
-              <div className="ml-auto flex max-w-[80%] flex-col gap-2 rounded-l-xl rounded-tr-xl bg-slate-100 p-4 text-sm text-slate-700 md:max-w-[60%] ">
-                I accidentally deleted some important files. Can they be
-                recovered?
-              </div>
-
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 text-slate-700 md:max-w-[60%] ">
-                <div className="text-sm">
-                  Im sorry to hear that. Let me guide you through the process to
-                  resolve it. Could you please provide your username?
-                </div>
-              </div>
-
-              <div className="mr-auto flex max-w-[80%] flex-col gap-2 rounded-r-xl rounded-tl-xl border border-[#C1BDBD] p-4 md:max-w-[60%] ">
-                <div className="text-sm text-slate-700 ">
-                  Hi there! How can I assist you today?
-                </div>
               </div>
             </div>
           </div>

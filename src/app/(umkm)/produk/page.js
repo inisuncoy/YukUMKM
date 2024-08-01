@@ -228,6 +228,7 @@ const ProdukPage = () => {
           toast.dismiss();
           toast.error(error.response?.data.error?.message);
           setImages([]);
+          setThumbnail('');
         } else if (
           error.response?.data?.code === 404 &&
           error.response?.data.status == 'NOT_FOUND'
@@ -547,22 +548,21 @@ const ProdukPage = () => {
           setMenuActive(!menuActive);
           setName('');
           setCategory('');
-          setStatus();
-          setPrice(0);
+          setStatus('');
+          setPrice('');
           setDescription('');
           setImgLength(5);
           setImages([]);
           setItemImages([]);
           setThumbnail('');
           setThumbnailUri('');
-          router.push('/produk');
         }}
-        className={`fixed w-full h-full overflow-y-scroll backdrop-blur-sm bg-black/20  top-0 left-0 z-50 flex justify-center  ${
+        className={`fixed w-full h-full overflow-y-scroll backdrop-blur-sm bg-black/20  top-0 left-0 z-[70] flex justify-center  ${
           menuActive ? '' : 'hidden'
         }`}
       >
         <div
-          className="w-[694px] flex flex-col gap-[14px]"
+          className="w-[694px] flex flex-col justify-center  gap-[14px]"
           onClick={(e) => e.stopPropagation()}
         >
           <div className=" w-full bg-white rounded-lg relative">
@@ -574,7 +574,10 @@ const ProdukPage = () => {
             </div>
           </div>
           <form onSubmit={id ? onUpdate : onSubmit}>
-            <div className=" w-full bg-white rounded-lg relative p-[20px] flex flex-col gap-[43px]">
+            <div
+              className="w-full bg-white rounded-lg relative p-[20px] flex flex-col gap-[43px] overflow-auto"
+              style={{ maxHeight: '80vh' }}
+            >
               <div className="grid grid-cols-1 gap-[32px]">
                 <InputField
                   id={'name'}

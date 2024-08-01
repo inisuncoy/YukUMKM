@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
       <head></head>
 
       <body className={`${poppins.variable} ${poppins.className}`}>
-        <div class="loader">
+        <div className="loader">
           <div></div>
         </div>
         <Toaster position="top-center" />

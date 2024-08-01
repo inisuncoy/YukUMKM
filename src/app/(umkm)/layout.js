@@ -23,6 +23,12 @@ const UmkmLayout = ({ children }) => {
     setHasToken(!!token);
   }, []);
 
+  useEffect(() => {
+    // Set active and navBtn to false when pathname changes
+    setActive(false);
+    setNavBtn(false);
+  }, [pathname]);
+
   return (
     <div className="w-full">
       <nav className="bg-[#1D1D1D] border-gray-200 fixed w-full top-0 z-[60] ">

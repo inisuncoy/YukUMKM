@@ -231,7 +231,13 @@ const ProfileUmkmPage = () => {
       .then(function (response) {
         if (response.data?.code === 200 || response.data?.code === 201) {
           toast.dismiss();
-          toast.success('Success Add Blog');
+          toast.success(
+            `${
+              financeType == 'INCOME'
+                ? 'Success Menambah Pendapatan'
+                : 'Success Menambah Pengeluaran'
+            }`
+          );
           setModalFormKeuangan(false);
           setIsAction(true);
         }
@@ -409,19 +415,19 @@ const ProfileUmkmPage = () => {
                 <div>
                   <h1 className="text-[13px] font-bold">Alamat Toko</h1>
                   <p className="text-[13px] font-normal">
-                    {address ?? 'Wajib ditulis'}
+                    {address ? address : 'Wajib ditulis'}
                   </p>
                 </div>
                 <div>
                   <h1 className="text-[13px] font-bold">WhatsApp</h1>
                   <p className="text-[13px] font-normal">
-                    {whatsapp ?? 'Wajib ditulis'}
+                    {whatsapp ? whatsapp : 'Wajib ditulis'}
                   </p>
                 </div>
                 <div>
                   <h1 className="text-[13px] font-bold">Facebook</h1>
                   <p className="text-[13px] font-normal">
-                    {facebook ?? 'Wajib ditulis'}
+                    {facebook ? facebook : 'Wajib ditulis'}
                   </p>
                 </div>
                 <div>
@@ -433,7 +439,7 @@ const ProfileUmkmPage = () => {
                 <div>
                   <h1 className="text-[13px] font-bold">Keterangan Toko</h1>
                   <p className="text-[13px] font-normal">
-                    {description ?? 'Wajib ditulis'}
+                    {description ? description : 'Wajib ditulis'}
                   </p>
                 </div>
 
@@ -492,9 +498,16 @@ const ProfileUmkmPage = () => {
 
       <div
         onClick={() => {
-          setModalFormProfile(!modalFormProfile), setUpdatedProfile(true);
+          setModalFormProfile(!modalFormProfile);
+          setUpdatedProfile(true);
+          setName('');
+          setAddress('');
+          setWhatsapp('');
+          setInstagram('');
+          setFacebook('');
+          setDescription('');
         }}
-        className={`fixed w-full h-screen backdrop-blur-sm bg-black/20  top-0 left-0 z-50 flex justify-center items-center ${
+        className={`fixed w-full h-screen backdrop-blur-sm bg-black/20 top-0 left-0 z-[70] flex justify-center items-center ${
           modalFormProfile ? '' : 'hidden'
         }`}
       >
@@ -502,7 +515,7 @@ const ProfileUmkmPage = () => {
           className="w-[694px] flex flex-col gap-[14px]"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className=" w-full bg-white rounded-lg relative">
+          <div className="w-full bg-white rounded-lg relative">
             <div className="px-[22px] py-[18px] flex gap-[17px] bg-white rounded-[8px]">
               <span className="border-2 rounded-full border-[#FE6D00]"></span>
               <h1 className="md:text-[20px] text-[16px] font-semibold items-center flex gap-5">
@@ -511,7 +524,10 @@ const ProfileUmkmPage = () => {
             </div>
           </div>
           <form onSubmit={onUpdate}>
-            <div className=" w-full bg-white rounded-lg relative p-[20px] flex flex-col gap-[43px]">
+            <div
+              className="w-full bg-white rounded-lg relative p-[20px] flex flex-col gap-[43px] overflow-auto"
+              style={{ maxHeight: '80vh' }}
+            >
               <div className="grid grid-cols-1 gap-[32px]">
                 <InputField
                   id={'name'}
