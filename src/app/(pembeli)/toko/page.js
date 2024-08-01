@@ -5,9 +5,7 @@ import request from '@/utils/request';
 import React, { useCallback, useEffect, useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
 
-const TokoPage = ({ params }) => {
-  const { detailProduk } = params;
-
+const TokoPage = () => {
   const [sallerDatas, setSallerDatas] = useState();
   const [loading, setLoading] = useState(true);
 

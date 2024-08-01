@@ -12,50 +12,52 @@ import { GoDotFill } from 'react-icons/go';
 import CardProduct from '@/components/card/CardProduct';
 import request from '@/utils/request';
 import { NumberFormat } from '@/utils/numberFormat';
+import { redirect } from 'next/dist/server/api-utils';
+import { useRouter } from 'next/navigation';
 // export async function generateStaticParams() {
 //   return [{ detailToko: 'Sayur Mayur', detailProduk: 'Kacang Panjang' }];
 // }
 
 const DetailProdukPage = ({ params }) => {
+  const router = useRouter()
+
   const { detailToko, detailProduk } = params;
   const [productSellerById, setProductSellerById] = useState();
   const [productSallerDatas, setProductSallerDatas] = useState();
   const [idSeller, setIdSeller] = useState();
-  const [loading, setLoading] = useState(true);
-
-  console.log(decodeURIComponent(detailProduk));
-
+  const [loading, setLoading] = useState(false);
   const fetchProductSallerById = useCallback(async () => {
-    await request
-      .get(`/public/item?slug=${detailProduk}`)
-      .then(function (response) {
-        setProductSellerById(response.data.data);
-        setLoading(false);
-      })
-      .catch(function (error) {
-        setLoading(false);
-      });
-  }, [detailProduk]);
-
-  useEffect(() => {
-    fetchProductSallerById();
-  }, [fetchProductSallerById]);
+    setLoading(true);
+    try {
+      const response = await request.get(`/public/item?slug=${detailProduk}`)
+      setProductSellerById(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching product saller data:', error);
+      setLoading(false);
+      router.back();
+    } finally {
+      setLoading(false);
+    }
+  }, [detailProduk, router]);
 
   const fetchProductSaller = useCallback(async () => {
-    await request
-      .get(`/public/item`)
-      .then(function (response) {
-        setProductSallerDatas(response.data.data);
-        setLoading(false);
-      })
-      .catch(function (error) {
-        setLoading(false);
-      });
+    setLoading(true);
+    try {
+      const response = await request.get(`/public/item`)
+      setProductSallerDatas(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching product saller data:', error);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
-    fetchProductSaller();
-  }, [fetchProductSaller]);
+    Promise.all([fetchProductSaller(), fetchProductSallerById()]);
+  }, [fetchProductSaller, fetchProductSallerById]);
 
   return (
     <div className="flex flex-col gap-[19px]">
@@ -93,110 +95,108 @@ const DetailProdukPage = ({ params }) => {
           </h1>
         </div>
         <div className="h-[52px]"></div>
-        {productSellerById &&
-          productSellerById.map((data, i) => (
-            <div
-              key={i}
-              className="flex lg:flex-row flex-col gap-[24px] items-center bg-white  rounded-lg "
-            >
-              <div className="flex flex-col gap-[25px] lg:max-w-[210px] w-full items-center ">
-                <img
+        {productSellerById && (
+          <div
+            className="flex lg:flex-row flex-col gap-[24px] items-center bg-white  rounded-lg "
+          >
+            <div className="flex flex-col gap-[25px] lg:max-w-[210px] w-full items-center ">
+              <img
+                width={0}
+                height={0}
+                alt=""
+                src={process.env.NEXT_PUBLIC_HOST + productSellerById.image_uri}
+                className="lg:max-w-[210px] lg:max-h-[210px] w-full object-cover"
+              />
+              <div className="flex justify-between w-full lg:gap-0 md:gap-[54px]">
+                <Image
                   width={0}
                   height={0}
                   alt=""
-                  src={process.env.NEXT_PUBLIC_HOST + data.image_uri}
-                  className="lg:max-w-[210px] lg:max-h-[210px] w-full object-cover"
+                  src={preview}
+                  className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
                 />
-                <div className="flex justify-between w-full lg:gap-0 md:gap-[54px]">
-                  <Image
-                    width={0}
-                    height={0}
-                    alt=""
-                    src={preview}
-                    className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
-                  />
-                  <Image
-                    width={0}
-                    height={0}
-                    alt=""
-                    src={preview}
-                    className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
-                  />
-                  <Image
-                    width={0}
-                    height={0}
-                    alt=""
-                    src={preview}
-                    className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
-                  />
-                </div>
-              </div>
-              <div className="h-full w-full flex flex-col  lg:pl-[58px] md:pl-[20px] pl-[12px] md:pr-[12px] md:gap-[14px] gap-[16px] leading-normal">
-                <div className="grow">
-                  <div>
-                    <h1 className="text-[24px] font-semibold">{data.name}</h1>
-                    <h1 className="text-[30px] font-semibold">
-                      {NumberFormat(data.price)}
-                    </h1>
-                  </div>
-                  <div>
-                    <p className="xl:text-[16px] lg:text-[15px] md:text-[12px] text-[13px]">
-                      Deskripsi Produk
-                    </p>
-                    <p className="xl:text-[16px] lg:text-[15px] md:text-[12px] text-[13px]">
-                      {data.description}
-                    </p>
-                  </div>
-                  <div className="text-[14px] font-bold text-[#FE6D00]">
-                    Lihat selengkapnya
-                  </div>
-                </div>
-                <div className="grow-0 ">
-                  <button className="w-full text-center bg-[#1D1D1D] text-white text-[16px] font-semibold py-[14px] rounded-lg">
-                    Hubungi Penjual
-                  </button>
-                </div>
-                <div className="flex md:flex-row flex-col xl:gap-[41px] lg:gap-[31px] md:gap-[21px] gap-[11px] ">
-                  {data.user.detail_seller.instagram && (
-                    <div className="flex gap-[28px]  items-center">
-                      <Image
-                        width={0}
-                        height={0}
-                        alt="instagram"
-                        src={instagram}
-                        className="max-w-[27px] max-h-[27px] "
-                      />
-                      <h1>@{data.user.detail_seller.instagram}</h1>
-                    </div>
-                  )}
-                  {data.user.detail_seller.whatsapp && (
-                    <div className="flex gap-[28px] items-center">
-                      <Image
-                        width={0}
-                        height={0}
-                        alt="whatsapp"
-                        src={whatsapp}
-                        className="max-w-[27px] max-h-[27px] "
-                      />
-                      <h1>{data.user.detail_seller.whatsapp}</h1>
-                    </div>
-                  )}
-                  {data.user.detail_seller.facebook && (
-                    <div className="flex gap-[28px] items-center">
-                      <Image
-                        width={0}
-                        height={0}
-                        alt="facebook"
-                        src={facebook}
-                        className="max-w-[27px] max-h-[27px] "
-                      />
-                      <h1>{data.user.detail_seller.facebook}</h1>
-                    </div>
-                  )}
-                </div>
+                <Image
+                  width={0}
+                  height={0}
+                  alt=""
+                  src={preview}
+                  className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
+                />
+                <Image
+                  width={0}
+                  height={0}
+                  alt=""
+                  src={preview}
+                  className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover"
+                />
               </div>
             </div>
-          ))}
+            <div className="h-full w-full flex flex-col  lg:pl-[58px] md:pl-[20px] pl-[12px] md:pr-[12px] md:gap-[14px] gap-[16px] leading-normal">
+              <div className="grow">
+                <div>
+                  <h1 className="text-[24px] font-semibold">{productSellerById.name}</h1>
+                  <h1 className="text-[30px] font-semibold">
+                    {NumberFormat(productSellerById.price)}
+                  </h1>
+                </div>
+                <div>
+                  <p className="xl:text-[16px] lg:text-[15px] md:text-[12px] text-[13px]">
+                    Deskripsi Produk
+                  </p>
+                  <p className="xl:text-[16px] lg:text-[15px] md:text-[12px] text-[13px]">
+                    {productSellerById.description}
+                  </p>
+                </div>
+                <div className="text-[14px] font-bold text-[#FE6D00]">
+                  Lihat selengkapnya
+                </div>
+              </div>
+              <div className="grow-0 ">
+                <button className="w-full text-center bg-[#1D1D1D] text-white text-[16px] font-semibold py-[14px] rounded-lg">
+                  Hubungi Penjual
+                </button>
+              </div>
+              <div className="flex md:flex-row flex-col xl:gap-[41px] lg:gap-[31px] md:gap-[21px] gap-[11px] ">
+                {productSellerById.user.detail_seller.instagram && (
+                  <div className="flex gap-[28px]  items-center">
+                    <Image
+                      width={0}
+                      height={0}
+                      alt="instagram"
+                      src={instagram}
+                      className="max-w-[27px] max-h-[27px] "
+                    />
+                    <h1>@{productSellerById.user.detail_seller.instagram}</h1>
+                  </div>
+                )}
+                {productSellerById.user.detail_seller.whatsapp && (
+                  <div className="flex gap-[28px] items-center">
+                    <Image
+                      width={0}
+                      height={0}
+                      alt="whatsapp"
+                      src={whatsapp}
+                      className="max-w-[27px] max-h-[27px] "
+                    />
+                    <h1>{productSellerById.user.detail_seller.whatsapp}</h1>
+                  </div>
+                )}
+                {productSellerById.user.detail_seller.facebook && (
+                  <div className="flex gap-[28px] items-center">
+                    <Image
+                      width={0}
+                      height={0}
+                      alt="facebook"
+                      src={facebook}
+                      className="max-w-[27px] max-h-[27px] "
+                    />
+                    <h1>{productSellerById.user.detail_seller.facebook}</h1>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="h-[58px]" />
         <div className="flex gap-[17px] bg-white rounded-[8px]">

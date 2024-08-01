@@ -13,35 +13,53 @@ const CardProduct = ({ name, thumbnail, price, saller, href }) => {
   return (
     <Link
       href={href}
-      className="bg-[#faeced] px-3 py-2 xl:w-[164px] lg:w-[154px] md:[164px] w-[154px] max-w-[164px] max-h-[230px] rounded-lg"
+      className="bg-[#faeced] rounded-lg p-2"
     >
-      <img
-        width={0}
-        height={0}
-        alt="product"
-        src={process.env.NEXT_PUBLIC_HOST + thumbnail}
-        className=" xl:w-[145px] xl:h-[145px] lg:w-[135px] lg:h-[135px] md:w-[145px] md:h-[145px] w-[135px] h-[135px]  object-cover m-auto"
-      />
-      <div className="flex flex-col gap-[25px] mt-[3px]">
-        <div className="text-[10px] grow">
-          <h1>{name}</h1>
-          <h2 className="font-black">{NumberFormat(price)}</h2>
-        </div>
-        <div
-          onClick={(e) => {
-            e.preventDefault();
-            router.push(`/toko/${saller}`);
-          }}
-          className="flex items-center gap-[7px] text-[10px]"
-        >
+      {/* xl:w-[164px] lg:w-[154px] md:[164px] w-[154px] max-w-[164px] max-h-[230px] */}
+      <div className='flex flex-col justify-center'>
+        {/* <Image
+          width={0}
+          height={0}
+          sizes='100vw'
+          loading='lazy'
+          alt="product"
+          src={(thumbnail) ? (process.env.NEXT_PUBLIC_HOST + thumbnail) : "/assets/img/product/product1.png"}
+          className=" xl:w-[145px] xl:h-[145px] lg:w-[135px] lg:h-[135px] md:w-[145px] md:h-[145px] w-[135px] h-[135px]  object-cover m-auto"
+        /> */}
+        <div className='aspect-square'>
           <Image
             width={0}
             height={0}
+            sizes='100vw'
+            loading='lazy'
             alt="product"
-            src={iconToko}
-            className="w-[12px] h-[12px] object-cover"
+            src={(thumbnail) ? (process.env.NEXT_PUBLIC_HOST + thumbnail) : "/assets/img/product/product1.png"}
+            className="w-full h-full object-cover rounded-lg"
           />
-          <p>{saller}</p>
+        </div>
+        <div className="flex flex-col gap-[25px] mt-[3px]">
+          <div className="text-[10px] grow">
+            <h1 className='truncate'>{name}</h1>
+            <h2 className="font-black">{NumberFormat(price)}</h2>
+          </div>
+          <div
+            onClick={(e) => {
+              e.preventDefault();
+              router.push(`/toko/${saller}`);
+            }}
+            className="flex items-center gap-[7px] text-[10px]"
+          >
+            <Image
+              width={0}
+              height={0}
+              sizes='100vw'
+              alt="product"
+              loading='lazy'
+              src={iconToko}
+              className="w-[12px] h-[12px] object-cover"
+            />
+            <p>{saller}</p>
+          </div>
         </div>
       </div>
     </Link>
