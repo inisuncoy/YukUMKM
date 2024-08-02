@@ -34,7 +34,7 @@ export default function HomePage() {
   const fetchSaller = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await request.get(`/public/seller`)
+      const response = await request.get(`/public/seller`);
       setSallerDatas(response.data.data);
       setLoading(false);
     } catch (error) {
@@ -46,10 +46,7 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    Promise.all([
-      fetchSaller(), 
-      fetchProductSaller()
-    ]);
+    Promise.all([fetchSaller(), fetchProductSaller()]);
   }, [fetchSaller, fetchProductSaller]);
 
   return (
@@ -60,7 +57,7 @@ export default function HomePage() {
           height={0}
           alt="hero"
           src={hero}
-          loading='lazy'
+          loading="lazy"
           className="w-full object-cover object-bottom lg:rounded-lg"
         />
       </div>
@@ -98,34 +95,38 @@ export default function HomePage() {
                   >
                     <div className="w-[218px] h-[269px] absolute">
                       <Image
-                        loading='lazy'
+                        loading="lazy"
                         width={0}
                         height={0}
                         alt="product-bg"
-                        sizes='100vw'
-                        // src={(saller.profile_uri) ? (process.env.NEXT_PUBLIC_HOST + saller.profile_uri) : "/assets/logo/logoUMKM.png"}
-                        src={"/assets/logo/logoUMKM.png"}
+                        sizes="100vw"
+                        src={
+                          saller.profile_uri
+                            ? process.env.NEXT_PUBLIC_HOST + saller.profile_uri
+                            : '/assets/logo/logoUMKM.png'
+                        }
+                        // src={"/assets/logo/logoUMKM.png"}
                         className="w-full h-full object-cover object-bottom rounded-lg"
                       />
                     </div>
                     <div className="flex gap-4 z-10 w-full justify-end">
                       {/* <div> */}
-                        {productSallerDatas
-                          .filter((product) => saller.id === product.user_id)
-                          .slice(0, 2)
-                          .map(
-                            (product, x) =>
-                              saller.id === product.user_id && (
-                                <CardProductV2
-                                  key={x}
-                                  name={product.name}
-                                  thumbnail={product.image_uri}
-                                  price={product.price}
-                                  seller={product.user.name}
-                                  href={`/toko/${product.user.name}/${product.name}`}
-                                />
-                              )
-                          )}
+                      {productSallerDatas
+                        .filter((product) => saller.id === product.user_id)
+                        .slice(0, 2)
+                        .map(
+                          (product, x) =>
+                            saller.id === product.user_id && (
+                              <CardProductV2
+                                key={x}
+                                name={product.name}
+                                thumbnail={product.image_uri}
+                                price={product.price}
+                                seller={product.user.name}
+                                href={`/toko/${product.user.name}/${product.name}`}
+                              />
+                            )
+                        )}
                       {/* </div> */}
                       {/* <Link
                         href={'#'}
