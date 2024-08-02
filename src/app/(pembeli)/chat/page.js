@@ -1,42 +1,46 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
-// import Link from 'next/link';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
 import { IoTrashOutline } from 'react-icons/io5';
 import { RiSendPlaneLine } from 'react-icons/ri';
 
 import { io } from 'socket.io-client';
-// const socket = io(
-//   'https://api.yukumkm.my.id?userId=c6875c63-6738-4bf7-a4d6-0ac95482c5ab'
-// );
-
-import icontoko from '../../../../public/assets/icon/icon-toko.png';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+
 import Cookies from 'js-cookie';
 import Link from 'next/link';
 import request from '@/utils/request';
 
 const ChatPage = () => {
-  const [isClient, setIsClient] = useState(false);
-  const [hasToken, setHasToken] = useState(false);
+  const [isAction, setIsAction] = useState(false);
   const [partnerDatas, setPartnerDatas] = useState([]);
   const [listMessage, setListMessage] = useState([]);
   const [partnerId, setPartnerId] = useState(null);
   const [detailPartner, setDetailPartner] = useState(null);
+
   const [message, setMessage] = useState('');
   const [userId, setUserId] = useState('');
 
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const id = searchParams.get('id') ?? '';
-  const profile = searchParams.get('profile') ?? '';
-  const name = searchParams.get('name') ?? '';
+  const [showModal, setShowModal] = useState(false); // State untuk modal peringatan
 
   const socketRef = useRef();
 
+  useEffect(() => {
+    // Only access localStorage on the client-side
+    if (typeof window !== 'undefined') {
+      const partner = JSON.parse(localStorage.getItem('partner'));
+      setDetailPartner(partner);
+    }
+  }, []);
+
   const fetchusers = useCallback(async () => {
+    // Periksa token sebelum melakukan request
+    const token = Cookies.get('token');
+    if (!token) {
+      setShowModal(true); // Tampilkan modal peringatan jika tidak ada token
+      return;
+    }
     await request
       .get(`/auth/profile`)
       .then(function (response) {
@@ -51,61 +55,63 @@ const ChatPage = () => {
     fetchusers();
   }, [fetchusers]);
 
-  console.log(userId);
-
-  useEffect(() => {
-    // This will run only in the client
-    setIsClient(true);
-    const token = Cookies.get('token');
-    setHasToken(!!token);
-  }, []);
-
   useEffect(() => {
     const socket = io(`https://api.yukumkm.my.id?userId=${userId}`);
     socketRef.current = socket;
-    if (!hasToken) return;
 
-    socket.on('chat partners', (response) => {
+    socket.on('chatList', (response) => {
       setPartnerDatas(response);
     });
 
-    socket.emit('chat partners');
+    socket.emit('getChatList');
 
-    socket.on('previous messages', (response) => {
+    socket.on('chatHistory', (response) => {
       setListMessage(response);
     });
 
-    if (id && name && profile) {
-      handlePartner(id);
+    socket.on('receiverMessage', (response) => {
+      setListMessage((prevArray) => [...prevArray, response]);
+      setIsAction(true);
+    });
+
+    socket.on('senderMessage', (response) => {
+      setListMessage((prevArray) => [...prevArray, response]);
+    });
+
+    if (detailPartner) {
+      handlePartner(detailPartner.id);
+    }
+
+    if (isAction) {
+      handleUpdate();
+      setIsAction(false);
     }
 
     return () => {
-      socket.off('chat partners');
-      socket.off('previous messages');
+      socket.off('chatList');
+      socket.off('chatHistory');
     };
-  }, [hasToken, userId, id, name, profile]);
+  }, [userId, detailPartner, isAction]);
 
   const handlePartner = (partnerId) => {
     const socket = socketRef.current;
-    socket.emit('join room', { partnerId });
-    socket.emit('exit room', { partnerId });
+    socket.emit('getChatHistory', { partnerId });
     setPartnerId(partnerId);
   };
 
   const handleSendMassage = (e) => {
     e.preventDefault();
     const socket = socketRef.current;
-    socket.emit(
-      'private message',
-      {
-        partnerId: partnerId,
-        message: message,
-      },
-      () => {
-        socket.emit('chat partners');
-      }
-    );
+    socket.emit('sendMessages', {
+      partnerId: partnerId,
+      message: message,
+    });
     setMessage('');
+    setIsAction(true);
+  };
+  const handleUpdate = () => {
+    const socket = socketRef.current;
+    socket.emit('getChatList');
   };
 
   const messageEndRef = useRef(null);
@@ -118,11 +124,7 @@ const ChatPage = () => {
     scrollToBottom();
   }, [listMessage]);
 
-  if (!isClient) {
-    return null;
-  }
-
-  if (!hasToken) {
+  if (showModal) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div className="bg-white p-8 rounded-lg shadow-lg text-center">
@@ -135,11 +137,6 @@ const ChatPage = () => {
       </div>
     );
   }
-
-  console.log('partner : ', partnerDatas);
-  console.log('message : ', listMessage);
-  console.log('message : ', profile);
-  console.log('message : ', partnerId);
 
   return (
     <div className="grid grid-cols-3 gap-[29px]  ">
@@ -168,19 +165,14 @@ const ChatPage = () => {
                 partnerDatas.map((data, i) => (
                   <li
                     key={i}
-                    className="py-3 sm:py-4 px-3 sm:px-3 cursor-pointer "
+                    className={`py-3 sm:py-4 px-3 sm:px-3 cursor-pointer ${
+                      partnerId == data.id ? 'bg-[#f8cc89]' : ''
+                    }`}
                     onClick={() => {
-                      handlePartner(
-                        data.sender.id != userId
-                          ? data.sender.id
-                          : data.receiver.id
-                      ),
-                        setPartnerId(
-                          data.sender.id != userId
-                            ? data.sender.id
-                            : data.receiver.id
-                        ),
+                      handlePartner(data.id),
+                        setPartnerId(data.id),
                         setDetailPartner(data);
+                      localStorage.removeItem('partner');
                     }}
                   >
                     <div className="flex items-center">
@@ -192,14 +184,8 @@ const ChatPage = () => {
                           alt="product-bg"
                           sizes="100vw"
                           src={
-                            data.sender.id != userId
-                              ? data.sender.profile_uri
-                                ? process.env.NEXT_PUBLIC_HOST +
-                                  data.sender.profile_uri
-                                : '/assets/icon/store.jpeg'
-                              : data.receiver.profile_uri
-                              ? process.env.NEXT_PUBLIC_HOST +
-                                data.receiver.profile_uri
+                            data.profile_uri
+                              ? process.env.NEXT_PUBLIC_HOST + data.profile_uri
                               : '/assets/icon/store.jpeg'
                           }
                           className="w-8 h-8 rounded-full object-cover"
@@ -207,16 +193,11 @@ const ChatPage = () => {
                       </div>
                       <div className="flex-1 min-w-0 ms-4">
                         <p className="text-sm font-medium text-gray-900 truncate ">
-                          {data.sender.id != userId
-                            ? data.sender.name
-                            : data.receiver.name}
+                          {data.name}
                         </p>
-                        <p className="text-sm text-gray-500 truncate ">
-                          {data.message}
+                        <p className="text-sm text-gray-700 truncate ">
+                          {data.lastMessage}
                         </p>
-                      </div>
-                      <div className="ml-[10px] w-[30px] h-[30px] rounded-full border-2 border-[#FE6D00] flex justify-center items-center text-[#FE6D00]">
-                        <p>1</p>
                       </div>
                     </div>
                   </li>
@@ -226,7 +207,7 @@ const ChatPage = () => {
         </div>
       </div>
       <div className="col-span-2 w-full bg-white relative">
-        {detailPartner || (id && name && profile) ? (
+        {detailPartner ? (
           <div>
             <div className="flex justify-between px-[44px] py-[22px] shadow-lg">
               <div className="flex gap-[18px] items-center">
@@ -237,32 +218,21 @@ const ChatPage = () => {
                   sizes="100vw"
                   loading="lazy"
                   src={
-                    detailPartner
-                      ? detailPartner.sender.id != userId
-                        ? detailPartner.sender.profile_uri
-                          ? process.env.NEXT_PUBLIC_HOST +
-                            detailPartner.sender.profile_uri
-                          : '/assets/icon/store.jpeg'
-                        : detailPartner.receiver.profile_uri
-                        ? process.env.NEXT_PUBLIC_HOST +
-                          detailPartner.receiver.profile_uri
-                        : '/assets/icon/store.jpeg'
-                      : profile != null
-                      ? '/assets/icon/store.jpeg'
+                    detailPartner && detailPartner.profile_uri
+                      ? process.env.NEXT_PUBLIC_HOST + detailPartner.profile_uri
                       : '/assets/icon/store.jpeg'
                   }
                   className="w-[26px] h-[26px] object-cover"
                 />
                 <h1 className="text-[20px] font-semibold text-gray-900 truncate">
-                  {detailPartner
-                    ? detailPartner.sender.id != userId
-                      ? detailPartner.sender.name
-                      : detailPartner.receiver.name
-                    : name}
+                  {detailPartner.name}
                 </h1>
               </div>
               <div>
-                <IoTrashOutline className="text-red-500 text-[25px]" />
+                <IoTrashOutline
+                  className="text-red-500 text-[25px]"
+                  onClick={() => handleUpdate()}
+                />
               </div>
             </div>
             <div className="h-[64vh] px-[16px] pt-[12px] overflow-y-auto no-scrollbar">

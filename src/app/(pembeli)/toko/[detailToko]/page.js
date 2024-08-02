@@ -15,6 +15,7 @@ import { z } from 'zod';
 import toast from 'react-hot-toast';
 import CardProductV2 from '@/components/card/CardProductV2';
 import Link from 'next/link';
+import Cookies from 'js-cookie';
 
 //export async function generateStaticParams() {
 //  return [{ detailToko: 'Sayur Mayur' }];
@@ -39,28 +40,11 @@ const DetailTokoPage = ({ params }) => {
   const checkboxRefs = useRef([]);
   const [modalReview, setModalReview] = useState(false);
   const [isActionReview, setIsActionReview] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [validations, setValidations] = useState([]);
 
   const [selectedStar, setSelectedStar] = useState(0);
   const stars = Array(5).fill(0);
-
-  console.log(selectedStar);
-  console.log(review);
-
-  const handleCheckboxChange = (event, data) => {
-    if (event.target.checked) {
-      setSelectedItems([...selectedItems, data.id]);
-    } else {
-      setSelectedItems(selectedItems.filter((item) => item !== data.id));
-    }
-  };
-
-  const handleReset = () => {
-    setSelectedItems([]);
-    checkboxRefs.current.forEach((checkbox) => {
-      if (checkbox) checkbox.checked = false;
-    });
-  };
 
   const fetchSaller = useCallback(async () => {
     await request
@@ -74,10 +58,6 @@ const DetailTokoPage = ({ params }) => {
         setLoading(false);
       });
   }, [detailToko]);
-
-  useEffect(() => {
-    fetchSaller();
-  }, [fetchSaller]);
 
   const fetchProductSaller = useCallback(async () => {
     const payload = {
@@ -103,11 +83,12 @@ const DetailTokoPage = ({ params }) => {
       });
   }, [idSeller, selectedItems, minPrice, maxPrice]);
 
-  useEffect(() => {
-    fetchProductSaller();
-  }, [fetchProductSaller]);
-
   const fetchReview = useCallback(async () => {
+    const token = Cookies.get('token');
+    if (!token) {
+      return;
+    }
+
     let payload = {
       sellerId: idSeller,
     };
@@ -130,17 +111,6 @@ const DetailTokoPage = ({ params }) => {
       });
   }, [idSeller]);
 
-  useEffect(() => {
-    if (isActionReview) {
-      fetchReview();
-    }
-    setIsActionReview(false);
-  }, [fetchReview, isActionReview]);
-
-  useEffect(() => {
-    fetchReview();
-  }, [fetchReview]);
-
   const fetchCategory = useCallback(async () => {
     await request
       .get(`/public/itemCategory`)
@@ -152,10 +122,6 @@ const DetailTokoPage = ({ params }) => {
         setLoading(false);
       });
   }, []);
-
-  useEffect(() => {
-    fetchCategory();
-  }, [fetchCategory]);
 
   const onSubmit = async (e, rating) => {
     e.preventDefault();
@@ -231,6 +197,49 @@ const DetailTokoPage = ({ params }) => {
       });
   };
 
+  const handleCheckboxChange = (event, data) => {
+    if (event.target.checked) {
+      setSelectedItems([...selectedItems, data.id]);
+    } else {
+      setSelectedItems(selectedItems.filter((item) => item !== data.id));
+    }
+  };
+
+  const handleReset = () => {
+    setSelectedItems([]);
+    checkboxRefs.current.forEach((checkbox) => {
+      if (checkbox) checkbox.checked = false;
+    });
+  };
+
+  const checkTokenAndPerformAction = (action) => {
+    const token = Cookies.get('token');
+    if (!token) {
+      setShowModal(true); // Tampilkan modal jika token tidak ada
+    } else {
+      action(); // Jalankan aksi jika token ada
+    }
+  };
+
+  useEffect(() => {
+    if (isActionReview) {
+      fetchReview();
+    }
+    setIsActionReview(false);
+    Promise.all([
+      fetchCategory(),
+      fetchReview(),
+      fetchSaller(),
+      fetchProductSaller(),
+    ]);
+  }, [
+    fetchCategory,
+    fetchReview,
+    fetchSaller,
+    fetchProductSaller,
+    isActionReview,
+  ]);
+
   return (
     <>
       <div className="flex flex-col gap-[19px]">
@@ -297,14 +306,23 @@ const DetailTokoPage = ({ params }) => {
                   </p>
                 </div>
                 <div className="grow-0 flex">
-                  <Link
-                    href={`/chat?name=${data.name}&profile=${data.profile_uri}&id=${data.id}`}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault(); // Cegah navigasi default
+                      checkTokenAndPerformAction(() => {
+                        localStorage.setItem('partner', JSON.stringify(data));
+                        window.location.href = `/chat`;
+                      });
+                    }}
                     className="w-full text-center bg-[#1D1D1D] text-white text-[16px] font-semibold py-[14px] rounded-lg"
                   >
                     Hubungi Penjual
-                  </Link>
+                  </button>
+
                   <button
-                    onClick={() => setModalReview(!modalReview)}
+                    onClick={() =>
+                      checkTokenAndPerformAction(() => setModalReview(true))
+                    }
                     className="w-full text-center bg-white border-2 border-black text-black text-[16px] font-semibold py-[14px] rounded-lg"
                   >
                     Beri Penilaian
@@ -477,6 +495,25 @@ const DetailTokoPage = ({ params }) => {
           </div>
         </div>
       </div>
+      {showModal && (
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={() => {
+            setShowModal(false);
+          }}
+        >
+          <div
+            className="bg-white p-8 rounded-lg shadow-lg text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-2xl font-bold mb-4">You need to log in</h2>
+            <p className="mb-4">Please log in to access the chat.</p>
+            <Link href="/login">
+              <p className="text-blue-500 underline">Go to Login Page</p>
+            </Link>
+          </div>
+        </div>
+      )}
     </>
   );
 };
