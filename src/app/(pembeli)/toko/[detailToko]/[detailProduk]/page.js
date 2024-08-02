@@ -13,20 +13,26 @@ import { NumberFormat } from '@/utils/numberFormat';
 import { useRouter } from 'next/navigation';
 import CardProductV2 from '@/components/card/CardProductV2';
 
-
-
 const DetailProdukPage = ({ params }) => {
-  const router = useRouter()
+  const router = useRouter();
 
   const { detailToko, detailProduk } = params;
   const [productSellerById, setProductSellerById] = useState();
   const [productSellerDatas, setProductSellerDatas] = useState();
   const [loading, setLoading] = useState(false);
+  const [hoverImg, setHoverImg] = useState('');
+
+  // Jika ada gambar yang di-hover, gunakan gambar tersebut, jika tidak, gunakan gambar default
+  const mainImageSrc = hoverImg
+    ? process.env.NEXT_PUBLIC_HOST + hoverImg
+    : productSellerById?.image_uri
+    ? process.env.NEXT_PUBLIC_HOST + productSellerById.image_uri
+    : '/assets/img/product/product1.png';
 
   const fetchProductSellerById = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await request.get(`/public/item?slug=${detailProduk}`)
+      const response = await request.get(`/public/item?slug=${detailProduk}`);
       setProductSellerById(response.data.data);
       setLoading(false);
     } catch (error) {
@@ -41,7 +47,7 @@ const DetailProdukPage = ({ params }) => {
   const fetchProductSeller = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await request.get(`/public/item`)
+      const response = await request.get(`/public/item`);
       setProductSellerDatas(response.data.data);
       setLoading(false);
     } catch (error) {
@@ -55,6 +61,8 @@ const DetailProdukPage = ({ params }) => {
   useEffect(() => {
     Promise.all([fetchProductSeller(), fetchProductSellerById()]);
   }, [fetchProductSeller, fetchProductSellerById]);
+
+  console.log(hoverImg);
 
   return (
     <div className="flex flex-col gap-[19px]">
@@ -93,39 +101,54 @@ const DetailProdukPage = ({ params }) => {
         </div>
         <div className="h-[52px]"></div>
         {productSellerById && (
-          <div
-            className="flex lg:flex-row flex-col items-center bg-white rounded-lg mx-3 gap-y-6 gap-x-12"
-          >
+          <div className="flex lg:flex-row flex-col items-center bg-white rounded-lg mx-3 gap-y-6 gap-x-12">
             <div className="flex flex-col gap-[25px] lg:max-w-[210px] w-full items-center ">
-              <Image
-                width={0}
-                height={0}
-                sizes='100vw'
-                loading='lazy'
-                alt="main-product-img"
-                src={productSellerById.image_uri ? (process.env.NEXT_PUBLIC_HOST + productSellerById.image_uri) : "/assets/img/product/product1.png"}
-                className="lg:max-w-[220px] lg:max-h-[220px] w-full object-cover rounded-lg"
-              />
+              <div className="relative w-[220px] h-[220px]  flex-shrink-0">
+                <Image
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  loading="lazy"
+                  alt="main-product-img"
+                  src={mainImageSrc}
+                  className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
+                />
+              </div>
+
               <div className="flex justify-between w-full lg:gap-0 md:gap-[54px]">
-                {productSellerById && productSellerById.item_image && (
+                {productSellerById &&
+                  productSellerById.item_image &&
                   productSellerById?.item_image.map((data, i) => (
-                    <Image
+                    <div
                       key={i}
-                      width={0}
-                      height={0}
-                      sizes='100vw'
-                      alt="detail-product-img"
-                      src={data.uri ? (process.env.NEXT_PUBLIC_HOST + data.uri) : "/assets/img/product/product1.png"}
-                      className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover rounded-lg"
-                    />
-                  ))
-                )}
+                      onMouseOver={(e) => {
+                        e.preventdefault, setHoverImg(data.uri);
+                      }}
+                      onMouseOut={() => setHoverImg('')}
+                      className="rounded-lg border-2 border-gray-300 p-2"
+                    >
+                      <Image
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                        alt="detail-product-img"
+                        src={
+                          data.uri
+                            ? process.env.NEXT_PUBLIC_HOST + data.uri
+                            : '/assets/img/product/product1.png'
+                        }
+                        className="lg:w-[56px] lg:h-[56px] md:w-[130px] md:h-[130px] w-[94px] h-[94px] object-cover rounded-lg "
+                      />
+                    </div>
+                  ))}
               </div>
             </div>
             <div className="h-full w-full flex flex-col  md:gap-[14px] gap-[16px] leading-normal">
               <div className="grow">
                 <div>
-                  <h1 className="text-[24px] font-semibold">{productSellerById.name}</h1>
+                  <h1 className="text-[24px] font-semibold">
+                    {productSellerById.name}
+                  </h1>
                   <h1 className="text-[30px] font-semibold">
                     {NumberFormat(productSellerById.price)}
                   </h1>

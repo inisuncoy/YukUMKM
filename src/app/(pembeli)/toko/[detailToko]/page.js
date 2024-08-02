@@ -14,6 +14,7 @@ import InputField from '@/components/forms/InputField';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
 import CardProductV2 from '@/components/card/CardProductV2';
+import Link from 'next/link';
 
 //export async function generateStaticParams() {
 //  return [{ detailToko: 'Sayur Mayur' }];
@@ -296,9 +297,12 @@ const DetailTokoPage = ({ params }) => {
                   </p>
                 </div>
                 <div className="grow-0 flex">
-                  <button className="w-full text-center bg-[#1D1D1D] text-white text-[16px] font-semibold py-[14px] rounded-lg">
+                  <Link
+                    href={`/chat?name=${data.name}&profile=${data.profile_uri}&id=${data.id}`}
+                    className="w-full text-center bg-[#1D1D1D] text-white text-[16px] font-semibold py-[14px] rounded-lg"
+                  >
                     Hubungi Penjual
-                  </button>
+                  </Link>
                   <button
                     onClick={() => setModalReview(!modalReview)}
                     className="w-full text-center bg-white border-2 border-black text-black text-[16px] font-semibold py-[14px] rounded-lg"
