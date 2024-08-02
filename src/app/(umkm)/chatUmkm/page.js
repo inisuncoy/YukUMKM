@@ -6,8 +6,8 @@ import { IoTrashOutline } from 'react-icons/io5';
 import { RiSendPlaneLine } from 'react-icons/ri';
 
 import { io } from 'socket.io-client';
-
 import Image from 'next/image';
+
 import Cookies from 'js-cookie';
 import Link from 'next/link';
 import request from '@/utils/request';
@@ -18,17 +18,19 @@ const ChatPage = () => {
   const [listMessage, setListMessage] = useState([]);
   const [partnerId, setPartnerId] = useState(null);
   const [detailPartner, setDetailPartner] = useState(null);
+
   const [message, setMessage] = useState('');
   const [userId, setUserId] = useState('');
 
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false); // State untuk modal peringatan
 
   const socketRef = useRef();
 
   const fetchusers = useCallback(async () => {
+    // Periksa token sebelum melakukan request
     const token = Cookies.get('token');
     if (!token) {
-      setShowModal(true);
+      setShowModal(true); // Tampilkan modal peringatan jika tidak ada token
       return;
     }
     await request
@@ -68,10 +70,6 @@ const ChatPage = () => {
       setListMessage((prevArray) => [...prevArray, response]);
     });
 
-    if (id && name && profile) {
-      handlePartner(id);
-    }
-
     if (isAction) {
       handleUpdate();
       setIsAction(false);
@@ -81,7 +79,7 @@ const ChatPage = () => {
       socket.off('chatList');
       socket.off('chatHistory');
     };
-  }, [userId, isAction]);
+  }, [userId, detailPartner, isAction]);
 
   const handlePartner = (partnerId) => {
     const socket = socketRef.current;
