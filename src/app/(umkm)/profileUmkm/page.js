@@ -92,52 +92,46 @@ const ProfileUmkmPage = () => {
     toast.loading('Saving data...');
     e.preventDefault();
 
-    // Inisialisasi objek data dengan title dan content
+    // Inisialisasi objek data
     let data = {};
 
-    // Tambahkan imageUri ke data jika imageUri tidak null atau undefined
-    if (name != null || name != '') {
+    // Tambahkan field ke data hanya jika field tidak kosong
+    if (name !== '') {
       data.name = name;
     }
-    if (address != null || address != '') {
+    if (address !== '') {
       data.address = address;
     }
-    if (description != null || description != '') {
+    if (description !== '') {
       data.description = description;
     }
-    if (profileUri != null || profileUri != '') {
+    if (profileUri !== '') {
       data.profileUri = profileUri;
     }
-    if (whatsapp != null || whatsapp != '') {
+    if (whatsapp !== '') {
       data.whatsapp = whatsapp;
     }
-    if (instagram != null || instagram != '') {
+    if (instagram !== '') {
       data.instagram = instagram;
     }
-    if (facebook != null || facebook != '') {
+    if (facebook !== '') {
       data.facebook = facebook;
     }
 
-    // Buat validasi hanya jika profileUri tidak null atau undefined
-    if (
-      profileUri != null ||
-      name != null ||
-      address != null ||
-      description != null ||
-      whatsapp != null ||
-      facebook != null ||
-      instagram != null ||
-      name != '' ||
-      address != '' ||
-      description != '' ||
-      profileUri != '' ||
-      whatsapp != '' ||
-      instagram != '' ||
-      facebook != ''
-    ) {
+    // Jika hanya profileUri yang diisi, maka hapus field lainnya dari data
+    if (Object.keys(data).length > 1 && data.profileUri !== undefined) {
+      Object.keys(data).forEach((key) => {
+        if (key !== 'profileUri' && data[key] === '') {
+          delete data[key];
+        }
+      });
+    }
+
+    // Buat validasi hanya jika ada field yang diisi
+    if (Object.keys(data).length > 0) {
       const validation = formSchema.safeParse(data);
       console.log(validation);
-      if (!validation.success) {
+      if (!validation) {
         validation.error.errors.map((validation) => {
           const key = [
             {
@@ -155,7 +149,7 @@ const ProfileUmkmPage = () => {
       }
     }
 
-    // Lakukan request patch hanya jika validasi berhasil atau jika tidak ada imageUri
+    // Lakukan request patch
     request
       .patch(`/auth/profile`, data)
       .then(function (response) {
@@ -164,7 +158,7 @@ const ProfileUmkmPage = () => {
           toast.success('Success Update Profile');
           router.push('/profileUmkm');
           setUpdatedProfile(true);
-          setProfileUri(null);
+          setProfileUri('');
           setModalFormProfile(false);
         }
         setLoading(false);
@@ -340,19 +334,23 @@ const ProfileUmkmPage = () => {
               <form onSubmit={onUpdate}>
                 <div className="py-[20px] px-[40px] rounded-lg shadow-xl flex flex-col gap-[20px]">
                   <div className="relative lg:w-[185px]  flex justify-center items-center ">
-                    <img
-                      width={0}
-                      height={0}
-                      alt="profile"
-                      src={
-                        profileUri
-                          ? URL.createObjectURL(profileUri)
-                          : defaultProfileUri
-                          ? process.env.NEXT_PUBLIC_HOST + defaultProfileUri
-                          : defaultProfile
-                      }
-                      className="w-[127px] h-[127px] "
-                    />
+                    <div className="relative w-[127px] h-[127px] flex-shrink-0 ">
+                      <Image
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                        loading="lazy"
+                        alt="main-product-img"
+                        src={
+                          profileUri
+                            ? URL.createObjectURL(profileUri)
+                            : defaultProfileUri
+                            ? process.env.NEXT_PUBLIC_HOST + defaultProfileUri
+                            : defaultProfile
+                        }
+                        className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
+                      />
+                    </div>
                     {validations &&
                       validations.map(
                         (validation, index) =>
@@ -368,7 +366,10 @@ const ProfileUmkmPage = () => {
                     {profileUri && (
                       <GiCancel
                         className="absolute top-0 right-0 text-red-500 text-lg cursor-pointer"
-                        onClick={() => setProfileUri(null)}
+                        onClick={() => {
+                          setProfileUri(null);
+                          document.getElementById(`profileUri`).value = '';
+                        }}
                       />
                     )}
                   </div>

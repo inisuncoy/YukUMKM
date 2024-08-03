@@ -44,17 +44,15 @@ const formSchema = z.object({
 });
 
 const ProfilePage = () => {
-  const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
-  const [profileUri, setProfileUri] = useState('');
+  const [name, setName] = useState();
+  const [address, setAddress] = useState();
+  const [profileUri, setProfileUri] = useState(null);
   const [defaultProfileUri, setDefaultProfileUri] = useState();
-
   const [updatedProfile, setUpdatedProfile] = useState(false);
-  const [alertLogout, setAlertLogout] = useState(false);
-
+  const [modalLogout, setModalLogout] = useState(false);
+  const [modalFormProfile, setModalFormProfile] = useState(false);
   const [loading, setLoading] = useState(false);
   const [validations, setValidations] = useState([]);
-  const [menuActive, setMenuActive] = useState(false);
 
   const router = useRouter();
 
@@ -78,31 +76,35 @@ const ProfilePage = () => {
       data.profileUri = profileUri;
     }
 
-    // Jika tidak ada field yang diisi, maka tidak perlu melakukan request
-    if (Object.keys(data).length === 0) {
-      setLoading(false);
-      toast.dismiss();
-      return;
+    // Jika hanya profileUri yang diisi, maka hapus field lainnya dari data
+    if (Object.keys(data).length > 1 && data.profileUri !== undefined) {
+      Object.keys(data).forEach((key) => {
+        if (key !== 'profileUri' && data[key] === '') {
+          delete data[key];
+        }
+      });
     }
 
     // Buat validasi hanya jika ada field yang diisi
-    const validation = formSchema.safeParse(data);
-    console.log(validation);
-    if (!validation) {
-      validation.error.errors.map((validation) => {
-        const key = [
-          {
-            name: validation.path[0],
-            message: validation.message,
-          },
-        ];
-        setValidations((validations) => [...validations, ...key]);
-      });
-      setLoading(false);
-      toast.dismiss();
-      toast.error('Invalid Input.');
+    if (Object.keys(data).length > 0) {
+      const validation = formSchema.safeParse(data);
+      console.log(validation);
+      if (!validation) {
+        validation.error.errors.map((validation) => {
+          const key = [
+            {
+              name: validation.path[0],
+              message: validation.message,
+            },
+          ];
+          setValidations((validations) => [...validations, ...key]);
+        });
+        setLoading(false);
+        toast.dismiss();
+        toast.error('Invalid Input.');
 
-      return;
+        return;
+      }
     }
 
     // Lakukan request patch
@@ -112,10 +114,10 @@ const ProfilePage = () => {
         if (response.data?.code === 200 || response.data?.code === 201) {
           toast.dismiss();
           toast.success('Success Update Profile');
-
+          router.push('/profile');
           setUpdatedProfile(true);
-          setProfileUri(null);
-          setMenuActive(false);
+          setProfileUri('');
+          setModalFormProfile(false);
         }
         setLoading(false);
       })
@@ -143,7 +145,7 @@ const ProfilePage = () => {
       });
   };
 
-  const fetchusers = useCallback(async () => {
+  const fetchUsers = useCallback(async () => {
     await request
       .get(`/auth/profile`)
       .then(function (response) {
@@ -158,15 +160,15 @@ const ProfilePage = () => {
   }, []);
 
   useEffect(() => {
-    fetchusers();
-  }, [fetchusers]);
+    fetchUsers();
+  }, [fetchUsers]);
 
   useEffect(() => {
     if (updatedProfile) {
-      fetchusers();
+      fetchUsers();
       setUpdatedProfile(false);
     }
-  }, [fetchusers, updatedProfile]);
+  }, [fetchUsers, updatedProfile]);
   return (
     <>
       <div className="flex flex-col gap-[30px]">
@@ -201,23 +203,29 @@ const ProfilePage = () => {
                         className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
                       />
                     </div>
-
+                    {validations &&
+                      validations.map(
+                        (validation, index) =>
+                          validation.name === 'profileUri' && (
+                            <p
+                              key={index}
+                              className="text-sm text-red-500 mt-2"
+                            >
+                              {validation.message}
+                            </p>
+                          )
+                      )}
                     {profileUri && (
                       <GiCancel
                         className="absolute top-0 right-0 text-red-500 text-lg cursor-pointer"
-                        onClick={() => setProfileUri(null)}
+                        onClick={() => {
+                          setProfileUri(null);
+                          document.getElementById(`profileUri`).value = '';
+                        }}
                       />
                     )}
                   </div>
-                  {validations &&
-                    validations.map(
-                      (validation, index) =>
-                        validation.name === 'profileUri' && (
-                          <p key={index} className="text-sm text-red-500 mt-2">
-                            {validation.message}
-                          </p>
-                        )
-                    )}
+
                   <label
                     htmlFor="profileUri"
                     className="cursor-pointer rounded-lg flex justify-center items-center px-[55px] py-[10px] text-white font-bold text-[16px] bg-[#6366F1]"
@@ -254,23 +262,24 @@ const ProfilePage = () => {
                   </h1>
                 </div>
                 <div>
-                  <h1 className="text-[13px] font-bold">Nama</h1>
+                  <h1 className="text-[13px] font-bold">Nama Toko</h1>
                   <p className="text-[13px] font-normal">{name}</p>
                 </div>
                 <div>
-                  <h1 className="text-[13px] font-bold">Alamat</h1>
+                  <h1 className="text-[13px] font-bold">Alamat Toko</h1>
                   <p className="text-[13px] font-normal">
-                    {address ?? 'Wajib ditulis'}
+                    {address ? address : 'Wajib ditulis'}
                   </p>
                 </div>
+
                 <button
-                  onClick={() => setMenuActive(!menuActive)}
+                  onClick={() => setModalFormProfile(!modalFormProfile)}
                   className="bg-[#6366F1] text-[16px] font-bold text-white py-[10px] w-full  rounded-lg"
                 >
                   Ubah Biodata
                 </button>
                 <button
-                  onClick={() => setAlertLogout(!alertLogout)}
+                  onClick={() => setModalLogout(!modalLogout)}
                   className="bg-[#FF3D00] text-[16px] font-bold text-white py-[10px] w-full  rounded-lg"
                 >
                   Keluar Akun
@@ -280,19 +289,25 @@ const ProfilePage = () => {
           </div>
         </div>
       </div>
+
+      {/*   MODAL VIEW */}
+
       <div
         onClick={() => {
-          setMenuActive(!menuActive), setUpdatedProfile(true);
+          setModalFormProfile(!modalFormProfile);
+          setUpdatedProfile(true);
+          setName('');
+          setAddress('');
         }}
-        className={`fixed w-full h-screen backdrop-blur-sm bg-black/20  top-0 left-0 z-50 flex justify-center items-center ${
-          menuActive ? '' : 'hidden'
+        className={`fixed w-full h-screen backdrop-blur-sm bg-black/20 top-0 left-0 z-[70] flex justify-center items-center ${
+          modalFormProfile ? '' : 'hidden'
         }`}
       >
         <div
           className="w-[694px] flex flex-col gap-[14px]"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className=" w-full bg-white rounded-lg relative">
+          <div className="w-full bg-white rounded-lg relative">
             <div className="px-[22px] py-[18px] flex gap-[17px] bg-white rounded-[8px]">
               <span className="border-2 rounded-full border-[#FE6D00]"></span>
               <h1 className="md:text-[20px] text-[16px] font-semibold items-center flex gap-5">
@@ -301,14 +316,17 @@ const ProfilePage = () => {
             </div>
           </div>
           <form onSubmit={onUpdate}>
-            <div className=" w-full bg-white rounded-lg relative p-[20px] flex flex-col gap-[43px]">
+            <div
+              className="w-full bg-white rounded-lg relative p-[20px] flex flex-col gap-[43px] overflow-auto"
+              style={{ maxHeight: '80vh' }}
+            >
               <div className="grid grid-cols-1 gap-[32px]">
                 <InputField
                   id={'name'}
                   name={'name'}
                   value={name}
-                  label={'Nama Toko'}
-                  placeholder={'Nama toko'}
+                  label={'Nama'}
+                  placeholder={'Nama'}
                   type={'text'}
                   onChange={(e) => setName(e.target.value)}
                   validations={validations}
@@ -325,18 +343,19 @@ const ProfilePage = () => {
                 />
               </div>
               <button className="bg-[#4DBB8D] text-[16px] font-bold text-white py-[10px] w-full rounded-lg">
-                Konfirmasil
+                Konfirmasi
               </button>
             </div>
           </form>
         </div>
       </div>
+
       <div
         className={`fixed w-full h-full overflow-y-scroll backdrop-blur-sm bg-black/20  top-0 left-0 z-50 flex justify-center  ${
-          alertLogout ? '' : 'hidden'
+          modalLogout ? '' : 'hidden'
         }`}
         onClick={() => {
-          setAlertLogout(!alertLogout);
+          setModalLogout(!modalLogout);
         }}
       >
         <div
@@ -352,6 +371,7 @@ const ProfilePage = () => {
           <button
             onClick={() => {
               Cookies.remove('token');
+              localStorage.removeItem('partner');
               router.push('/login');
             }}
             className="w-[120px] text-[23px] font-semibold text-white bg-red-500 py-2 text-center rounded-lg"
