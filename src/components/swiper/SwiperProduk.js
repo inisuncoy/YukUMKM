@@ -91,7 +91,7 @@ export default function SwiperProduk({ datas }) {
                 thumbnail={data.image_uri}
                 price={data.price}
                 seller={data.user.name}
-                href={`/toko/${data.user.name}/${data.slug}`}
+                href={`/toko/${data.user.slug}/${data.slug}`}
               />
             </SwiperSlide>
           ))}

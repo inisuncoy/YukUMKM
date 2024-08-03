@@ -124,7 +124,7 @@ export default function HomePage() {
                                   thumbnail={product.image_uri}
                                   price={product.price}
                                   seller={product.user.name}
-                                  href={`/toko/${saller.slug}/${product.slug}`}
+                                  href={`/toko/${product.user.slug}/${product.slug}`}
                                   sizeImg={'w-[145px] h-[145px]'}
                                 />
                               )
@@ -165,7 +165,7 @@ export default function HomePage() {
                   thumbnail={data.image_uri}
                   price={data.price}
                   seller={data.user.name}
-                  href={`/toko/${data.user.name}/${data.slug}`}
+                  href={`/toko/${data.user.slug}/${data.slug}`}
                 />
               ))}
             </div>
