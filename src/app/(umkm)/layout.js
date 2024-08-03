@@ -1,5 +1,4 @@
 'use client';
-import { Button } from 'flowbite-react';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -17,14 +16,10 @@ const UmkmLayout = ({ children }) => {
   const pathname = usePathname();
 
   useEffect(() => {
-    // This will run only in the client
     setIsClient(true);
     const token = Cookies.get('token');
     setHasToken(!!token);
-  }, []);
 
-  useEffect(() => {
-    // Set active and navBtn to false when pathname changes
     setActive(false);
     setNavBtn(false);
   }, [pathname]);

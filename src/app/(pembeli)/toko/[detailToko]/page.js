@@ -7,10 +7,14 @@ import { MdLocationOn } from 'react-icons/md';
 import { FaRegStar, FaStar } from 'react-icons/fa';
 
 import LogoUMKM from '../../../../../public/assets/icon/store.jpeg';
+import instagram from '../../../../../public/assets/icon/instagram.png';
+import whatsapp from '../../../../../public/assets/icon/whatsapp.png';
+import facebook from '../../../../../public/assets/icon/facebook.png';
+
 import NextBreadcrumb from '@/components/NextBreadcrumb';
 //import { usePathname } from 'next/navigation';
 import request from '@/utils/request';
-import InputField from '@/components/forms/InputField';
+
 import { z } from 'zod';
 import toast from 'react-hot-toast';
 import CardProductV2 from '@/components/card/CardProductV2';
@@ -48,7 +52,7 @@ const DetailTokoPage = ({ params }) => {
 
   const fetchSaller = useCallback(async () => {
     await request
-      .get(`/public/seller?slug=${decodeURIComponent(detailToko)}`)
+      .get(`/public/seller?slug=${detailToko}`)
       .then(function (response) {
         setSallerDatas([response.data.data]);
         setIdSeller(response.data.data.id);
@@ -275,36 +279,119 @@ const DetailTokoPage = ({ params }) => {
               key={i}
               className="w-full p-[17px] bg-white rounded-lg flex md:flex-row flex-col  gap-[16px]"
             >
-              {data.profile_uri ? (
-                <img
-                  width={0}
-                  height={0}
-                  alt="profile-toko"
-                  src={process.env.NEXT_PUBLIC_HOST + data.profile_uri}
-                  className="md:w-[281px] md:h-[296px] object-cover rounded-lg"
-                />
-              ) : (
+              <div className="relative md:w-[281px] md:h-[296px] flex-shrink-0">
                 <Image
                   width={0}
                   height={0}
-                  alt="profile-toko"
-                  src={LogoUMKM}
-                  className="md:w-[281px] md:h-[296px] object-cover rounded-lg"
+                  sizes="100vw"
+                  loading="lazy"
+                  alt="main-product-img"
+                  src={
+                    data.profile_uri
+                      ? process.env.NEXT_PUBLIC_HOST + data.profile_uri
+                      : LogoUMKM
+                  }
+                  className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
                 />
-              )}
+              </div>
+
               <div className="w-full flex flex-col lg:gap-0 gap-5">
-                <div className="flex flex-col gap-[12px] grow">
-                  <div>
-                    <h1 className="font-semibold text-[40px]">{data.name}</h1>
-                    <div className="flex gap-[9px] items-center">
-                      <MdLocationOn className="text-[#E21B1B] text-[22px]" />
-                      <p className="text-[16px] font-bold">{data.address}</p>
-                    </div>
+                <div className="flex gap-[12px] grow">
+                  <div className="relative md:hidden w-[100px] h-[100px] flex-shrink-0">
+                    <Image
+                      width={0}
+                      height={0}
+                      sizes="100vw"
+                      loading="lazy"
+                      alt="main-product-img"
+                      src={
+                        data.profile_uri
+                          ? process.env.NEXT_PUBLIC_HOST + data.profile_uri
+                          : LogoUMKM
+                      }
+                      className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
+                    />
                   </div>
-                  <p className="text-[13px] ">
-                    {data.detail_seller.description}
-                  </p>
+                  <div className="flex flex-col gap-[12px] grow">
+                    <div>
+                      <div className="flex justify-between">
+                        <h1 className="font-semibold text-[30px] md:text-[40px]">
+                          {data.name}
+                        </h1>
+                        <div className="w-full flex justify-end items-center grow-0 text-[14px] gap-1 ">
+                          <FaStar className="text-[#FEC810] text-2xl md:text-4xl" />
+                          <div className="px-[3px] py-[6px] text-center text-[18px] md:text-[24px]">
+                            <h1>{data.avgRating ?? 0}</h1>
+                          </div>
+                        </div>
+                      </div>
+                      {data.address && (
+                        <div className="flex gap-[9px] items-start">
+                          <MdLocationOn className="text-[#E21B1B] text-[20px] md:text-[22px] " />
+                          <p className="text-[13px] md:text-[16px] font-bold">
+                            {data.address}
+                          </p>
+                        </div>
+                      )}
+                      <div className="flex flex-row flex-wrap mt-2  gap-[11px] md:hidden">
+                        {data.detail_seller.instagram && (
+                          <div className="flex gap-[8px]  items-center">
+                            <Image
+                              width={0}
+                              height={0}
+                              sizes="100vw"
+                              loading="lazy"
+                              alt="instagram"
+                              src={instagram}
+                              className="w-[12px] h-[12px] md:w-[27px] md:h-[27px] "
+                            />
+                            <h1 className="text-[8px]">
+                              @{data.detail_seller.instagram}
+                            </h1>
+                          </div>
+                        )}
+                        {data.detail_seller.whatsapp && (
+                          <div className="flex gap-[8px] items-center">
+                            <Image
+                              width={0}
+                              height={0}
+                              sizes="100vw"
+                              loading="lazy"
+                              alt="whatsapp"
+                              src={whatsapp}
+                              className="w-[12px] h-[12px] md:w-[27px] md:h-[27px] "
+                            />
+                            <h1 className="text-[8px]">
+                              {data.detail_seller.whatsapp}
+                            </h1>
+                          </div>
+                        )}
+                        {data.detail_seller.facebook && (
+                          <div className="flex gap-[8px] items-center">
+                            <Image
+                              width={0}
+                              height={0}
+                              sizes="100vw"
+                              loading="lazy"
+                              alt="facebook"
+                              src={facebook}
+                              className="w-[12px] h-[12px] md:w-[27px] md:h-[27px] "
+                            />
+                            <h1 className="text-[8px]">
+                              {data.detail_seller.facebook}
+                            </h1>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <p className="hidden md:block text-[13px] ">
+                      {data.detail_seller.description}
+                    </p>
+                  </div>
                 </div>
+                <p className="md:hidden text-[13px] ">
+                  {data.detail_seller.description}
+                </p>
                 <div className="grow-0 flex">
                   <button
                     onClick={(e) => {
@@ -314,7 +401,7 @@ const DetailTokoPage = ({ params }) => {
                         window.location.href = `/chat`;
                       });
                     }}
-                    className="w-full text-center bg-[#1D1D1D] text-white text-[16px] font-semibold py-[14px] rounded-lg"
+                    className="w-full text-center bg-[#1D1D1D] text-white text-[12px] md:text-[16px] font-semibold py-2 md:py-[14px] rounded-lg"
                   >
                     Hubungi Penjual
                   </button>
@@ -323,7 +410,7 @@ const DetailTokoPage = ({ params }) => {
                     onClick={() =>
                       checkTokenAndPerformAction(() => setModalReview(true))
                     }
-                    className="w-full text-center bg-white border-2 border-black text-black text-[16px] font-semibold py-[14px] rounded-lg"
+                    className="w-full text-center bg-white border-2 border-black text-black text-[12px] md:text-[16px] font-semibold py-2 md:py-[14px] rounded-lg"
                   >
                     Beri Penilaian
                   </button>
@@ -350,7 +437,7 @@ const DetailTokoPage = ({ params }) => {
                     thumbnail={data.image_uri}
                     price={data.price}
                     seller={data.user.name}
-                    href={`${decodeURIComponent(detailToko)}/${data.slug}`}
+                    href={`${data.user?.slug}/${data.slug}`}
                   />
                 ))}
             </div>
@@ -404,7 +491,7 @@ const DetailTokoPage = ({ params }) => {
                 </legend>
 
                 <div className="space-y-2 px-5 py-6">
-                  <div className="flex gap-5 items-center">
+                  <div className="flex flex-col md:flex-row gap-2 md:gap-5 items-center">
                     <div className="max-w-sm mx-auto">
                       <label
                         htmlFor="number-input"
@@ -423,7 +510,7 @@ const DetailTokoPage = ({ params }) => {
                         onChange={(e) => setMinPrice(e.target.value)}
                       />
                     </div>
-                    <h1 className="block text-xs font-medium">To</h1>
+
                     <div className="max-w-sm mx-auto">
                       <label
                         htmlFor="number-input"
@@ -461,40 +548,41 @@ const DetailTokoPage = ({ params }) => {
           </div>
         </div>
       </div>
-      <div
-        className={`fixed w-full h-full overflow-y-scroll backdrop-blur-sm bg-black/20  top-0 left-0 z-50 flex justify-center  ${
-          modalReview ? '' : 'hidden'
-        }`}
-        onClick={() => {
-          setModalReview(!modalReview);
 
-          setSelectedStar(review ?? 0);
-        }}
-      >
+      {modalReview && (
         <div
-          className="rounded-lg w-[694px] h-[279px] flex flex-col justify-center items-center gap-[14px] bg-white m-auto"
-          onClick={(e) => e.stopPropagation()}
+          className={`fixed w-full h-full overflow-y-scroll backdrop-blur-sm bg-black/20  top-0 left-0 z-50 flex justify-center`}
+          onClick={() => {
+            setModalReview(!modalReview);
+            setSelectedStar(review ?? 0);
+          }}
         >
-          <p className="text-center text-[26px]">Beri Penilaian Toko</p>
-          <div className="flex gap-[40px]">
-            {stars.map((_, index) => (
-              <div
-                key={index}
-                onClick={(e) => {
-                  setSelectedStar(index + 1);
-                  onSubmit(e, index + 1);
-                }}
-              >
-                {index < selectedStar ? (
-                  <FaStar className="text-[78px] cursor-pointer text-[#FFF000]" />
-                ) : (
-                  <FaRegStar className="text-[78px] cursor-pointer " />
-                )}
-              </div>
-            ))}
+          <div
+            className="rounded-lg w-full h-[200px] mx-[10px] md:w-[694px] md:h-[279px] flex flex-col justify-center items-center gap-[14px] bg-white m-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-center text-[26px]">Beri Penilaian Toko</p>
+            <div className="flex gap-[40px]">
+              {stars.map((_, index) => (
+                <div
+                  key={index}
+                  onClick={(e) => {
+                    setSelectedStar(index + 1);
+                    onSubmit(e, index + 1);
+                  }}
+                >
+                  {index < selectedStar ? (
+                    <FaStar className="text-[30px] md:text-[78px] cursor-pointer text-[#FFF000]" />
+                  ) : (
+                    <FaRegStar className="text-[30px] md:text-[78px] cursor-pointer " />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
       {showModal && (
         <div
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"

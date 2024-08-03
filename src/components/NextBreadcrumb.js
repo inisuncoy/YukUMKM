@@ -69,10 +69,10 @@ const NextBreadcrumb = ({
                         itemLink.toUpperCase()
                           ? 'text-black'
                           : 'text-[#FE6D00]'
-                      } hover:text-primary-600 md:ml-2 md:text-[16px] text-[12px]`}
+                      } hover:text-primary-600 focus:outline-none focus:ring focus:ring-transparent md:ml-2 md:text-[16px] text-[12px]`}
                     >
-                      {formatText(itemLink).length > 50
-                        ? `${formatText(itemLink).substring(0, 50)}...`
+                      {formatText(itemLink).length > 30
+                        ? `${formatText(itemLink).substring(0, 30)}...`
                         : formatText(itemLink)}
                     </Link>
                   </div>

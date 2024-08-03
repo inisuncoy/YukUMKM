@@ -12,8 +12,13 @@ import { Navigation } from 'swiper/modules';
 import CardProduct from '../card/CardProduct';
 import { IoIosArrowForward } from 'react-icons/io';
 import CardProductV2 from '../card/CardProductV2';
+import Image from 'next/image';
+import { NumberFormat } from '@/utils/numberFormat';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function SwiperProduk({ datas }) {
+  const router = useRouter();
   const iconArrow = (
     <svg
       className="xl:w-[55px] md:w-[40px]"
@@ -79,13 +84,14 @@ export default function SwiperProduk({ datas }) {
               </SwiperSlide>
             ))} */}
           {datas.map((data, i) => (
-            <SwiperSlide key={i} className="">
+            <SwiperSlide key={i} className=" ">
               <CardProductV2
+                key={i}
                 name={data.name}
                 thumbnail={data.image_uri}
                 price={data.price}
-                saller={data.user.name}
-                href={`toko/${data.user.name}/${data.name}`}
+                seller={data.user.name}
+                href={`/toko/${data.user.slug}/${data.slug}`}
               />
             </SwiperSlide>
           ))}

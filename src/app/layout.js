@@ -2,7 +2,6 @@ import './globals.css';
 import { Poppins } from 'next/font/google';
 import { Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
-import Script from 'next/script';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -35,44 +34,6 @@ export default function RootLayout({ children }) {
         >
           {children}
         </Suspense>
-        <Script id="custom-script" strategy="afterInteractive">
-          {`
-            document.addEventListener('DOMContentLoaded', function() {
-              window.addEventListener('load', function() {
-                document.querySelector('.loader').style.transition = 'opacity 1s';
-                document.querySelector('.loader').style.opacity = 0;
-                setTimeout(function() {
-                  document.querySelector('.loader').style.display = 'none';
-                  document.querySelector('.content').style.display = 'block';
-                  document.querySelector('.content').style.transition = 'opacity 1s';
-                  document.querySelector('.content').style.opacity = 1;
-                }, 1000);
-              });
-
-              function showLoader() {
-                document.getElementById('loader').style.display = 'block';
-              }
-
-              function hideLoader() {
-                document.getElementById('loader').style.display = 'none';
-              }
-
-              document.querySelectorAll('.loadButton').forEach(function(button) {
-                button.addEventListener('click', function() {
-                  button.disabled = true;
-                  document.querySelector('.content').style.transition = 'opacity 0.5s';
-                  document.querySelector('.content').style.opacity = 0;
-                  setTimeout(function() {
-                    document.querySelector('.content').style.display = 'none';
-                    document.querySelector('.loader').style.display = 'block';
-                    document.querySelector('.loader').style.transition = 'opacity 0.5s';
-                    document.querySelector('.loader').style.opacity = 1;
-                  }, 500);
-                });
-              });
-            });
-          `}
-        </Script>
       </body>
     </html>
   );

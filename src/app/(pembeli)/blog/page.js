@@ -1,20 +1,21 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
-import Image from 'next/image';
 import React, { useCallback, useEffect, useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+
+import moment from 'moment';
 
 import { IoIosSearch } from 'react-icons/io';
 import { GoDotFill } from 'react-icons/go';
 
-import hero from '../../../../public/assets/img/hero/image.png';
-import Link from 'next/link';
 import CardBlogLarge from '@/components/card/CardBlogLarge';
 import CardBlogSmall from '@/components/card/CardBlogSmall';
 import NextBreadcrumb from '@/components/NextBreadcrumb';
-import request from '@/utils/request';
-import moment from 'moment';
 
-export default function BlogPAge() {
+import request from '@/utils/request';
+
+export default function BlogPage() {
   const [blogDatas, setBlogDatas] = useState();
   const [recordsTotal, setRecordsTotal] = useState();
   const [loading, setLoading] = useState(true);
@@ -33,8 +34,9 @@ export default function BlogPAge() {
   }, []);
 
   useEffect(() => {
-    fetchBlog();
+    Promise.all([fetchBlog()]);
   }, [fetchBlog]);
+
   return (
     <div className=" w-full">
       <div className="w-full h-[390px] inline-flex flex-nowrap overflow-hidden ">
@@ -42,7 +44,9 @@ export default function BlogPAge() {
           width={0}
           height={0}
           alt="hero"
-          src={hero}
+          loading="lazy"
+          sizes="100vw"
+          src={'/assets/img/hero/image.png'}
           className="w-full object-cover object-bottom lg:rounded-lg"
         />
       </div>
@@ -83,39 +87,44 @@ export default function BlogPAge() {
           </div>
           <div className=" flex flex-col gap-[30px]">
             {recordsTotal >= 1 && (
-              <Link
-                href={`blog/${blogDatas[0].slug}`}
-                className="rounded-lg shadow-xl flex lg:flex-row flex-col gap-[20px] lg:pr-[23px]"
-              >
-                <img
-                  width={0}
-                  height={0}
-                  alt="main-blog"
-                  src={process.env.NEXT_PUBLIC_HOST + blogDatas[0].image_uri}
-                  className="lg:max-w-[413px] max-h-[323px] lg:w-[413px] md:w-full lg:h-[323px]  object-cover lg:rounded-l-lg md:rounded-lg"
-                />
-                <div className="flex flex-col gap-[14px] justify-center lg:px-0 md:p-[12px] p-[12px]">
-                  <div>
-                    <h1 className="font-semibold text-[16px]">
-                      {blogDatas[0].title}
-                    </h1>
-                    <div className="text-[10px] flex gap-1 text-gray-400 items-center ">
-                      <p className="md:block hidden">
-                        <span>{blogDatas[0].user.name} </span>
-                      </p>
-                      <GoDotFill className="lg:block hidden" />
-                      <span>
-                        {moment(blogDatas[0].created_at).format(
-                          'DD/MM/YYYY, LT'
-                        )}
-                      </span>
-                    </div>
+              <Link href={`blog/${blogDatas[0].slug}`}>
+                <div className="rounded-lg shadow-xl flex lg:flex-row items-start flex-col gap-[20px] lg:pr-[23px] hover:bg-gray-100">
+                  <div className="relative lg:max-w-[413px] max-h-[323px] lg:w-[413px] md:w-full lg:h-[323px] w-full h-[233px] flex-shrink-0 lg:rounded-l-lg md:rounded-lg ">
+                    <Image
+                      width={0}
+                      height={0}
+                      sizes="100vw"
+                      loading="lazy"
+                      alt="main-product-img"
+                      src={
+                        process.env.NEXT_PUBLIC_HOST + blogDatas[0].image_uri
+                      }
+                      className="absolute left-0 top-0 w-full h-full object-cover object-center lg:rounded-l-lg md:rounded-lg  transition duration-50"
+                    />
                   </div>
-                  <p className="xl:text-[13px] lg:text-[11px] md:text-[12px] ">
-                    {blogDatas[0].content.length > 1000
-                      ? `${blogDatas[0].content.substring(0, 1000)}...`
-                      : blogDatas[0].content}
-                  </p>
+                  <div className="flex flex-col gap-[14px] justify-center lg:px-0 md:p-[12px] p-[12px]">
+                    <div>
+                      <h1 className="font-semibold text-[16px]">
+                        {blogDatas[0].title}
+                      </h1>
+                      <div className="text-[10px] flex gap-1 text-gray-400 items-center ">
+                        <p className="md:block hidden">
+                          <span>{blogDatas[0].user.name} </span>
+                        </p>
+                        <GoDotFill className="lg:block hidden" />
+                        <span>
+                          {moment(blogDatas[0].created_at).format(
+                            'DD/MM/YYYY, LT'
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="xl:text-[13px] lg:text-[11px] md:text-[12px] ">
+                      {blogDatas[0].content.length > 950
+                        ? `${blogDatas[0].content.substring(0, 950)}...`
+                        : blogDatas[0].content}
+                    </p>
+                  </div>
                 </div>
               </Link>
             )}

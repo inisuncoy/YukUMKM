@@ -60,7 +60,7 @@ const TokoPage = () => {
             Toko
           </h1>
         </div>
-        <div className="xl:px-[60px] lg:px[50px] md:px-[40px] px-[30px] grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-x-[16px] gap-y-[30px]">
+        <div className="xl:px-[60px] lg:px[50px] md:px-[40px] px-[0px] grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-x-[16px] gap-y-[30px]">
           {loading ? (
             <div>Loading</div>
           ) : (
@@ -71,6 +71,7 @@ const TokoPage = () => {
                 href={`/toko/${data.slug}`}
                 logo={data.profile_uri}
                 name={data.name}
+                avgRating={data.avgRating}
               />
             ))
           )}
