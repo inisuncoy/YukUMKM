@@ -92,8 +92,6 @@ const DetailProdukPage = ({ params }) => {
     ]);
   }, [fetchProductSeller, fetchProductSellerById, fetchSaller]);
 
-  console.log(hoverImg);
-
   return (
     <>
       <div className="flex flex-col gap-[19px]">

@@ -80,7 +80,6 @@ const DetailBlogPage = ({ params }) => {
         setAddComment(true);
       })
       .catch(function (error) {
-        console.log(error);
         if (
           (error.response?.data?.code === 400 ||
             error.response?.data?.code === 422) &&

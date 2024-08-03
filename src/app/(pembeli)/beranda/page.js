@@ -29,7 +29,10 @@ export default function HomePage() {
     setLoading(true);
     let payload = { name_insensitive: queryProductValue, status: true };
     try {
-      const response = await request.get(`/public/item`, payload);
+      const response = await request.get(
+        `/public/item?sortBy=totalVisited&sortDirection=desc`,
+        payload
+      );
       setProductSallerDatas(response.data.data);
       setLoading(false);
     } catch (error) {
@@ -42,7 +45,9 @@ export default function HomePage() {
   const fetchSaller = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await request.get(`/public/seller`);
+      const response = await request.get(
+        `/public/seller?limit=4&sortBy=avgRating&sortDirection=desc`
+      );
       setSallerDatas(response.data.data);
       setLoading(false);
     } catch (error) {
@@ -127,59 +132,58 @@ export default function HomePage() {
               <div className="px-[20px]  pb-[32px] flex">
                 <div className="grid grid-cols-2  md:grid-cols-1 lg:grid-cols-2 gap-x-[16px] w-full lg:gap-[52px] md:gap-[12px] gap-[12px]">
                   {sallerDatas &&
-                    (showAllSeller
-                      ? sallerDatas.slice(0, 4)
-                      : sallerDatas.slice(0, 2)
-                    ).map((saller, i) => (
-                      <div key={i}>
-                        <div className="hidden relative w-full md:flex md:flex-row items-center">
-                          <div className="w-[218px] h-[269px] ">
-                            <Image
-                              loading="lazy"
-                              width={0}
-                              height={0}
-                              alt="product-bg"
-                              sizes="100vw"
-                              src={
-                                saller.profile_uri
-                                  ? process.env.NEXT_PUBLIC_HOST +
-                                    saller.profile_uri
-                                  : '/assets/logo/logoUMKM.png'
-                              }
-                              className="w-full h-full object-cover object-bottom rounded-lg"
-                            />
+                    (showAllSeller ? sallerDatas : sallerDatas.slice(0, 2)).map(
+                      (saller, i) => (
+                        <div key={i}>
+                          <div className="hidden relative w-full md:flex md:flex-row items-center">
+                            <div className="w-[218px] h-[269px] ">
+                              <Image
+                                loading="lazy"
+                                width={0}
+                                height={0}
+                                alt="product-bg"
+                                sizes="100vw"
+                                src={
+                                  saller.profile_uri
+                                    ? process.env.NEXT_PUBLIC_HOST +
+                                      saller.profile_uri
+                                    : '/assets/logo/logoUMKM.png'
+                                }
+                                className="w-full h-full object-cover object-bottom rounded-lg"
+                              />
+                            </div>
+                            <div className="flex gap-4 z-10 w-full justify-end absolute ">
+                              {productSallerDatas
+                                .filter(
+                                  (product) => saller.id === product.user_id
+                                )
+                                .slice(0, 2)
+                                .map(
+                                  (product, x) =>
+                                    saller.id === product.user_id && (
+                                      <CardProductV2
+                                        key={x}
+                                        name={product.name}
+                                        thumbnail={product.image_uri}
+                                        price={product.price}
+                                        seller={product.user.name}
+                                        href={`/toko/${product.user.slug}/${product.slug}`}
+                                        sizeImg={'w-[145px] h-[145px]'}
+                                      />
+                                    )
+                                )}
+                            </div>
                           </div>
-                          <div className="flex gap-4 z-10 w-full justify-end absolute ">
-                            {productSallerDatas
-                              .filter(
-                                (product) => saller.id === product.user_id
-                              )
-                              .slice(0, 2)
-                              .map(
-                                (product, x) =>
-                                  saller.id === product.user_id && (
-                                    <CardProductV2
-                                      key={x}
-                                      name={product.name}
-                                      thumbnail={product.image_uri}
-                                      price={product.price}
-                                      seller={product.user.name}
-                                      href={`/toko/${product.user.slug}/${product.slug}`}
-                                      sizeImg={'w-[145px] h-[145px]'}
-                                    />
-                                  )
-                              )}
-                          </div>
-                        </div>
 
-                        <CardTokoV2
-                          href={`/toko/${saller.slug}`}
-                          logo={saller.profile_uri}
-                          name={saller.name}
-                          className={'md:hidden block'}
-                        />
-                      </div>
-                    ))}
+                          <CardTokoV2
+                            href={`/toko/${saller.slug}`}
+                            logo={saller.profile_uri}
+                            name={saller.name}
+                            className={'md:hidden block'}
+                          />
+                        </div>
+                      )
+                    )}
                 </div>
               </div>
             </div>
