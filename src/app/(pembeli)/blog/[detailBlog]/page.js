@@ -211,7 +211,7 @@ const DetailBlogPage = ({ params }) => {
                       </div>
                     )}
                     <div className="w-full border-[1px] border-black px-[20px] pt-[11px] pb-[30px]">
-                      <div className="flex items-center gap-[20px]">
+                      <div className="flex flex-col md:flex-row md:items-center md:gap-[20px]">
                         <h1 className="text-[20px] font-semibold ">
                           {comment.user.name}
                         </h1>

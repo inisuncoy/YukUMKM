@@ -9,8 +9,8 @@ import moment from 'moment';
 const CardBlogLarge = ({ imageUri, title, href, saller, date }) => {
   return (
     <Link href={href}>
-      <div className=" bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100">
-        <div className="relative w-full h-[233px]  flex-shrink-0">
+      <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100">
+        <div className="relative w-full h-[233px] flex-shrink-0">
           <Image
             width={0}
             height={0}
@@ -21,19 +21,12 @@ const CardBlogLarge = ({ imageUri, title, href, saller, date }) => {
             className="absolute left-0 top-0 w-full h-full object-cover object-center rounded-t-lg transition duration-50"
           />
         </div>
-        {/* <img
-        width={0}
-        height={0}
-        alt=""
-        src={process.env.NEXT_PUBLIC_HOST + imageUri}
-        className="w-full h-full rounded-t-lg"
-      /> */}
-        <div className="lg:p-[16px] md:p-[12px] p-[8px]">
-          <a href="#">
-            <h5 className="mb-[3px] md:text-[16px] text-[12px] font-semibold tracking-tight text-gray-900 ">
-              {title}
-            </h5>
-          </a>
+
+        <div className="lg:p-[16px] md:p-[12px] p-[8px] flex flex-col justify-between space-y-3">
+          <h5 className="mb-[3px] md:text-[16px] text-[12px] font-semibold tracking-tight text-gray-900  ">
+            {title}
+          </h5>
+
           <div className="text-[10px] flex lg:flex-row md:flex-col gap-1 text-gray-400 lg:items-center ">
             <p className="md:block hidden">
               <span>{saller} </span>

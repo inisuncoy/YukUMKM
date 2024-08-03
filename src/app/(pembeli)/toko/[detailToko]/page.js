@@ -7,10 +7,14 @@ import { MdLocationOn } from 'react-icons/md';
 import { FaRegStar, FaStar } from 'react-icons/fa';
 
 import LogoUMKM from '../../../../../public/assets/icon/store.jpeg';
+import instagram from '../../../../../public/assets/icon/instagram.png';
+import whatsapp from '../../../../../public/assets/icon/whatsapp.png';
+import facebook from '../../../../../public/assets/icon/facebook.png';
+
 import NextBreadcrumb from '@/components/NextBreadcrumb';
 //import { usePathname } from 'next/navigation';
 import request from '@/utils/request';
-import InputField from '@/components/forms/InputField';
+
 import { z } from 'zod';
 import toast from 'react-hot-toast';
 import CardProductV2 from '@/components/card/CardProductV2';
@@ -338,7 +342,7 @@ const DetailTokoPage = ({ params }) => {
                               sizes="100vw"
                               loading="lazy"
                               alt="instagram"
-                              src={'/assets/icon/instagram.png'}
+                              src={instagram}
                               className="w-[12px] h-[12px] md:w-[27px] md:h-[27px] "
                             />
                             <h1 className="text-[8px]">
@@ -354,7 +358,7 @@ const DetailTokoPage = ({ params }) => {
                               sizes="100vw"
                               loading="lazy"
                               alt="whatsapp"
-                              src={'/assets/icon/whatsapp.png'}
+                              src={whatsapp}
                               className="w-[12px] h-[12px] md:w-[27px] md:h-[27px] "
                             />
                             <h1 className="text-[8px]">
@@ -370,7 +374,7 @@ const DetailTokoPage = ({ params }) => {
                               sizes="100vw"
                               loading="lazy"
                               alt="facebook"
-                              src={'/assets/icon/facebook.png'}
+                              src={facebook}
                               className="w-[12px] h-[12px] md:w-[27px] md:h-[27px] "
                             />
                             <h1 className="text-[8px]">

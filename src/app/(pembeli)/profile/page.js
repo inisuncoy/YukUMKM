@@ -41,21 +41,13 @@ const formSchema = z.object({
       (file) => !file || ACCEPTED_IMAGE_TYPES.includes(file.type),
       'Only .jpg, .jpeg, .png and .webp formats are supported.'
     ),
-  description: z
-    .string()
-    .min(1, { message: 'Description must be at least 3 characters long' })
-    .optional(),
 });
 
 const ProfilePage = () => {
-  const [name, setName] = useState();
-  const [address, setAddress] = useState();
-  const [description, setDescription] = useState();
-  const [profileUri, setProfileUri] = useState(null);
+  const [name, setName] = useState('');
+  const [address, setAddress] = useState('');
+  const [profileUri, setProfileUri] = useState('');
   const [defaultProfileUri, setDefaultProfileUri] = useState();
-  const [whatsapp, setWhatsapp] = useState();
-  const [facebook, setFacebook] = useState();
-  const [instagram, setInstagram] = useState();
 
   const [updatedProfile, setUpdatedProfile] = useState(false);
   const [alertLogout, setAlertLogout] = useState(false);
@@ -72,50 +64,48 @@ const ProfilePage = () => {
     toast.loading('Saving data...');
     e.preventDefault();
 
-    // Inisialisasi objek data dengan title dan content
+    // Inisialisasi objek data
     let data = {};
 
-    // Tambahkan imageUri ke data jika imageUri tidak null atau undefined
-    if (name != null || name != '') {
+    // Tambahkan field ke data hanya jika field tidak kosong
+    if (name !== '') {
       data.name = name;
     }
-    if (address != null || address != '') {
+    if (address !== '') {
       data.address = address;
     }
-    if (profileUri != null || profileUri != '') {
+    if (profileUri !== '') {
       data.profileUri = profileUri;
     }
 
-    // Buat validasi hanya jika profileUri tidak null atau undefined
-    if (
-      profileUri != null ||
-      name != null ||
-      address != null ||
-      name != '' ||
-      address != '' ||
-      profileUri != ''
-    ) {
-      const validation = formSchema.safeParse(data);
-      console.log(validation);
-      if (!validation.success) {
-        validation.error.errors.map((validation) => {
-          const key = [
-            {
-              name: validation.path[0],
-              message: validation.message,
-            },
-          ];
-          setValidations((validations) => [...validations, ...key]);
-        });
-        setLoading(false);
-        toast.dismiss();
-        toast.error('Invalid Input.');
-
-        return;
-      }
+    // Jika tidak ada field yang diisi, maka tidak perlu melakukan request
+    if (Object.keys(data).length === 0) {
+      setLoading(false);
+      toast.dismiss();
+      return;
     }
 
-    // Lakukan request patch hanya jika validasi berhasil atau jika tidak ada imageUri
+    // Buat validasi hanya jika ada field yang diisi
+    const validation = formSchema.safeParse(data);
+    console.log(validation);
+    if (!validation) {
+      validation.error.errors.map((validation) => {
+        const key = [
+          {
+            name: validation.path[0],
+            message: validation.message,
+          },
+        ];
+        setValidations((validations) => [...validations, ...key]);
+      });
+      setLoading(false);
+      toast.dismiss();
+      toast.error('Invalid Input.');
+
+      return;
+    }
+
+    // Lakukan request patch
     request
       .patch(`/auth/profile`, data)
       .then(function (response) {
@@ -160,10 +150,6 @@ const ProfilePage = () => {
         setName(response.data.data.name);
         setDefaultProfileUri(response.data.data.profile_uri);
         setAddress(response.data.data.address);
-        setDescription(response.data.data.detail_seller.description);
-        setWhatsapp(response.data.data.detail_seller.whatsapp);
-        setFacebook(response.data.data.detail_seller.facebook);
-        setInstagram(response.data.data.detail_seller.instagram);
         setLoading(false);
       })
       .catch(function (error) {
@@ -198,11 +184,13 @@ const ProfilePage = () => {
               <form onSubmit={onUpdate}>
                 <div className="py-[20px] px-[40px] rounded-lg shadow-xl flex flex-col gap-[20px]">
                   <div className="relative lg:w-[185px]  flex justify-center items-center ">
-                    {defaultProfileUri ? (
-                      <img
+                    <div className="relative w-[127px] h-[127px] flex-shrink-0 ">
+                      <Image
                         width={0}
                         height={0}
-                        alt="profile"
+                        sizes="100vw"
+                        loading="lazy"
+                        alt="main-product-img"
                         src={
                           profileUri
                             ? URL.createObjectURL(profileUri)
@@ -210,17 +198,9 @@ const ProfilePage = () => {
                             ? process.env.NEXT_PUBLIC_HOST + defaultProfileUri
                             : defaultProfile
                         }
-                        className="w-[127px] h-[127px] "
+                        className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
                       />
-                    ) : (
-                      <Image
-                        width={0}
-                        height={0}
-                        alt="profile"
-                        src={defaultProfile}
-                        className="w-[127px] h-[127px] "
-                      />
-                    )}
+                    </div>
 
                     {profileUri && (
                       <GiCancel

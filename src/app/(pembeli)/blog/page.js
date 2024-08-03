@@ -89,7 +89,7 @@ export default function BlogPage() {
             {recordsTotal >= 1 && (
               <Link href={`blog/${blogDatas[0].slug}`}>
                 <div className="rounded-lg shadow-xl flex lg:flex-row items-start flex-col gap-[20px] lg:pr-[23px] hover:bg-gray-100">
-                  <div className="relative lg:max-w-[413px] max-h-[323px] lg:w-[413px] md:w-full lg:h-[323px]  flex-shrink-0">
+                  <div className="relative lg:max-w-[413px] max-h-[323px] lg:w-[413px] md:w-full lg:h-[323px] w-full h-[233px] flex-shrink-0 lg:rounded-l-lg md:rounded-lg ">
                     <Image
                       width={0}
                       height={0}
@@ -99,7 +99,7 @@ export default function BlogPage() {
                       src={
                         process.env.NEXT_PUBLIC_HOST + blogDatas[0].image_uri
                       }
-                      className="absolute left-0 top-0 w-full h-full object-cover object-center lg:rounded-l-lg md:rounded-lg transition duration-50"
+                      className="absolute left-0 top-0 w-full h-full object-cover object-center lg:rounded-l-lg md:rounded-lg  transition duration-50"
                     />
                   </div>
                   <div className="flex flex-col gap-[14px] justify-center lg:px-0 md:p-[12px] p-[12px]">
