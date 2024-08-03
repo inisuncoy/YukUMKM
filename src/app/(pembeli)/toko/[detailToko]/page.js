@@ -68,6 +68,7 @@ const DetailTokoPage = ({ params }) => {
       userId: idSeller,
       minPrice: minPrice,
       maxPrice: maxPrice,
+      status: true,
     };
 
     // Construct query string for itemCategoryIds

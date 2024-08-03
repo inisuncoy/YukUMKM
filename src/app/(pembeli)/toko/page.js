@@ -1,17 +1,26 @@
 'use client';
+import React, { useCallback, useEffect, useState } from 'react';
+
+import { IoIosSearch } from 'react-icons/io';
+
+import { useDebounce } from 'use-debounce';
+
 import NextBreadcrumb from '@/components/NextBreadcrumb';
 import CardTokoV2 from '@/components/card/CardTokoV2';
 import request from '@/utils/request';
-import React, { useCallback, useEffect, useState } from 'react';
-import { IoIosSearch } from 'react-icons/io';
 
 const TokoPage = () => {
   const [sallerDatas, setSallerDatas] = useState();
   const [loading, setLoading] = useState(true);
 
+  const [querySeller, setQuerySeller] = useState('');
+
+  const [querySellerValue] = useDebounce(querySeller, 500);
+
   const fetchSaller = useCallback(async () => {
+    let payload = { name_insensitive: querySellerValue };
     await request
-      .get(`/public/seller`)
+      .get(`/public/seller`, payload)
       .then(function (response) {
         setSallerDatas(response.data.data);
         setLoading(false);
@@ -19,16 +28,21 @@ const TokoPage = () => {
       .catch(function (error) {
         setLoading(false);
       });
-  }, []);
+  }, [querySellerValue]);
 
   useEffect(() => {
-    fetchSaller();
-  }, [fetchSaller]);
+    if (querySellerValue) {
+      fetchSaller();
+    }
+    Promise.all([fetchSaller()]);
+  }, [fetchSaller, querySellerValue]);
 
   return (
     <div className="flex flex-col gap-[19px]">
       <div className="w-full relative ">
         <input
+          value={querySeller}
+          onChange={(e) => setQuerySeller(e.target.value)}
           className=" w-full py-[20px] pl-[53px] rounded-[8px]"
           placeholder="Search here..."
         />
@@ -53,6 +67,7 @@ const TokoPage = () => {
         }
         capitalizeLinks
       />
+
       <div className=" w-full bg-white rounded-lg relative px-[22px] pb-5 pt-[33px]">
         <div className="xl:px-[50px] lg:px-[40px] md:px-[30px] px-[20px]  py-[18px] flex gap-[17px] bg-white rounded-[8px]">
           <span className="border-2 rounded-full border-[#FE6D00]"></span>

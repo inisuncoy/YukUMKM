@@ -62,8 +62,9 @@ const DetailProdukPage = ({ params }) => {
 
   const fetchProductSeller = useCallback(async () => {
     setLoading(true);
+    let payload = { status: true };
     try {
-      const response = await request.get(`/public/item`);
+      const response = await request.get(`/public/item`, payload);
       setProductSellerDatas(response.data.data);
       setLoading(false);
     } catch (error) {

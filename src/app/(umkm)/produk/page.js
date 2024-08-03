@@ -644,7 +644,14 @@ const ProdukPage = () => {
                             {thumbnail ? (
                               <GiCancel
                                 className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full"
-                                onClick={() => setThumbnail('')}
+                                onClick={() => {
+                                  {
+                                    setThumbnail('');
+                                    document.getElementById(
+                                      `thumbnail_img`
+                                    ).value = '';
+                                  }
+                                }}
                               />
                             ) : (
                               <label
@@ -663,13 +670,20 @@ const ProdukPage = () => {
                               <Image
                                 width={0}
                                 height={0}
+                                loading="lazy"
+                                sizes="100vw"
                                 src={URL.createObjectURL(thumbnail)}
                                 className="rounded-lg w-[75px] h-[75px] object-cover"
                                 alt={`thumbnail-img`}
                               />
                               <GiCancel
                                 className="absolute -top-0 -right-0 text-red-500 cursor-pointer bg-white rounded-full"
-                                onClick={() => setThumbnail('')}
+                                onClick={() => {
+                                  setThumbnail('');
+                                  document.getElementById(
+                                    `thumbnail_img`
+                                  ).value = '';
+                                }}
                               />
                             </>
                           ) : (
