@@ -12,17 +12,18 @@ const PembeliLayout = ({ children }) => {
   const [isClient, setIsClient] = useState(false);
   const [hasToken, setHasToken] = useState(false);
 
-  const pathname = usePathname();
-  // const isActive ((href)=>return pathname.startsWith(href))
-
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     // This will run only in the client
     setIsClient(true);
     const token = Cookies.get('token');
     setHasToken(!!token);
-  }, []);
+
+    setActive(false);
+    setNavBtn(false);
+  }, [pathname]);
 
   return (
     <div className="w-full">
@@ -200,6 +201,7 @@ const PembeliLayout = ({ children }) => {
                         className="block w-full py-2 px-3 text-white bg-[#FE6D00] rounded focus:outline-none focus:ring focus:ring-transparent md:hidden "
                         onClick={() => {
                           Cookies.remove('token');
+                          localStorage.removeItem('partner');
                           router.push('/login');
                         }}
                       >
@@ -232,6 +234,7 @@ const PembeliLayout = ({ children }) => {
                         className="block py-2 px-3  rounded focus:outline-none focus:ring focus:ring-transparent hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 "
                         onClick={() => {
                           Cookies.remove('token');
+                          localStorage.removeItem('partner');
                           router.push('/login');
                         }}
                       >

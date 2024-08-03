@@ -3,13 +3,18 @@
 /* eslint-disable react/no-unescaped-entities */
 'use client';
 import React, { useCallback, useEffect, useState } from 'react';
-import NextBreadcrumb from '@/components/NextBreadcrumb';
-import request from '@/utils/request';
+import Image from 'next/image';
+
+import { LuUser2 } from 'react-icons/lu';
+
 import moment from 'moment';
 import Cookies from 'js-cookie';
-import { LuUser2 } from 'react-icons/lu';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
+
+import NextBreadcrumb from '@/components/NextBreadcrumb';
+
+import request from '@/utils/request';
 
 const formSchema = z.object({
   comment: z
@@ -31,37 +36,6 @@ const DetailBlogPage = ({ params }) => {
   const [isLogin, setIsLogin] = useState(false);
 
   let token = Cookies.get('token');
-
-  const fetchBlog = useCallback(async () => {
-    let payload = {
-      slug: detailBlog,
-    };
-    await request
-      .get(`/public/blog`, payload)
-      .then(function (response) {
-        setBlogDatas([response.data.data]);
-        setIdBlog(response.data.data.id);
-        setLoading(false);
-      })
-      .catch(function (error) {
-        setLoading(false);
-      });
-  }, [detailBlog]);
-
-  useEffect(() => {
-    fetchBlog();
-  }, [fetchBlog]);
-
-  useEffect(() => {
-    if (addComment) {
-      fetchBlog();
-    }
-    if (token) {
-      setIsLogin(true);
-    }
-  }, [fetchBlog, addComment, token]);
-
-  console.log(comment);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -100,10 +74,10 @@ const DetailBlogPage = ({ params }) => {
         if (response.data?.code === 200 || response.data?.code === 201) {
           toast.dismiss();
           toast.success('Success Add Comment');
-          setAddComment(true);
         }
         setLoading(false);
-        console.log(response);
+        setComment('');
+        setAddComment(true);
       })
       .catch(function (error) {
         console.log(error);
@@ -128,6 +102,34 @@ const DetailBlogPage = ({ params }) => {
         setLoading(false);
       });
   };
+
+  const fetchBlog = useCallback(async () => {
+    let payload = {
+      slug: detailBlog,
+    };
+    await request
+      .get(`/public/blog`, payload)
+      .then(function (response) {
+        setBlogDatas([response.data.data]);
+        setIdBlog(response.data.data.id);
+        setLoading(false);
+      })
+      .catch(function (error) {
+        setLoading(false);
+      });
+  }, [detailBlog]);
+
+  useEffect(() => {
+    if (addComment) {
+      fetchBlog();
+    }
+    if (token) {
+      setIsLogin(true);
+    }
+    setAddComment(false);
+
+    Promise.all([fetchBlog()]);
+  }, [fetchBlog, addComment, token]);
 
   return (
     <div className="flex flex-col gap-[30px]">
@@ -170,13 +172,17 @@ const DetailBlogPage = ({ params }) => {
             </div>
             <div className="h-[35px]"></div>
             <div className="flex flex-col gap-[30px]">
-              <img
-                width={0}
-                height={0}
-                alt="thumnail"
-                src={process.env.NEXT_PUBLIC_HOST + data.image_uri}
-                className="w-full"
-              />
+              <div className="relative w-full h-[389px]  flex-shrink-0">
+                <Image
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  loading="lazy"
+                  alt="main-product-img"
+                  src={process.env.NEXT_PUBLIC_HOST + data.image_uri}
+                  className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
+                />
+              </div>
               <p className="xl:text-[20px]">{data.content}</p>
             </div>
             <div className="h-[65px]"></div>
@@ -184,13 +190,30 @@ const DetailBlogPage = ({ params }) => {
               {data.comments &&
                 data.comments.map((comment, i) => (
                   <div key={i} className="flex gap-[32px]">
-                    <div className="w-[51px] h-[51px] border-[2px] border-black flex justify-center items-end">
-                      <LuUser2 className="text-[45px] " />
-                    </div>
+                    {comment.user.profile_uri ? (
+                      <div className="relative w-[51px] h-[51px] border-[2px] border-black flex justify-center items-end rounded-full  flex-shrink-0">
+                        <Image
+                          width={0}
+                          height={0}
+                          sizes="100vw"
+                          loading="lazy"
+                          alt="main-product-img"
+                          src={
+                            process.env.NEXT_PUBLIC_HOST +
+                            comment.user.profile_uri
+                          }
+                          className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-[51px] h-[51px] border-[2px] border-black flex justify-center items-end">
+                        <LuUser2 className="text-[45px] " />
+                      </div>
+                    )}
                     <div className="w-full border-[1px] border-black px-[20px] pt-[11px] pb-[30px]">
                       <div className="flex items-center gap-[20px]">
                         <h1 className="text-[20px] font-semibold ">
-                          Jajang Sutejo
+                          {comment.user.name}
                         </h1>
                         <span className="text-[15px] font-medium opacity-50 ">
                           {moment(comment.created_at).format('DD/MM/YYYY, LT')}
@@ -221,7 +244,7 @@ const DetailBlogPage = ({ params }) => {
                     value={comment}
                   ></textarea>
                   {isLogin ? (
-                    <></>
+                    ''
                   ) : (
                     <div className="flex flex-col gap-[42px] px-[30px] py-[20px] border-b border-black">
                       <h1 className="text-[20px] ">

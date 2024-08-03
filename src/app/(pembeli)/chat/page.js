@@ -1,16 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
+import Image from 'next/image';
+import Link from 'next/link';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+
 import { IoIosSearch } from 'react-icons/io';
 import { IoTrashOutline } from 'react-icons/io5';
 import { RiSendPlaneLine } from 'react-icons/ri';
 
 import { io } from 'socket.io-client';
-import Image from 'next/image';
-
 import Cookies from 'js-cookie';
-import Link from 'next/link';
+
 import request from '@/utils/request';
+import { useSearchParams } from 'next/navigation';
 
 const ChatPage = () => {
   const [isAction, setIsAction] = useState(false);
@@ -18,21 +20,15 @@ const ChatPage = () => {
   const [listMessage, setListMessage] = useState([]);
   const [partnerId, setPartnerId] = useState(null);
   const [detailPartner, setDetailPartner] = useState(null);
-
   const [message, setMessage] = useState('');
   const [userId, setUserId] = useState('');
-
-  const [showModal, setShowModal] = useState(false); // State untuk modal peringatan
+  const [showModal, setShowModal] = useState(false);
+  const [modalChatList, setModalChatList] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const socketRef = useRef();
 
-  useEffect(() => {
-    // Only access localStorage on the client-side
-    if (typeof window !== 'undefined') {
-      const partner = JSON.parse(localStorage.getItem('partner'));
-      setDetailPartner(partner);
-    }
-  }, []);
+  const pathname = useSearchParams();
 
   const fetchusers = useCallback(async () => {
     // Periksa token sebelum melakukan request
@@ -51,9 +47,45 @@ const ChatPage = () => {
       });
   }, []);
 
+  const handlePartner = (partnerId) => {
+    const socket = socketRef.current;
+    socket.emit('getChatHistory', { partnerId });
+    setPartnerId(partnerId);
+  };
+
+  const handleSendMassage = (e) => {
+    e.preventDefault();
+    const socket = socketRef.current;
+    socket.emit('sendMessages', {
+      partnerId: partnerId,
+      message: message,
+    });
+    setMessage('');
+    setIsAction(true);
+  };
+  const handleUpdate = () => {
+    const socket = socketRef.current;
+    socket.emit('getChatList');
+  };
+
+  const messageEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   useEffect(() => {
-    fetchusers();
+    if (typeof window !== 'undefined') {
+      const partner = JSON.parse(localStorage.getItem('partner'));
+      setDetailPartner(partner);
+    }
+
+    Promise.all([fetchusers()]);
   }, [fetchusers]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [listMessage]);
 
   useEffect(() => {
     const socket = io(`https://api.yukumkm.my.id?userId=${userId}`);
@@ -93,37 +125,6 @@ const ChatPage = () => {
     };
   }, [userId, detailPartner, isAction]);
 
-  const handlePartner = (partnerId) => {
-    const socket = socketRef.current;
-    socket.emit('getChatHistory', { partnerId });
-    setPartnerId(partnerId);
-  };
-
-  const handleSendMassage = (e) => {
-    e.preventDefault();
-    const socket = socketRef.current;
-    socket.emit('sendMessages', {
-      partnerId: partnerId,
-      message: message,
-    });
-    setMessage('');
-    setIsAction(true);
-  };
-  const handleUpdate = () => {
-    const socket = socketRef.current;
-    socket.emit('getChatList');
-  };
-
-  const messageEndRef = useRef(null);
-
-  const scrollToBottom = () => {
-    messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [listMessage]);
-
   if (showModal) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -140,7 +141,7 @@ const ChatPage = () => {
 
   return (
     <div className="grid grid-cols-3 gap-[29px]  ">
-      <div className=" h-full w-full flex flex-col gap-[29px]">
+      <div className=" h-full w-full hidden md:flex flex-col gap-[29px] ">
         <div className="w-full relative">
           <input
             className=" w-full py-[20px] pl-[53px] rounded-[8px]"
@@ -206,27 +207,52 @@ const ChatPage = () => {
           </div>
         </div>
       </div>
-      <div className="col-span-2 w-full bg-white relative">
+      <div className="col-span-3 md:col-span-2 w-full h-[83vh] md:h-full bg-white relative rounded-lg">
         {detailPartner ? (
           <div>
-            <div className="flex justify-between px-[44px] py-[22px] shadow-lg">
-              <div className="flex gap-[18px] items-center">
-                <Image
-                  width={0}
-                  height={0}
-                  alt="profile"
-                  sizes="100vw"
-                  loading="lazy"
-                  src={
-                    detailPartner && detailPartner.profile_uri
-                      ? process.env.NEXT_PUBLIC_HOST + detailPartner.profile_uri
-                      : '/assets/icon/store.jpeg'
-                  }
-                  className="w-[26px] h-[26px] object-cover"
-                />
-                <h1 className="text-[20px] font-semibold text-gray-900 truncate">
-                  {detailPartner.name}
-                </h1>
+            <div className="flex justify-between px-[20px] md:px-[44px] py-[22px] shadow-lg">
+              <div className="flex gap-5 items-center">
+                <button
+                  type="button"
+                  onClick={() => setModalChatList(!modalChatList)}
+                  className="inline-flex items-center   justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 "
+                >
+                  <span className="sr-only">Open main menu</span>
+                  <svg
+                    className="w-5 h-5"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 17 14"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M1 1h15M1 7h15M1 13h15"
+                    />
+                  </svg>
+                </button>
+                <div className="flex gap-[18px] items-center">
+                  <Image
+                    width={0}
+                    height={0}
+                    alt="profile"
+                    sizes="100vw"
+                    loading="lazy"
+                    src={
+                      detailPartner && detailPartner.profile_uri
+                        ? process.env.NEXT_PUBLIC_HOST +
+                          detailPartner.profile_uri
+                        : '/assets/icon/store.jpeg'
+                    }
+                    className="w-[26px] h-[26px] object-cover"
+                  />
+                  <h1 className="text-[20px] font-semibold text-gray-900 truncate">
+                    {detailPartner.name}
+                  </h1>
+                </div>
               </div>
               <div>
                 <IoTrashOutline
@@ -276,7 +302,7 @@ const ChatPage = () => {
             </div>
           </div>
         ) : (
-          <div className="w-full h-full flex justify-center items-center">
+          <div className="w-full h-[83vh] md:h-full  justify-center items-center rounded-lg hidden md:flex">
             <Image
               width={0}
               height={0}
@@ -286,6 +312,78 @@ const ChatPage = () => {
               src={'/assets/img/logo/logo1.png'}
               className="w-[200px] h-[200px] object-cover  "
             />
+          </div>
+        )}
+        {modalChatList && (
+          <div className=" h-[83vh] md:h-full w-full  bg-[#F1F1EE] absolute top-0 left-0 z-[50] p-5 block md:hidden ">
+            <div className=" h-full w-full flex flex-col gap-[29px] ">
+              <div className="w-full relative shadow">
+                <input
+                  className=" w-full py-[20px] pl-[53px] rounded-[8px]"
+                  placeholder="Search here..."
+                />
+                <button className="absolute z-50 top-0 left-0 bottom-0 m-auto ml-[15px] ">
+                  <IoIosSearch className="text-[24px] text-black " />
+                </button>
+              </div>
+              <div className=" w-full bg-white rounded-lg relative shadow">
+                <div className="px-[22px] py-[18px] flex gap-[17px] bg-white rounded-[8px]">
+                  <span className="border-2 rounded-full border-[#FE6D00]"></span>
+                  <h1 className="md:text-[20px] text-[16px] font-semibold items-center flex gap-5">
+                    Obrolan ({partnerDatas.length})
+                  </h1>
+                </div>
+              </div>
+              <div className="bg-white rounded-[8px] py-[26px] h-screen md:h-[62vh] shadow">
+                <div className="flow-root">
+                  <ul role="list" className="divide-y divide-gray-200 ">
+                    {partnerDatas &&
+                      partnerDatas.map((data, i) => (
+                        <li
+                          key={i}
+                          className={`py-3 sm:py-4 px-3 sm:px-3 cursor-pointer ${
+                            partnerId == data.id ? 'bg-[#f8cc89]' : ''
+                          }`}
+                          onClick={() => {
+                            handlePartner(data.id),
+                              setPartnerId(data.id),
+                              setDetailPartner(data);
+                            setModalChatList(!modalChatList);
+                            localStorage.removeItem('partner');
+                          }}
+                        >
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0">
+                              <Image
+                                loading="lazy"
+                                width={0}
+                                height={0}
+                                alt="product-bg"
+                                sizes="100vw"
+                                src={
+                                  data.profile_uri
+                                    ? process.env.NEXT_PUBLIC_HOST +
+                                      data.profile_uri
+                                    : '/assets/icon/store.jpeg'
+                                }
+                                className="w-8 h-8 rounded-full object-cover"
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0 ms-4">
+                              <p className="text-sm font-medium text-gray-900 truncate ">
+                                {data.name}
+                              </p>
+                              <p className="text-sm text-gray-700 truncate ">
+                                {data.lastMessage}
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
