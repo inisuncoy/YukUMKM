@@ -47,7 +47,6 @@ function Login() {
         setLoading(false);
         toast.dismiss();
         toast.error('Invalid Input.');
-        console.log(validations);
         return;
       }
     } catch (error) {
@@ -74,7 +73,6 @@ function Login() {
           }
         })
         .catch(function (error) {
-          console.log(error);
           if (
             error.response?.data?.code === 400 &&
             error.response?.data.status == 'VALIDATION_ERROR'
@@ -105,7 +103,6 @@ function Login() {
       request
         .post('/auth/seller/login', data)
         .then(function (response) {
-          console.log('Response received:', response); // Tambahkan log untuk melihat response
           if (response.data?.code === 200 || response.data?.code === 201) {
             toast.dismiss();
             toast.success('Success Login');
@@ -119,7 +116,6 @@ function Login() {
           setLoading(false);
         })
         .catch(function (error) {
-          console.log(error);
           if (
             error.response?.data?.code === 400 &&
             error.response?.data.status == 'VALIDATION_ERROR'

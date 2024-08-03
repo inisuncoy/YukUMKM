@@ -65,7 +65,6 @@ function Register() {
       setLoading(false);
       toast.dismiss();
       toast.error('Invalid Input.');
-      console.log(validations);
       return;
     }
     let data = new FormData();
@@ -81,7 +80,6 @@ function Register() {
           },
         })
         .then(function (response) {
-          console.log('Response received:', response); // Tambahkan log untuk melihat response
           if (response.data?.code === 200 || response.data?.code === 201) {
             toast.dismiss();
             toast.success('Success Registered');
@@ -91,7 +89,6 @@ function Register() {
           setLoading(false);
         })
         .catch(function (error) {
-          console.log(error);
           if (
             (error.response?.data?.code === 400 ||
               error.response?.data?.code === 422) &&
@@ -131,7 +128,6 @@ function Register() {
           setLoading(false);
         })
         .catch(function (error) {
-          console.log(error);
           if (
             (error.response?.data?.code === 400 ||
               error.response?.data?.code === 422) &&

@@ -305,7 +305,7 @@ const ChatPage = () => {
             <div className="absolute bottom-0 w-full px-[16px] pb-[22px]">
               <form className="w-full relative" onSubmit={handleSendMassage}>
                 <input
-                  className=" w-full py-[20px] pl-[10px] rounded-[8px] border-2 border-gray-300"
+                  className=" w-full py-[20px] pl-[10px] pr-[60px] rounded-[8px] border-2 border-gray-300"
                   placeholder="Type a message..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}

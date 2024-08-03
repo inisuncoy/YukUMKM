@@ -199,24 +199,20 @@ const ProdukPage = () => {
         },
       })
       .then(function (response) {
-        dataItemImages.append('itemId', response.data.data.id);
-        request
-          .post('/cms/itemImage', dataItemImages, {
+        if (images.length !== 0) {
+          dataItemImages.append('itemId', response.data.data.id);
+          request.post('/cms/itemImage', dataItemImages, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
-          })
-          .then(function (response) {
-            if (response.data?.code === 200 || response.data?.code === 201) {
-              toast.dismiss();
-              toast.success('Success Add Product');
-              setIsProductAdded(true);
-              setMenuActive(!menuActive);
-              setImages([]);
-              setImgLength(5);
-            }
-            setLoading(false);
           });
+        }
+        toast.dismiss();
+        toast.success('Success Add Product');
+        setIsProductAdded(true);
+        setMenuActive(!menuActive);
+        setImages([]);
+        setImgLength(5);
       })
       .catch(function (error) {
         if (
@@ -364,7 +360,6 @@ const ProdukPage = () => {
       setThumbnailUri(response.data.data.image_uri);
       setImgLength(1);
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }

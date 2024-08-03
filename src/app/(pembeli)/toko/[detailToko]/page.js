@@ -176,10 +176,8 @@ const DetailTokoPage = ({ params }) => {
           setModalReview(false);
         }
         setLoading(false);
-        console.log(response);
       })
       .catch(function (error) {
-        console.log(error);
         if (
           (error.response?.data?.code === 400 ||
             error.response?.data?.code === 422) &&

@@ -130,7 +130,6 @@ const ProfileUmkmPage = () => {
     // Buat validasi hanya jika ada field yang diisi
     if (Object.keys(data).length > 0) {
       const validation = formSchema.safeParse(data);
-      console.log(validation);
       if (!validation) {
         validation.error.errors.map((validation) => {
           const key = [
