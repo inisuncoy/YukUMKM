@@ -8,7 +8,9 @@ import { IoIosSearch } from 'react-icons/io';
 import { IoTrashOutline } from 'react-icons/io5';
 import { RiSendPlaneLine } from 'react-icons/ri';
 
+import { useDebounce } from 'use-debounce';
 import { io } from 'socket.io-client';
+import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
 
 import request from '@/utils/request';
@@ -22,9 +24,12 @@ const ChatPage = () => {
   const [detailPartner, setDetailPartner] = useState(null);
   const [message, setMessage] = useState('');
   const [userId, setUserId] = useState('');
+  const [queryChatList, setQueryChatList] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [modalChatList, setModalChatList] = useState(true);
   const [loading, setLoading] = useState(true);
+
+  const [queryChatListValue] = useDebounce(queryChatList, 500);
 
   const socketRef = useRef();
 
@@ -63,9 +68,15 @@ const ChatPage = () => {
     setMessage('');
     setIsAction(true);
   };
-  const handleUpdate = () => {
+  const handleDeleteChatRoom = async (e, partnerId) => {
+    toast.loading('Deleting data...');
+    e.preventDefault();
     const socket = socketRef.current;
-    socket.emit('getChatList');
+    socket.emit('deleteChatRoom', { partnerId: partnerId });
+    toast.dismiss();
+    toast.success('Success Delete Chat Room');
+    setDetailPartner('');
+    setIsAction(true);
   };
 
   const messageEndRef = useRef(null);
@@ -95,7 +106,7 @@ const ChatPage = () => {
       setPartnerDatas(response);
     });
 
-    socket.emit('getChatList');
+    socket.emit('getChatList', { query: queryChatListValue });
 
     socket.on('chatHistory', (response) => {
       setListMessage(response);
@@ -115,15 +126,19 @@ const ChatPage = () => {
     }
 
     if (isAction) {
-      handleUpdate();
+      socket.emit('getChatList', { query: queryChatListValue });
       setIsAction(false);
+    }
+
+    if (queryChatListValue) {
+      socket.emit('getChatList', { query: queryChatListValue });
     }
 
     return () => {
       socket.off('chatList');
       socket.off('chatHistory');
     };
-  }, [userId, detailPartner, isAction]);
+  }, [userId, detailPartner, isAction, queryChatListValue]);
 
   if (showModal) {
     return (
@@ -144,6 +159,8 @@ const ChatPage = () => {
       <div className=" h-full w-full hidden md:flex flex-col gap-[29px] ">
         <div className="w-full relative">
           <input
+            value={queryChatList}
+            onChange={(e) => setQueryChatList(e.target.value)}
             className=" w-full py-[20px] pl-[53px] rounded-[8px]"
             placeholder="Search here..."
           />
@@ -257,7 +274,7 @@ const ChatPage = () => {
               <div>
                 <IoTrashOutline
                   className="text-red-500 text-[25px]"
-                  onClick={() => handleUpdate()}
+                  onClick={(e) => handleDeleteChatRoom(e, detailPartner.id)}
                 />
               </div>
             </div>

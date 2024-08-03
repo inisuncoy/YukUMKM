@@ -247,7 +247,7 @@ const EditBlogPage = () => {
             />
             <button className="bg-[#4DBB8D] text-[16px] font-bold text-white py-[10px] w-full rounded-lg flex items-center justify-center gap-4">
               <MdOutlineAdd className="text-[20px]" />
-              <p>Buat Blog</p>
+              <p>Edit Blog</p>
             </button>
             <FaRegTrashAlt
               className="text-red-500 text-2xl absolute top-7 right-6 cursor-pointer"
