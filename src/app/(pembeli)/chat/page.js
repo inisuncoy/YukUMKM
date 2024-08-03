@@ -76,6 +76,7 @@ const ChatPage = () => {
     toast.dismiss();
     toast.success('Success Delete Chat Room');
     setDetailPartner('');
+    setModalChatList(!modalChatList);
     setIsAction(true);
   };
 

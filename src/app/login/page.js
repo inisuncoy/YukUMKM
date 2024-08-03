@@ -152,8 +152,8 @@ function Login() {
   return (
     <>
       {loading && <Loading />}
-      <div className="px-[32px] flex">
-        <div className="relative ">
+      <div className="lg:px-[32px] flex">
+        <div className="relative hidden lg:block">
           <div className=" h-screen w-[605px] overflow-hidden">
             <div className="grid grid-cols-2 gap-[29px] grid-flow-row-dense">
               <div className="bg-gray-500 rounded-b-[20px] row-span-5">
@@ -222,7 +222,7 @@ function Login() {
             />
           </div>
         </div>
-        <div className="w-full h-screen  flex justify-start items-center px-[63px]">
+        <div className="w-full h-screen  flex justify-center lg:justify-start items-center px-5 lg:px-[63px]">
           <div className={`w-[550px] 'h-[550px] flex flex-col gap-[19px]`}>
             <div className="px-[22px] py-[18px] flex gap-[17px] bg-white rounded-[8px]">
               <span className="border-2 rounded-full border-[#FE6D00]"></span>
