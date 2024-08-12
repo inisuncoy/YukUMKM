@@ -1,7 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
+import Link from 'next/link';
 import Image from 'next/image';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+
 import { IoIosSearch } from 'react-icons/io';
 import { MdLocationOn } from 'react-icons/md';
 import { FaRegStar, FaStar } from 'react-icons/fa';
@@ -11,19 +12,16 @@ import instagram from '../../../../../public/assets/icon/instagram.png';
 import whatsapp from '../../../../../public/assets/icon/whatsapp.png';
 import facebook from '../../../../../public/assets/icon/facebook.png';
 
-import NextBreadcrumb from '@/components/NextBreadcrumb';
-//import { usePathname } from 'next/navigation';
-import request from '@/utils/request';
-
 import { z } from 'zod';
-import toast from 'react-hot-toast';
-import CardProductV2 from '@/components/card/CardProductV2';
-import Link from 'next/link';
 import Cookies from 'js-cookie';
+import toast from 'react-hot-toast';
+import { useDebounce } from 'use-debounce';
 
-//export async function generateStaticParams() {
-//  return [{ detailToko: 'Sayur Mayur' }];
-//}
+import NextBreadcrumb from '@/components/NextBreadcrumb';
+import CardProductV2 from '@/components/card/CardProductV2';
+import Loading from '@/components/Loading';
+
+import request from '@/utils/request';
 
 const formSchema = z.object({
   rating: z.number(),
@@ -41,13 +39,16 @@ const DetailTokoPage = ({ params }) => {
   const [minPrice, setMinPrice] = useState();
   const [maxPrice, setMaxPrice] = useState();
   const [review, setReview] = useState();
-  const checkboxRefs = useRef([]);
   const [modalReview, setModalReview] = useState(false);
   const [isActionReview, setIsActionReview] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [validations, setValidations] = useState([]);
-
   const [selectedStar, setSelectedStar] = useState(0);
+  const [queryItemSeller, setQueryItemSeller] = useState('');
+
+  const [queryItemSellerValue] = useDebounce(queryItemSeller, 500);
+
+  const checkboxRefs = useRef([]);
   const stars = Array(5).fill(0);
 
   const fetchSaller = useCallback(async () => {
@@ -69,9 +70,9 @@ const DetailTokoPage = ({ params }) => {
       minPrice: minPrice,
       maxPrice: maxPrice,
       status: true,
+      name_insensitive: queryItemSellerValue,
     };
 
-    // Construct query string for itemCategoryIds
     const queryParams = new URLSearchParams();
     selectedItems.forEach((id) => {
       queryParams.append('itemCategoryIds[]', id);
@@ -86,7 +87,7 @@ const DetailTokoPage = ({ params }) => {
       .catch(function (error) {
         setLoading(false);
       });
-  }, [idSeller, selectedItems, minPrice, maxPrice]);
+  }, [idSeller, selectedItems, minPrice, maxPrice, queryItemSellerValue]);
 
   const fetchReview = useCallback(async () => {
     const token = Cookies.get('token');
@@ -218,17 +219,22 @@ const DetailTokoPage = ({ params }) => {
   const checkTokenAndPerformAction = (action) => {
     const token = Cookies.get('token');
     if (!token) {
-      setShowModal(true); // Tampilkan modal jika token tidak ada
+      setShowModal(true);
     } else {
-      action(); // Jalankan aksi jika token ada
+      action();
     }
   };
 
   useEffect(() => {
+    if (queryItemSellerValue) {
+      fetchProductSaller();
+    }
+
     if (isActionReview) {
       fetchReview();
+      setIsActionReview(false);
     }
-    setIsActionReview(false);
+
     Promise.all([
       fetchCategory(),
       fetchReview(),
@@ -241,13 +247,20 @@ const DetailTokoPage = ({ params }) => {
     fetchSaller,
     fetchProductSaller,
     isActionReview,
+    queryItemSellerValue,
   ]);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <>
       <div className="flex flex-col gap-[19px]">
         <div className="w-full relative">
           <input
+            value={queryItemSeller}
+            onChange={(e) => setQueryItemSeller(e.target.value)}
             className=" w-full py-[20px] pl-[53px] rounded-[8px]"
             placeholder="Search here..."
           />

@@ -13,27 +13,32 @@ import CardTokoV2 from '@/components/card/CardTokoV2';
 import CardProductSmall from '@/components/card/CardProductSmall';
 
 import request from '@/utils/request';
+import Link from 'next/link';
+import Loading from '@/components/Loading';
 
 export default function HomePage() {
-  const [loading, setLoading] = useState(false);
-  const [productSallerDatas, setProductSallerDatas] = useState([]);
-  const [sallerDatas, setSallerDatas] = useState();
+  const [loading, setLoading] = useState(true);
+  const [productSellerDatas, setProductSellerDatas] = useState([]);
+  const [sellerDatas, setSellerDatas] = useState();
   const [showAllSeller, setShowAllSeller] = useState(false);
   const [showAllProduct, setShowAllProduct] = useState(false);
-  const [queryProduct, setQueryProduct] = useState('');
   const [modalSearch, setModalSearch] = useState(false);
+  const [itemsToShow, setItemsToShow] = useState(2);
+  const [queryProduct, setQueryProduct] = useState('');
 
   const [queryProductValue] = useDebounce(queryProduct, 500);
 
-  const fetchProductSaller = useCallback(async () => {
-    setLoading(true);
-    let payload = { name_insensitive: queryProductValue, status: true };
+  const fetchProductSeller = useCallback(async () => {
+    let payload = {
+      name_insensitive: queryProductValue,
+      status: true,
+      sortBy: 'totalVisited',
+      sortDirection: 'desc',
+      limit: 20,
+    };
     try {
-      const response = await request.get(
-        `/public/item?sortBy=totalVisited&sortDirection=desc`,
-        payload
-      );
-      setProductSallerDatas(response.data.data);
+      const response = await request.get(`/public/item`, payload);
+      setProductSellerDatas(response.data.data);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -42,17 +47,19 @@ export default function HomePage() {
     }
   }, [queryProductValue]);
 
-  const fetchSaller = useCallback(async () => {
-    setLoading(true);
+  const fetchSeller = useCallback(async () => {
+    let payload = {
+      limit: 4,
+      sortBy: 'avgRating',
+      sortDirection: 'desc',
+    };
     try {
-      const response = await request.get(
-        `/public/seller?limit=4&sortBy=avgRating&sortDirection=desc`
-      );
-      setSallerDatas(response.data.data);
+      const response = await request.get(`/public/seller`, payload);
+      setSellerDatas(response.data.data);
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.error('Error fetching saller data:', error);
+      console.error('Error fetching seller data:', error);
     } finally {
       setLoading(false);
     }
@@ -60,13 +67,41 @@ export default function HomePage() {
 
   useEffect(() => {
     if (queryProductValue) {
-      fetchProductSaller();
+      fetchProductSeller();
       setModalSearch(true);
     } else {
       setModalSearch(false);
     }
-    Promise.all([fetchSaller(), fetchProductSaller()]);
-  }, [fetchSaller, fetchProductSaller, queryProductValue]);
+    Promise.all([fetchSeller(), fetchProductSeller()]);
+  }, [fetchSeller, fetchProductSeller, queryProductValue]);
+
+  useEffect(() => {
+    const updateItemsToShow = () => {
+      if (window.innerWidth >= 2401) {
+        setItemsToShow(5);
+      } else if (window.innerWidth >= 2124) {
+        setItemsToShow(4);
+      } else if (window.innerWidth >= 1829) {
+        setItemsToShow(3);
+      } else if (window.innerWidth >= 1024) {
+        setItemsToShow(2);
+      } else if (window.innerWidth >= 768) {
+        setItemsToShow(3);
+      } else if (window.innerWidth >= 529) {
+        setItemsToShow(2);
+      } else {
+        setItemsToShow(1);
+      }
+    };
+
+    window.addEventListener('resize', updateItemsToShow);
+    updateItemsToShow();
+    return () => window.removeEventListener('resize', updateItemsToShow);
+  }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className=" w-full ">
@@ -97,8 +132,8 @@ export default function HomePage() {
         {modalSearch ? (
           <div className="mt-[30px] w-full  rounded-lg relative overflow-y-auto h-[350px]">
             <div className="grid grid-cols-1 divide-y bg-white rounded-lg">
-              {productSallerDatas &&
-                productSallerDatas.map((data, i) => (
+              {productSellerDatas &&
+                productSellerDatas.map((data, i) => (
                   <CardProductSmall
                     key={i}
                     href={`/toko/${data.user.slug}/${data.slug}`}
@@ -129,14 +164,14 @@ export default function HomePage() {
                   </button>
                 </h1>
               </div>
-              <div className="px-[20px]  pb-[32px] flex">
-                <div className="grid grid-cols-2  md:grid-cols-1 lg:grid-cols-2 gap-x-[16px] w-full lg:gap-[52px] md:gap-[12px] gap-[12px]">
-                  {sallerDatas &&
-                    (showAllSeller ? sallerDatas : sallerDatas.slice(0, 2)).map(
-                      (saller, i) => (
-                        <div key={i}>
-                          <div className="hidden relative w-full md:flex md:flex-row items-center">
-                            <div className="w-[218px] h-[269px] ">
+              <div className="px-[20px]  pb-[32px] flex ">
+                <div className="grid  grid-cols-1 lg:grid-cols-2 gap-x-[16px] w-full lg:gap-[52px] md:gap-[12px] gap-[12px]">
+                  {sellerDatas &&
+                    (showAllSeller ? sellerDatas : sellerDatas.slice(0, 2)).map(
+                      (seller, i) => (
+                        <div key={i} className="w-full ">
+                          <div className=" relative w-full md:flex md:flex-row items-center">
+                            <div className="w-[218px] h-[319px] ">
                               <Image
                                 loading="lazy"
                                 width={0}
@@ -144,43 +179,38 @@ export default function HomePage() {
                                 alt="product-bg"
                                 sizes="100vw"
                                 src={
-                                  saller.profile_uri
+                                  seller.profile_uri
                                     ? process.env.NEXT_PUBLIC_HOST +
-                                      saller.profile_uri
+                                      seller.profile_uri
                                     : '/assets/logo/logoUMKM.png'
                                 }
                                 className="w-full h-full object-cover object-bottom rounded-lg"
                               />
                             </div>
-                            <div className="flex gap-4 z-10 w-full justify-end absolute ">
-                              {productSallerDatas
-                                .filter(
-                                  (product) => saller.id === product.user_id
-                                )
-                                .slice(0, 2)
-                                .map(
-                                  (product, x) =>
-                                    saller.id === product.user_id && (
-                                      <CardProductV2
-                                        key={x}
-                                        name={product.name}
-                                        thumbnail={product.image_uri}
-                                        price={product.price}
-                                        seller={product.user.name}
-                                        href={`/toko/${product.user.slug}/${product.slug}`}
-                                        sizeImg={'w-[145px] h-[145px]'}
-                                      />
-                                    )
-                                )}
+                            <div className="flex flex-col gap-2 right-0 bottom-0 items-end absolute">
+                              <div className="flex  gap-4 z-10 w-full  justify-end ">
+                                {seller.items
+                                  .slice(0, itemsToShow)
+                                  .map((product, x) => (
+                                    <CardProductV2
+                                      key={x}
+                                      name={product.name}
+                                      thumbnail={product.image_uri}
+                                      price={product.price}
+                                      seller={seller.name}
+                                      href={`/toko/${seller.slug}/${product.slug}`}
+                                      sizeImg={'w-[145px] h-[145px]'}
+                                    />
+                                  ))}
+                              </div>
+                              <Link
+                                href={`/toko/${seller.slug}`}
+                                className="text-[#FE6D00] text-[13px] font-bold underline focus:outline-none focus:ring focus:ring-transparent"
+                              >
+                                Lihat Toko
+                              </Link>
                             </div>
                           </div>
-
-                          <CardTokoV2
-                            href={`/toko/${saller.slug}`}
-                            logo={saller.profile_uri}
-                            name={saller.name}
-                            className={'md:hidden block'}
-                          />
                         </div>
                       )
                     )}
@@ -194,19 +224,19 @@ export default function HomePage() {
             >
               <div className="px-[22px] py-[18px] flex gap-[17px] bg-white rounded-[8px]">
                 <span className="border-2 rounded-full border-[#4DBB8D]"></span>
-                <h1 className="md:text-[20px] text-[14px] font-semibold items-center flex gap-5">
+                <h1 className="md:text-[20px] text-[16px] font-semibold items-center flex gap-5">
                   Barang Kekinian{' '}
                   <button
                     onClick={() => setShowAllProduct(!showAllProduct)}
-                    className="text-[#FE6D00] text-[10px] md:text-[13px] font-bold underline focus:outline-none focus:ring focus:ring-transparent"
+                    className="text-[#FE6D00] text-[13px] font-bold underline focus:outline-none focus:ring focus:ring-transparent"
                   >
                     {showAllProduct ? 'Tampilkan sedikit' : 'Lihat semua'}
                   </button>
                 </h1>
               </div>
               {showAllProduct ? (
-                <div className="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 xl:gap-4 lg:gap-[8px] md:gap-12 gap-8 px-4 pb-4">
-                  {productSallerDatas.map((data, i) => (
+                <div className="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 lg:gap-[25px] md:gap-[30px] sm:gap-[20px] gap-[10px] px-4 pb-4">
+                  {productSellerDatas.map((data, i) => (
                     <CardProductV2
                       key={i}
                       name={data.name}
@@ -219,8 +249,8 @@ export default function HomePage() {
                 </div>
               ) : (
                 <div className="px-4 pb-4 flex">
-                  {productSallerDatas && (
-                    <SwiperProduk datas={productSallerDatas} />
+                  {productSellerDatas && (
+                    <SwiperProduk datas={productSellerDatas} />
                   )}
                 </div>
               )}

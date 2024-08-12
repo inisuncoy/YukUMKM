@@ -39,6 +39,8 @@ export default function BlogUmkmPage() {
         <Image
           width={0}
           height={0}
+          loading="lazy"
+          sizes="100vw"
           alt="hero"
           src={hero}
           className="w-full object-cover object-bottom lg:rounded-lg"

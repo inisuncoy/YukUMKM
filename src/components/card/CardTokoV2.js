@@ -30,6 +30,8 @@ const CardTokoV2 = ({ logo, name, href, className, avgRating }) => {
               width={0}
               height={0}
               alt="product"
+              loading="lazy"
+              sizes="100vw"
               src={'/assets/icon/icon-toko.png'}
               className="w-[12px] h-[12px] object-cover"
             />

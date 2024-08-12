@@ -191,6 +191,8 @@ const EditBlogPage = () => {
               alt="icon"
               src={success} // Replace with your success image path
               className="w-[195px]"
+              loading="lazy"
+              sizes="100vw"
             />
             <h1 className="font-semibold text-black text-[26px] text-center rounded-lg">
               Blog <span className="text-[#4DBB8D]">berhasil</span> dihapus

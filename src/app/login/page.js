@@ -8,24 +8,20 @@ import Link from 'next/link';
 import InputField from '@/components/forms/InputField';
 import toast from 'react-hot-toast';
 import request from '@/utils/request';
-import Cookies from 'js-cookie';
-import { useRouter } from 'next/navigation';
-import Loading from '@/components/Loading';
+import FormulirOTP from '@/components/modal/FormulirOTP';
 
 function Login() {
-  const router = useRouter();
   const [menu, setMenu] = useState(true);
 
   const [validations, setValidations] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [modalOtp, setModalOtp] = useState(false);
 
   const onSubmit = async (e) => {
     setValidations([]);
-    setLoading(true);
-    // toast.loading('Loading...');
+    toast.loading('Loading...');
     e.preventDefault();
 
     try {
@@ -44,7 +40,6 @@ function Login() {
           ];
           setValidations((validations) => [...validations, ...key]);
         });
-        setLoading(false);
         toast.dismiss();
         toast.error('Invalid Input.');
         return;
@@ -56,98 +51,44 @@ function Login() {
     data.append('email', email);
     data.append('password', password);
 
-    if (menu) {
-      request
-        .post('/auth/buyer/login', data)
-        .then(function (response) {
-          setLoading(true);
-          if (response.data?.code === 200 || response.data?.code === 201) {
-            // toast.dismiss();
-            Cookies.set('token', response.data.data.token);
-            toast.success('Success Login');
-            router.push('/beranda').then(() => {
-              setLoading(false); // Set loading to false after redirecting
-            });
-          } else {
-            setLoading(false);
-          }
-        })
-        .catch(function (error) {
-          if (
-            error.response?.data?.code === 400 &&
-            error.response?.data.status == 'VALIDATION_ERROR'
-          ) {
-            setValidations(error.response?.data.error?.validation);
-            toast.dismiss();
-            toast.error(error.response?.data.error?.message);
-          } else if (
-            error.response?.data?.code === 401 &&
-            error.response?.data.status == 'UNAUTHORIZED'
-          ) {
-            toast.dismiss();
-            toast.error(error.response?.data.error?.message);
-          } else if (
-            error.response?.data?.code === 404 &&
-            error.response?.data.status == 'NOT_FOUND'
-          ) {
-            toast.dismiss();
-            toast.error(error.response?.data.error?.message);
-          } else if (error.response?.data?.code === 500) {
-            console.error('INTERNAL_SERVER_ERROR');
-            toast.dismiss();
-            toast.error(error.response?.data.error.message);
-          }
-          setLoading(false);
-        });
-    } else {
-      request
-        .post('/auth/seller/login', data)
-        .then(function (response) {
-          if (response.data?.code === 200 || response.data?.code === 201) {
-            toast.dismiss();
-            toast.success('Success Login');
-            Cookies.set('token', response.data.data.token);
-            setTimeout(() => {
-              setLoading(false); // Set loading to false before redirecting
-              router.push('/produk');
-              toast.success('Success Login');
-            }, 2000);
-          }
-          setLoading(false);
-        })
-        .catch(function (error) {
-          if (
-            error.response?.data?.code === 400 &&
-            error.response?.data.status == 'VALIDATION_ERROR'
-          ) {
-            setValidations(error.response?.data.error?.validation);
-            toast.dismiss();
-            toast.error(error.response?.data.error?.message);
-          } else if (
-            error.response?.data?.code === 401 &&
-            error.response?.data.status == 'UNAUTHORIZED'
-          ) {
-            toast.dismiss();
-            toast.error(error.response?.data.error?.message);
-          } else if (
-            error.response?.data?.code === 404 &&
-            error.response?.data.status == 'NOT_FOUND'
-          ) {
-            console.error('NOT_FOUND');
-            toast.dismiss();
-            toast.error(error.response?.data.error?.message);
-          } else if (error.response?.data?.code === 500) {
-            console.error('INTERNAL_SERVER_ERROR');
-            toast.dismiss();
-            toast.error(error.response?.data.error.message);
-          }
-          setLoading(false);
-        });
-    }
+    request
+      .post(menu ? '/auth/buyer/login' : '/auth/seller/login', data)
+      .then(function (response) {
+        if (response.data?.code === 200 || response.data?.code === 201) {
+          toast.dismiss();
+          setModalOtp(true);
+        }
+      })
+      .catch(function (error) {
+        if (
+          error.response?.data?.code === 400 &&
+          error.response?.data.status == 'VALIDATION_ERROR'
+        ) {
+          setValidations(error.response?.data.error?.validation);
+          toast.dismiss();
+          toast.error(error.response?.data.error?.message);
+        } else if (
+          error.response?.data?.code === 401 &&
+          error.response?.data.status == 'UNAUTHORIZED'
+        ) {
+          toast.dismiss();
+          toast.error(error.response?.data.error?.message);
+        } else if (
+          error.response?.data?.code === 404 &&
+          error.response?.data.status == 'NOT_FOUND'
+        ) {
+          toast.dismiss();
+          toast.error(error.response?.data.error?.message);
+        } else if (error.response?.data?.code === 500) {
+          console.error('INTERNAL_SERVER_ERROR');
+          toast.dismiss();
+          toast.error(error.response?.data.error.message);
+        }
+      });
   };
+
   return (
     <>
-      {loading && <Loading />}
       <div className="lg:px-[32px] flex">
         <div className="relative hidden lg:block">
           <div className=" h-screen w-[605px] overflow-hidden">
@@ -157,6 +98,8 @@ function Login() {
                   width={0}
                   height={0}
                   alt="background"
+                  loading="lazy"
+                  sizes="100vw"
                   src={bg1}
                   className="w-full h-full object-cover rounded-b-[20px]"
                 />
@@ -166,6 +109,8 @@ function Login() {
                   width={0}
                   height={0}
                   alt="background"
+                  loading="lazy"
+                  sizes="100vw"
                   src={bg1}
                   className="w-full h-full object-cover rounded-b-[20px]"
                 />
@@ -175,6 +120,8 @@ function Login() {
                   width={0}
                   height={0}
                   alt="background"
+                  loading="lazy"
+                  sizes="100vw"
                   src={bg1}
                   className="w-full h-full object-cover rounded-[20px]"
                 />
@@ -183,6 +130,19 @@ function Login() {
                 <Image
                   width={0}
                   height={0}
+                  alt="background"
+                  loading="lazy"
+                  sizes="100vw"
+                  src={bg1}
+                  className="w-full h-full object-cover rounded-[20px]"
+                />
+              </div>
+              <div className="bg-gray-500 rounded-[20px] row-span-12">
+                <Image
+                  width={0}
+                  height={0}
+                  loading="lazy"
+                  sizes="100vw"
                   alt="background"
                   src={bg1}
                   className="w-full h-full object-cover rounded-[20px]"
@@ -193,15 +153,8 @@ function Login() {
                   width={0}
                   height={0}
                   alt="background"
-                  src={bg1}
-                  className="w-full h-full object-cover rounded-[20px]"
-                />
-              </div>
-              <div className="bg-gray-500 rounded-[20px] row-span-12">
-                <Image
-                  width={0}
-                  height={0}
-                  alt="background"
+                  loading="lazy"
+                  sizes="100vw"
                   src={bg1}
                   className="w-full h-full object-cover rounded-[20px]"
                 />
@@ -212,6 +165,8 @@ function Login() {
             <Image
               width={0}
               height={0}
+              loading="lazy"
+              sizes="100vw"
               alt="background"
               src={logo1}
               className="w-full h-full object-cover rounded-[20px]"
@@ -243,111 +198,67 @@ function Login() {
                   <h1 className="text-[#FE6D00]">UMKM</h1>
                 </div>
               </div>
-              {menu ? (
-                <div className="pt-[45px] ">
-                  <form onSubmit={onSubmit}>
-                    <div className="grid grid-cols-1 gap-[32px]">
-                      <InputField
-                        id={'email'}
-                        name={'email'}
-                        value={email}
-                        label={'Email'}
-                        placeholder={'Email'}
-                        type={'email'}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        validations={validations}
-                      />
-                      <InputField
-                        id={'password'}
-                        name={'password'}
-                        value={password}
-                        label={'Password'}
-                        placeholder={'Password'}
-                        type={'password'}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        validations={validations}
-                      />
-                    </div>
-                    <p className="mt-[14px] text-[16px] font-medium">
-                      Lupa kata sandi?{' '}
-                      <Link
-                        href={'/'}
-                        className="font-bold text-[#FE6D00] underline"
-                      >
-                        Hubungi Kami
-                      </Link>
-                    </p>
-                    <button className="w-full text-center bg-gray-800 text-white py-[13px] text-[24px] font-bold rounded-[17px] mt-[30px]">
-                      Sign In
-                    </button>
-                    <p className="mt-[14px] text-[16px] font-medium">
-                      Tidak punya akun?{' '}
-                      <Link
-                        href={'/register'}
-                        className="font-bold text-[#FE6D00] underline"
-                      >
-                        Buat akun sekarang disini.
-                      </Link>
-                    </p>
-                  </form>
-                </div>
-              ) : (
-                <div className="pt-[45px]">
-                  <form onSubmit={onSubmit}>
-                    <div className="grid grid-cols-1 gap-[32px]">
-                      <InputField
-                        id={'email'}
-                        name={'email'}
-                        value={email}
-                        label={'Email'}
-                        placeholder={'Email'}
-                        type={'email'}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        validations={validations}
-                      />
-                      <InputField
-                        id={'password'}
-                        name={'password'}
-                        value={password}
-                        label={'Password'}
-                        placeholder={'Password'}
-                        type={'password'}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        validations={validations}
-                      />
-                    </div>
-                    <p className="mt-[14px] text-[16px] font-medium">
-                      Lupa kata sandi?{' '}
-                      <Link
-                        href={'/'}
-                        className="font-bold text-[#FE6D00] underline"
-                      >
-                        Hubungi Kami
-                      </Link>
-                    </p>
-                    <button className="w-full text-center bg-gray-800 text-white py-[13px] text-[24px] font-bold rounded-[17px] mt-[30px]">
-                      Sign In
-                    </button>
-                    <p className="mt-[14px] text-[16px] font-medium">
-                      Tidak punya akun?{' '}
-                      <Link
-                        href={'/register'}
-                        className="font-bold text-[#FE6D00] underline"
-                      >
-                        Buat akun sekarang disini.
-                      </Link>
-                    </p>
-                  </form>
-                </div>
-              )}
+              <div className="pt-[45px] ">
+                <form onSubmit={onSubmit}>
+                  <div className="grid grid-cols-1 gap-[32px]">
+                    <InputField
+                      id={'email'}
+                      name={'email'}
+                      value={email}
+                      label={'Email'}
+                      placeholder={'Email'}
+                      type={'email'}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      validations={validations}
+                    />
+                    <InputField
+                      id={'password'}
+                      name={'password'}
+                      value={password}
+                      label={'Password'}
+                      placeholder={'Password'}
+                      type={'password'}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      validations={validations}
+                    />
+                  </div>
+                  <p className="mt-[14px] text-[16px] font-medium">
+                    Lupa kata sandi?{' '}
+                    <Link
+                      href={'/'}
+                      className="font-bold text-[#FE6D00] underline"
+                    >
+                      Hubungi Kami
+                    </Link>
+                  </p>
+                  <button className="w-full text-center bg-gray-800 text-white py-[13px] text-[24px] font-bold rounded-[17px] mt-[30px]">
+                    Sign In
+                  </button>
+                  <p className="mt-[14px] text-[16px] font-medium">
+                    Tidak punya akun?{' '}
+                    <Link
+                      href={'/register'}
+                      className="font-bold text-[#FE6D00] underline"
+                    >
+                      Buat akun sekarang disini.
+                    </Link>
+                  </p>
+                </form>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {modalOtp && (
+        <FormulirOTP
+          email={email}
+          href={menu ? '/beranda' : '/produk'}
+          toastSuccess={'Success Login'}
+        />
+      )}
     </>
   );
 }
