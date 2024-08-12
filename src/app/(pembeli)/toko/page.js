@@ -7,12 +7,13 @@ import { useDebounce } from 'use-debounce';
 
 import NextBreadcrumb from '@/components/NextBreadcrumb';
 import CardTokoV2 from '@/components/card/CardTokoV2';
+import Loading from '@/components/Loading';
+
 import request from '@/utils/request';
 
 const TokoPage = () => {
   const [sallerDatas, setSallerDatas] = useState();
   const [loading, setLoading] = useState(true);
-
   const [querySeller, setQuerySeller] = useState('');
 
   const [querySellerValue] = useDebounce(querySeller, 500);
@@ -36,6 +37,10 @@ const TokoPage = () => {
     }
     Promise.all([fetchSaller()]);
   }, [fetchSaller, querySellerValue]);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex flex-col gap-[19px]">

@@ -1,6 +1,3 @@
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable react/no-unescaped-entities */
 'use client';
 import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
@@ -12,6 +9,7 @@ import Cookies from 'js-cookie';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
 
+import Loading from '@/components/Loading';
 import NextBreadcrumb from '@/components/NextBreadcrumb';
 
 import request from '@/utils/request';
@@ -129,6 +127,10 @@ const DetailBlogPage = ({ params }) => {
 
     Promise.all([fetchBlog()]);
   }, [fetchBlog, addComment, token]);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex flex-col gap-[30px]">

@@ -11,6 +11,7 @@ import { z } from 'zod';
 import request from '@/utils/request';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import FormulirOTP from '@/components/modal/FormulirOTP';
 
 const formSchema = z.object({
   name: z
@@ -39,6 +40,7 @@ function Register() {
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [modalOtp, setModalOtp] = useState(false);
 
   const onSubmit = async (e) => {
     setValidations([]);
@@ -72,184 +74,149 @@ function Register() {
     data.append('email', email);
     data.append('password', password);
 
-    if (menu) {
-      request
-        .post('/auth/buyer/register', data, {
-          headers: {
-            'Content-Type': ' application/json',
-          },
-        })
-        .then(function (response) {
-          if (response.data?.code === 200 || response.data?.code === 201) {
-            toast.dismiss();
-            toast.success('Success Registered');
-            Cookies.set('token', response.data.data.token);
-            router.push('/beranda');
-          }
-          setLoading(false);
-        })
-        .catch(function (error) {
-          if (
-            (error.response?.data?.code === 400 ||
-              error.response?.data?.code === 422) &&
-            error.response?.data.status == 'VALIDATION_ERROR'
-          ) {
-            setValidations(error.response?.data.error?.validation);
-            toast.dismiss();
-            toast.error(error.response?.data.error?.message);
-          } else if (
-            error.response?.data?.code === 404 &&
-            error.response?.data.status == 'NOT_FOUND'
-          ) {
-            console.error('NOT_FOUND');
-            toast.dismiss();
-            toast.error(error.response?.data.error?.message);
-          } else if (error.response?.data?.code === 500) {
-            console.error('INTERNAL_SERVER_ERROR');
-            toast.dismiss();
-            toast.error(error.response?.data.error.message);
-          }
-          setLoading(false);
-        });
-    } else {
-      request
-        .post('/auth/seller/register', data, {
-          headers: {
-            'Content-Type': ' application/json',
-          },
-        })
-        .then(function (response) {
-          if (response.data?.code === 200 || response.data?.code === 201) {
-            toast.dismiss();
-            toast.success('Success Registered');
-            Cookies.set('token', response.data.data.token);
-            router.push('/produk');
-          }
-          setLoading(false);
-        })
-        .catch(function (error) {
-          if (
-            (error.response?.data?.code === 400 ||
-              error.response?.data?.code === 422) &&
-            error.response?.data.status == 'VALIDATION_ERROR'
-          ) {
-            setValidations(error.response?.data.error?.validation);
-            toast.dismiss();
-            toast.error(error.response?.data.error?.message);
-          } else if (
-            error.response?.data?.code === 404 &&
-            error.response?.data.status == 'NOT_FOUND'
-          ) {
-            console.error('NOT_FOUND');
-            toast.dismiss();
-            toast.error(error.response?.data.error?.message);
-          } else if (error.response?.data?.code === 500) {
-            console.error('INTERNAL_SERVER_ERROR');
-            toast.dismiss();
-            toast.error(error.response?.data.error.message);
-          }
-          setLoading(false);
-        });
-    }
+    request
+      .post(menu ? '/auth/buyer/register' : '/auth/seller/register', data)
+      .then(function (response) {
+        if (response.data?.code === 200 || response.data?.code === 201) {
+          toast.dismiss();
+          setModalOtp(true);
+        }
+      })
+      .catch(function (error) {
+        if (
+          (error.response?.data?.code === 400 ||
+            error.response?.data?.code === 422) &&
+          error.response?.data.status == 'VALIDATION_ERROR'
+        ) {
+          setValidations(error.response?.data.error?.validation);
+          toast.dismiss();
+          toast.error(error.response?.data.error?.message);
+        } else if (
+          error.response?.data?.code === 404 &&
+          error.response?.data.status == 'NOT_FOUND'
+        ) {
+          console.error('NOT_FOUND');
+          toast.dismiss();
+          toast.error(error.response?.data.error?.message);
+        } else if (error.response?.data?.code === 500) {
+          console.error('INTERNAL_SERVER_ERROR');
+          toast.dismiss();
+          toast.error(error.response?.data.error.message);
+        }
+      });
   };
 
   return (
-    <div className="px-[32px] flex">
-      <div className="relative ">
-        <div className=" h-screen w-[605px] overflow-hidden">
-          <div className="grid grid-cols-2 gap-[29px] grid-flow-row-dense">
-            <div className="bg-gray-500 rounded-b-[20px] row-span-5">
-              <Image
-                width={0}
-                height={0}
-                alt="background"
-                src={bg1}
-                className="w-full h-full object-cover rounded-b-[20px]"
-              />
-            </div>
-            <div className="bg-gray-500 rounded-b-[20px] row-span-12">
-              <Image
-                width={0}
-                height={0}
-                alt="background"
-                src={bg1}
-                className="w-full h-full object-cover rounded-b-[20px]"
-              />
-            </div>
-            <div className="bg-gray-500 rounded-[20px] row-span-12">
-              <Image
-                width={0}
-                height={0}
-                alt="background"
-                src={bg1}
-                className="w-full h-full object-cover rounded-[20px]"
-              />
-            </div>
-            <div className="bg-gray-500 rounded-[20px] row-span-12">
-              <Image
-                width={0}
-                height={0}
-                alt="background"
-                src={bg1}
-                className="w-full h-full object-cover rounded-[20px]"
-              />
-            </div>
-            <div className="bg-gray-500 rounded-[20px] row-span-12">
-              <Image
-                width={0}
-                height={0}
-                alt="background"
-                src={bg1}
-                className="w-full h-full object-cover rounded-[20px]"
-              />
-            </div>
-            <div className="bg-gray-500 rounded-[20px] row-span-12">
-              <Image
-                width={0}
-                height={0}
-                alt="background"
-                src={bg1}
-                className="w-full h-full object-cover rounded-[20px]"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="absolute m-auto left-0 right-0 top-0 bottom-0 w-[268px] h-[268px] ">
-          <Image
-            width={0}
-            height={0}
-            alt="background"
-            src={logo1}
-            className="w-full h-full object-cover rounded-[20px]"
-          />
-        </div>
-      </div>
-      <div className="w-full h-screen  flex justify-start items-center px-[63px]">
-        <div className={`w-[550px] h-[613px] flex flex-col gap-[19px]`}>
-          <div className="px-[22px] py-[18px] flex gap-[17px] bg-white rounded-[8px]">
-            <span className="border-2 rounded-full border-[#FE6D00]"></span>
-            <h1 className="">Register</h1>
-          </div>
-          <div className="px-[30px] pt-[33px] h-full  bg-white rounded-[8px]">
-            <div className="flex ">
-              <div
-                className={`flex-1 text-center pb-[10px] border-b-4 border-[#FE6D00] cursor-pointer ${
-                  menu ? '' : 'opacity-[0.25]'
-                }`}
-                onClick={() => setMenu(true)}
-              >
-                <h1 className="text-[#FE6D00]">Pembeli</h1>
+    <>
+      <div className="px-[32px] flex">
+        <div className="relative ">
+          <div className=" h-screen w-[605px] overflow-hidden">
+            <div className="grid grid-cols-2 gap-[29px] grid-flow-row-dense">
+              <div className="bg-gray-500 rounded-b-[20px] row-span-5">
+                <Image
+                  loading="lazy"
+                  sizes="100vw"
+                  width={0}
+                  height={0}
+                  alt="background"
+                  src={bg1}
+                  className="w-full h-full object-cover rounded-b-[20px]"
+                />
               </div>
-              <div
-                className={`flex-1 text-center pb-[10px] border-b-4 border-[#FE6D00] cursor-pointer ${
-                  menu ? 'opacity-[0.25]' : ''
-                }`}
-                onClick={() => setMenu(false)}
-              >
-                <h1 className="text-[#FE6D00]">UMKM</h1>
+              <div className="bg-gray-500 rounded-b-[20px] row-span-12">
+                <Image
+                  loading="lazy"
+                  sizes="100vw"
+                  width={0}
+                  height={0}
+                  alt="background"
+                  src={bg1}
+                  className="w-full h-full object-cover rounded-b-[20px]"
+                />
+              </div>
+              <div className="bg-gray-500 rounded-[20px] row-span-12">
+                <Image
+                  loading="lazy"
+                  sizes="100vw"
+                  width={0}
+                  height={0}
+                  alt="background"
+                  src={bg1}
+                  className="w-full h-full object-cover rounded-[20px]"
+                />
+              </div>
+              <div className="bg-gray-500 rounded-[20px] row-span-12">
+                <Image
+                  loading="lazy"
+                  sizes="100vw"
+                  width={0}
+                  height={0}
+                  alt="background"
+                  src={bg1}
+                  className="w-full h-full object-cover rounded-[20px]"
+                />
+              </div>
+              <div className="bg-gray-500 rounded-[20px] row-span-12">
+                <Image
+                  loading="lazy"
+                  sizes="100vw"
+                  width={0}
+                  height={0}
+                  alt="background"
+                  src={bg1}
+                  className="w-full h-full object-cover rounded-[20px]"
+                />
+              </div>
+              <div className="bg-gray-500 rounded-[20px] row-span-12">
+                <Image
+                  loading="lazy"
+                  sizes="100vw"
+                  width={0}
+                  height={0}
+                  alt="background"
+                  src={bg1}
+                  className="w-full h-full object-cover rounded-[20px]"
+                />
               </div>
             </div>
-            {menu ? (
+          </div>
+          <div className="absolute m-auto left-0 right-0 top-0 bottom-0 w-[268px] h-[268px] ">
+            <Image
+              loading="lazy"
+              sizes="100vw"
+              width={0}
+              height={0}
+              alt="background"
+              src={logo1}
+              className="w-full h-full object-cover rounded-[20px]"
+            />
+          </div>
+        </div>
+        <div className="w-full h-screen  flex justify-start items-center px-[63px]">
+          <div className={`w-[550px] h-[613px] flex flex-col gap-[19px]`}>
+            <div className="px-[22px] py-[18px] flex gap-[17px] bg-white rounded-[8px]">
+              <span className="border-2 rounded-full border-[#FE6D00]"></span>
+              <h1 className="">Register</h1>
+            </div>
+            <div className="px-[30px] pt-[33px] h-full  bg-white rounded-[8px]">
+              <div className="flex ">
+                <div
+                  className={`flex-1 text-center pb-[10px] border-b-4 border-[#FE6D00] cursor-pointer ${
+                    menu ? '' : 'opacity-[0.25]'
+                  }`}
+                  onClick={() => setMenu(true)}
+                >
+                  <h1 className="text-[#FE6D00]">Pembeli</h1>
+                </div>
+                <div
+                  className={`flex-1 text-center pb-[10px] border-b-4 border-[#FE6D00] cursor-pointer ${
+                    menu ? 'opacity-[0.25]' : ''
+                  }`}
+                  onClick={() => setMenu(false)}
+                >
+                  <h1 className="text-[#FE6D00]">UMKM</h1>
+                </div>
+              </div>
               <div className="pt-[45px]">
                 <form onSubmit={onSubmit}>
                   <div className="grid grid-cols-1 gap-[32px]">
@@ -304,66 +271,18 @@ function Register() {
                   </p>
                 </form>
               </div>
-            ) : (
-              <div className="pt-[45px]">
-                <form onSubmit={onSubmit}>
-                  <div className="grid grid-cols-1 gap-[32px]">
-                    <InputField
-                      id={'name'}
-                      name={'name'}
-                      value={name}
-                      label={'Name'}
-                      placeholder={'Name'}
-                      type={'text'}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                      validations={validations}
-                    />
-                    <InputField
-                      id={'email'}
-                      name={'email'}
-                      value={email}
-                      label={'Email'}
-                      placeholder={'Email'}
-                      type={'email'}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      validations={validations}
-                    />
-                    <InputField
-                      id={'password'}
-                      name={'password'}
-                      value={password}
-                      label={'Password'}
-                      placeholder={'Password'}
-                      type={'password'}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      validations={validations}
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full text-center bg-gray-800 text-white py-[13px] text-[24px] font-bold rounded-[17px] mt-[30px]"
-                  >
-                    Sign Up
-                  </button>
-                  <p className="mt-[14px] text-[16px] font-medium">
-                    Sudah punya akun?{' '}
-                    <Link
-                      href={'/login'}
-                      className="font-bold text-[#FE6D00] underline"
-                    >
-                      Masuk disini.
-                    </Link>
-                  </p>
-                </form>
-              </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      {modalOtp && (
+        <FormulirOTP
+          email={email}
+          href={menu ? '/beranda' : '/produk'}
+          toastSuccess={'Success Register'}
+        />
+      )}
+    </>
   );
 }
 

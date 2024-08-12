@@ -10,6 +10,7 @@ import { useDebounce } from 'use-debounce';
 import { IoIosSearch } from 'react-icons/io';
 import { GoDotFill } from 'react-icons/go';
 
+import Loading from '@/components/Loading';
 import CardBlogLarge from '@/components/card/CardBlogLarge';
 import CardBlogSmall from '@/components/card/CardBlogSmall';
 import NextBreadcrumb from '@/components/NextBreadcrumb';
@@ -49,6 +50,10 @@ export default function BlogPage() {
     }
     Promise.all([fetchBlog()]);
   }, [fetchBlog, queryBlogValue]);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className=" w-full">
