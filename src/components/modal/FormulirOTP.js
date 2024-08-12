@@ -88,12 +88,13 @@ const FormulirOTP = ({ length = 6, email, toastSuccess, href }) => {
       })
       .catch(function (error) {
         if (
-          error.response?.data?.code === 400 &&
-          error.response?.data.status == 'VALIDATION_ERROR'
+          error.response?.data?.code === 400 ||
+          (error.response?.data?.code === 422 &&
+            error.response?.data.status == 'VALIDATION_ERROR')
         ) {
           setValidations(error.response?.data.error?.validation);
           toast.dismiss();
-          toast.error(error.response?.data.error?.message);
+          toast.error(error.response?.data.error?.validation?.message);
         } else if (
           error.response?.data?.code === 401 &&
           error.response?.data.status == 'UNAUTHORIZED'
@@ -112,6 +113,51 @@ const FormulirOTP = ({ length = 6, email, toastSuccess, href }) => {
           toast.error(error.response?.data.error.message);
         }
         setLoading(false);
+      });
+  };
+  const handleResend = (e) => {
+    setValidations([]);
+    toast.loading('Loading...');
+    e.preventDefault();
+
+    let data = new FormData();
+    data.append('email', email);
+
+    request
+      .post('/auth/send-otp', data)
+      .then(function (response) {
+        if (response.data?.code === 200 || response.data?.code === 201) {
+          toast.dismiss();
+          toast.success('Success Resend OTP');
+        }
+      })
+      .catch(function (error) {
+        if (
+          error.response?.data?.code === 400 ||
+          (error.response?.data?.code === 422 &&
+            error.response?.data.status == 'VALIDATION_ERROR')
+        ) {
+          setValidations(error.response?.data.error?.validation);
+          toast.dismiss();
+          toast.error(error.response?.data.error?.validation?.message);
+        } else if (
+          error.response?.data?.code === 401 &&
+          error.response?.data.status == 'UNAUTHORIZED'
+        ) {
+          toast.dismiss();
+          toast.error(error.response?.data.error?.message);
+        } else if (
+          error.response?.data?.code === 404 &&
+          error.response?.data.status == 'NOT_FOUND'
+        ) {
+          toast.dismiss();
+          toast.error(error.response?.data.error?.message);
+        } else if (error.response?.data?.code === 500) {
+          console.error('INTERNAL_SERVER_ERROR');
+          toast.dismiss();
+          toast.error(error.response?.data.error.message);
+        }
+        toast.dismiss();
       });
   };
 
@@ -156,12 +202,13 @@ const FormulirOTP = ({ length = 6, email, toastSuccess, href }) => {
         </form>
         <div className="text-sm text-slate-500 mt-4">
           Didnt receive code?{' '}
-          <a
+          <button
+            onClick={(e) => handleResend(e)}
             className="font-medium text-indigo-500 hover:text-indigo-600"
             href="#0"
           >
             Resend
-          </a>
+          </button>
         </div>
       </div>
     </div>
