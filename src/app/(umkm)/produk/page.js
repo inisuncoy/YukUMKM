@@ -1,21 +1,23 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useDebounce } from 'use-debounce';
-import { z } from 'zod';
-import toast from 'react-hot-toast';
+
 import { FaPlus } from 'react-icons/fa6';
 import { GiCancel } from 'react-icons/gi';
 import { IoIosSearch } from 'react-icons/io';
-import request from '@/utils/request';
+import { MdAddCircleOutline } from 'react-icons/md';
+import { FiEdit3 } from 'react-icons/fi';
+
+import { z } from 'zod';
+import toast from 'react-hot-toast';
+import { useDebounce } from 'use-debounce';
+
 import InputField from '@/components/forms/InputField';
 import TextareaField from '@/components/forms/TextareaField';
 import SelectionField from '@/components/forms/SelectionField';
-import Link from 'next/link';
-import { MdAddCircleOutline } from 'react-icons/md';
-import { FiEdit3 } from 'react-icons/fi';
+
+import request from '@/utils/request';
+import { checkAspectRatio } from '@/utils/checkAspectRatio';
 
 const icon = (
   <svg
@@ -49,29 +51,44 @@ const ACCEPTED_IMAGE_TYPES = [
 const formSchema = z.object({
   name: z
     .string()
-    .min(1, { message: 'Name must be at least 3 characters long' })
+    .min(10, { message: 'Name must be at least 10 characters long' })
     .max(30, { message: 'Name must be at most 30 characters long.' }),
-  // category: z
-  //   .string()
-  //   .min(1, { message: 'Category must be at least 3 characters long' })
-  //   .max(100, { message: 'Category must be at most 30 characters long.' }),
-  // status: z.boolean({
-  //   required_error: 'Status is required',
-  // }),
-  // price: z.number().int({ message: 'Price must be a number' }),
-  // imagesUri: z
-  //   .any()
-  //   .refine(
-  //     (file) => file?.size <= MAX_FILE_SIZE,
-  //     `The maximum file size that can be uploaded is 2MB`
-  //   )
-  //   .refine(
-  //     (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-  //     'Only .jpg, .jpeg, .png and .webp formats are supported.'
-  //   ),
+  category: z.string().min(1, { message: 'Category must be filled in' }),
+  status: z.boolean({
+    invalid_type_error: 'Status must be filled in',
+  }),
+  price: z.number().int({ message: 'Price must be a number' }),
+  imagesUri: z
+    .any()
+    .refine(
+      (file) => file?.size <= MAX_FILE_SIZE,
+      `The maximum file size that can be uploaded is 2MB`
+    )
+    .refine(
+      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+      'Only .jpg, .jpeg, .png and .webp formats are supported.'
+    )
+    .refine((file) => {
+      if (!file) return false;
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.src = url;
+
+      return new Promise((resolve) => {
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          // Memastikan gambar memiliki rasio 1:1
+          resolve(img.width === img.height);
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          resolve(false);
+        };
+      });
+    }, 'The image must have a 1:1 aspect ratio.'),
   description: z
     .string()
-    .min(10, { message: 'Description must be at least 3 characters long' })
+    .min(40, { message: 'Description must be at least 40 characters long' })
     .max(255, { message: 'Description must be at most 255 characters long.' }),
 });
 
@@ -102,10 +119,17 @@ const ProdukPage = () => {
   ];
 
   const onSubmit = async (e) => {
+    e.preventDefault();
     setValidations([]);
     setLoading(true);
     toast.loading('Saving data...');
-    e.preventDefault();
+
+    if (!isValid) {
+      setLoading(false);
+      toast.dismiss();
+      toast.error('Invalid Input.');
+      return;
+    }
 
     let data = {};
 
@@ -129,7 +153,36 @@ const ProdukPage = () => {
       data.imageUri = thumbnail;
     }
 
-    // Jika hanya profileUri yang diisi, maka hapus field lainnya dari data
+    let isValid = true;
+
+    if (thumbnail) {
+      const isThumbnailSquare = await checkAspectRatio(thumbnail);
+      if (!isThumbnailSquare) {
+        setValidations((prev) => [
+          ...prev,
+          {
+            name: 'imageUri',
+            message: 'The thumbnail image must have an aspect ratio of 1:1 ',
+          },
+        ]);
+        isValid = false;
+      }
+    }
+
+    for (let i = 0; i < images.length; i++) {
+      const isImageSquare = await checkAspectRatio(images[i]);
+      if (!isImageSquare) {
+        setValidations((prev) => [
+          ...prev,
+          {
+            name: 'ImageUriItem',
+            message: 'The ImageUriItem image must have an aspect ratio of 1:1 ',
+          },
+        ]);
+        isValid = false;
+      }
+    }
+
     if (Object.keys(data).length > 1 && data.imageUri !== undefined) {
       Object.keys(data).forEach((key) => {
         if (key !== 'imageUri' && data[key] === '') {
@@ -138,7 +191,6 @@ const ProdukPage = () => {
       });
     }
 
-    // Buat validasi hanya jika ada field yang diisi
     if (Object.keys(data).length > 0) {
       const validation = formSchema.safeParse(data);
       if (!validation) {
@@ -173,25 +225,65 @@ const ProdukPage = () => {
       .then(function (response) {
         if (images.length !== 0) {
           dataItemImages.append('itemId', response.data.data.id);
-          request.post('/cms/itemImage', dataItemImages).then(function (res) {
-            setIsAction(true);
-            setDetailItem('');
-          });
+          request
+            .post('/cms/itemImage', dataItemImages)
+            .then(function (res) {
+              setIsAction(true);
+              setDetailItem('');
+              setMenuActive(!menuActive);
+              toast.dismiss();
+              toast.success(
+                detailItem ? 'Success Edit Product' : 'Success Add Product'
+              );
+              setName('');
+              setCategory('');
+              setStatus('');
+              setPrice('');
+              setDescription('');
+              setImages([]);
+              setThumbnail('');
+              setImgLength(5);
+              setThumbnailUri('');
+            })
+            .catch(function (error) {
+              if (
+                (error.response?.data?.code === 400 ||
+                  error.response?.data?.code === 422) &&
+                error.response?.data.status == 'VALIDATION_ERROR'
+              ) {
+                setValidations(error.response?.data.error?.validation);
+                toast.dismiss();
+                toast.error(error.response?.data.error?.message);
+                setImages([]);
+                setThumbnail('');
+                document.getElementById(`thumbnail_img`).value = '';
+              } else if (
+                error.response?.data?.code === 404 &&
+                error.response?.data.status == 'NOT_FOUND'
+              ) {
+                toast.dismiss();
+                toast.error(error.response?.data.error?.message);
+              } else if (error.response?.data?.code === 500) {
+                toast.dismiss();
+                toast.error(error.response?.data.error.message);
+              }
+            });
+        } else {
+          toast.dismiss();
+          toast.success('Success Add Product');
+          setIsAction(true);
+          setMenuActive(!menuActive);
+          setName('');
+          setCategory('');
+          setStatus('');
+          setPrice('');
+          setDescription('');
+          setImages([]);
+          setThumbnail('');
+          setImgLength(5);
+          setThumbnailUri('');
+          setDetailItem('');
         }
-        toast.dismiss();
-        toast.success('Success Add Product');
-        setIsAction(true);
-        setMenuActive(!menuActive);
-        setName('');
-        setCategory('');
-        setStatus('');
-        setPrice('');
-        setDescription('');
-        setImages([]);
-        setThumbnail('');
-        setImgLength(5);
-        setThumbnailUri('');
-        setDetailItem('');
       })
       .catch(function (error) {
         if (
@@ -203,7 +295,8 @@ const ProdukPage = () => {
           toast.dismiss();
           toast.error(error.response?.data.error?.message);
           setImages([]);
-          setThumbnail([]);
+          setThumbnail('');
+          document.getElementById(`thumbnail_img`).value = '';
         } else if (
           error.response?.data?.code === 404 &&
           error.response?.data.status == 'NOT_FOUND'
@@ -331,7 +424,6 @@ const ProdukPage = () => {
       setStatus(detailItem.data.is_active);
       setPrice(detailItem.data.price);
       setDescription(detailItem.data.description);
-      setItemImagesUri(detailItem.data.item_image);
       setThumbnailUri(detailItem.data.image_uri);
       setImgLength(1);
     } else {
@@ -403,9 +495,11 @@ const ProdukPage = () => {
                       <tr key={index} className="bg-white  ">
                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                           <div className="flex  items-center gap-[12px]">
-                            <img
+                            <Image
                               width={78}
                               height={78}
+                              loading="lazy"
+                              sizes="100vw"
                               alt="product"
                               src={
                                 process.env.NEXT_PUBLIC_HOST + data.image_uri
@@ -447,6 +541,7 @@ const ProdukPage = () => {
           onClick={() => {
             setMenuActive(!menuActive);
             setDetailItem('');
+            setValidations([]);
           }}
           className={`fixed w-full h-full overflow-y-scroll backdrop-blur-sm bg-black/20  top-0 left-0 z-[70] flex justify-center`}
         >
@@ -565,6 +660,7 @@ const ProdukPage = () => {
                       </div>
                       <input
                         id={`thumbnail_img`}
+                        name={`imageUri`}
                         type="file"
                         accept="image/*"
                         className="hidden"
@@ -575,6 +671,18 @@ const ProdukPage = () => {
                           }
                         }}
                       />
+                      {validations &&
+                        validations.map(
+                          (validation, index) =>
+                            validation.name === 'imageUri' && (
+                              <p
+                                key={index}
+                                className="text-sm text-red-500 mt-2"
+                              >
+                                {validation.message}
+                              </p>
+                            )
+                        )}
                     </div>
                     <div className="flex-[2] flex flex-col gap-5">
                       <h1 className="text-[16px] font-bold leading-tight text-gray-500">
@@ -627,6 +735,7 @@ const ProdukPage = () => {
                             )}
                             <input
                               id={`img${i}`}
+                              name="ImageUriItem"
                               type="file"
                               accept="image/*"
                               className="hidden"
@@ -641,6 +750,18 @@ const ProdukPage = () => {
                           />
                         </div>
                       </div>
+                      {validations &&
+                        validations.map(
+                          (validation, index) =>
+                            validation.name === 'ImageUriItem' && (
+                              <p
+                                key={index}
+                                className="text-sm text-red-500 mt-2"
+                              >
+                                {validation.message}
+                              </p>
+                            )
+                        )}
                     </div>
                   </div>
                   <TextareaField
