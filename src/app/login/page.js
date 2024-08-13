@@ -227,7 +227,9 @@ function Login() {
                   <p className="mt-[14px] text-[16px] font-medium">
                     Lupa kata sandi?{' '}
                     <Link
-                      href={'/'}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      href={'https://wa.me/6281258081347'}
                       className="font-bold text-[#FE6D00] underline"
                     >
                       Hubungi Kami
