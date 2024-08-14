@@ -124,13 +124,6 @@ const ProdukPage = () => {
     setLoading(true);
     toast.loading('Saving data...');
 
-    if (!isValid) {
-      setLoading(false);
-      toast.dismiss();
-      toast.error('Invalid Input.');
-      return;
-    }
-
     let data = {};
 
     // Tambahkan field ke data hanya jika field tidak kosong
@@ -181,6 +174,13 @@ const ProdukPage = () => {
         ]);
         isValid = false;
       }
+    }
+
+    if (!isValid) {
+      setLoading(false);
+      toast.dismiss();
+      toast.error('Invalid Input.');
+      return;
     }
 
     if (Object.keys(data).length > 1 && data.imageUri !== undefined) {
