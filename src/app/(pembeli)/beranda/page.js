@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { IoIosSearch } from 'react-icons/io';
@@ -8,13 +9,11 @@ import { IoIosSearch } from 'react-icons/io';
 import { useDebounce } from 'use-debounce';
 
 import SwiperProduk from '@/components/swiper/SwiperProduk';
+import Loading from '@/components/Loading';
 import CardProductV2 from '@/components/card/CardProductV2';
-import CardTokoV2 from '@/components/card/CardTokoV2';
 import CardProductSmall from '@/components/card/CardProductSmall';
 
 import request from '@/utils/request';
-import Link from 'next/link';
-import Loading from '@/components/Loading';
 
 export default function HomePage() {
   const [loading, setLoading] = useState(true);
@@ -167,11 +166,12 @@ export default function HomePage() {
               <div className="px-[20px]  pb-[32px] flex ">
                 <div className="grid  grid-cols-1 lg:grid-cols-2 gap-x-[16px] w-full lg:gap-[52px] md:gap-[12px] gap-[12px]">
                   {sellerDatas &&
-                    (showAllSeller ? sellerDatas : sellerDatas.slice(0, 2)).map(
-                      (seller, i) => (
+                    (showAllSeller ? sellerDatas : sellerDatas.slice(0, 2))
+                      .filter((dataItems) => dataItems.items.length > 0)
+                      .map((seller, i) => (
                         <div key={i} className="w-full ">
                           <div className=" relative w-full md:flex md:flex-row items-center">
-                            <div className="w-[218px] h-[319px] ">
+                            <div className="w-[218px] h-[330px] ">
                               <Image
                                 loading="lazy"
                                 width={0}
@@ -187,7 +187,19 @@ export default function HomePage() {
                                 className="w-full h-full object-cover object-bottom rounded-lg"
                               />
                             </div>
-                            <div className="flex flex-col gap-2 right-0 bottom-0 items-end absolute">
+                            <div className="flex flex-col gap-2 right-0 bottom-0 items-end absolute  w-full">
+                              <div className="text-gray-800 hidden md:flex text-[16px] font-bold w-full pl-[225px] items-center gap-2">
+                                <Image
+                                  width={0}
+                                  height={0}
+                                  sizes="100vw"
+                                  alt="product"
+                                  loading="lazy"
+                                  src={'/assets/icon/icon-toko.png'}
+                                  className="w-[15px] h-[15px] object-cover"
+                                />
+                                <p>{seller.name}</p>
+                              </div>
                               <div className="flex  gap-4 z-10 w-full  justify-end ">
                                 {seller.items
                                   .slice(0, itemsToShow)
@@ -212,8 +224,7 @@ export default function HomePage() {
                             </div>
                           </div>
                         </div>
-                      )
-                    )}
+                      ))}
                 </div>
               </div>
             </div>
