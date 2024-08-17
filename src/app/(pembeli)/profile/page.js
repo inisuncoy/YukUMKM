@@ -261,29 +261,30 @@ const ProfilePage = () => {
                   </h1>
                 </div>
                 <div>
-                  <h1 className="text-[13px] font-bold">Nama Toko</h1>
+                  <h1 className="text-[13px] font-bold">Nama</h1>
                   <p className="text-[13px] font-normal">{name}</p>
                 </div>
                 <div>
-                  <h1 className="text-[13px] font-bold">Alamat Toko</h1>
+                  <h1 className="text-[13px] font-bold">Alamat</h1>
                   <p className="text-[13px] font-normal">
                     {address ? address : 'Wajib ditulis'}
                   </p>
                 </div>
-
-                <button
-                  onClick={() => setModalFormProfile(!modalFormProfile)}
-                  className="bg-[#6366F1] text-[16px] font-bold text-white py-[10px] w-full  rounded-lg"
-                >
-                  Ubah Biodata
-                </button>
-                <button
-                  onClick={() => setModalLogout(!modalLogout)}
-                  className="bg-[#FF3D00] text-[16px] font-bold text-white py-[10px] w-full  rounded-lg"
-                >
-                  Keluar Akun
-                </button>
               </div>
+            </div>
+            <div className="flex flex-col gap-3 items-center">
+              <button
+                onClick={() => setModalFormProfile(!modalFormProfile)}
+                className="bg-[#6366F1] text-[16px] font-bold text-white py-[10px]   rounded-lg w-[352px]"
+              >
+                Ubah Biodata
+              </button>
+              <button
+                onClick={() => setModalLogout(!modalLogout)}
+                className="bg-[#FF3D00] text-[16px] font-bold text-white py-[10px]   rounded-lg w-[352px]"
+              >
+                Keluar Akun
+              </button>
             </div>
           </div>
         </div>
@@ -334,8 +335,8 @@ const ProfilePage = () => {
                   id={'address'}
                   name={'address'}
                   value={address}
-                  label={'Alamat Toko'}
-                  placeholder={'Alamat toko'}
+                  label={'Alamat'}
+                  placeholder={'Alamat'}
                   type={'text'}
                   onChange={(e) => setAddress(e.target.value)}
                   validations={validations}

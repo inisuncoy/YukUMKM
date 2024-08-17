@@ -1,14 +1,19 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 import bg1 from '../../../public/assets/img/bg/bg1.png';
 import logo1 from '../../../public/assets/img/logo/logo1.png';
-import Link from 'next/link';
-import InputField from '@/components/forms/InputField';
+
 import toast from 'react-hot-toast';
 import request from '@/utils/request';
+import Cookies from 'js-cookie';
+
 import FormulirOTP from '@/components/modal/FormulirOTP';
+import Loading from '@/components/Loading';
+import InputField from '@/components/forms/InputField';
 
 function Login() {
   const [menu, setMenu] = useState(true);
@@ -18,11 +23,15 @@ function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [modalOtp, setModalOtp] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   const onSubmit = async (e) => {
     setValidations([]);
     toast.loading('Loading...');
     e.preventDefault();
+    setLoading(true);
 
     try {
       const validation = formSchema.safeParse({
@@ -55,8 +64,18 @@ function Login() {
       .post(menu ? '/auth/buyer/login' : '/auth/seller/login', data)
       .then(function (response) {
         if (response.data?.code === 200 || response.data?.code === 201) {
-          toast.dismiss();
-          setModalOtp(true);
+          if (response.data?.data?.isVerified) {
+            toast.dismiss();
+            Cookies.set('token', response.data.data.token);
+            toast.success('Success Login');
+            router.push(menu ? '/beranda' : '/produk');
+            setLoading(true);
+          } else {
+            toast.dismiss();
+            toast.success(response.data?.data?.message);
+            setLoading(false);
+            setModalOtp(true);
+          }
         }
       })
       .catch(function (error) {
@@ -84,8 +103,13 @@ function Login() {
           toast.dismiss();
           toast.error(error.response?.data.error.message);
         }
+        setLoading(false);
       });
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <>
