@@ -1,4 +1,5 @@
 'use client';
+import { useGlobalContext } from '@/context/store';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -11,6 +12,8 @@ const PembeliLayout = ({ children }) => {
   const [active, setActive] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [hasToken, setHasToken] = useState(false);
+
+  const { countMessage } = useGlobalContext();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -152,9 +155,14 @@ const PembeliLayout = ({ children }) => {
                     pathname.startsWith('/chat')
                       ? 'text-[#FE6D00]'
                       : 'text-white'
-                  } rounded focus:outline-none focus:ring focus:ring-transparent md:hover:bg-transparent md:border-0 md:p-0`}
+                  } relative rounded focus:outline-none focus:ring focus:ring-transparent md:hover:bg-transparent md:border-0 md:p-0`}
                 >
                   Chat
+                  <span
+                    className={`h-[8px] w-[8px] hidden md:${
+                      countMessage > 0 ? 'block' : 'hidden'
+                    } absolute top-[0px] right-[-15px] rounded-full bg-[#FE6D00]`}
+                  ></span>
                 </Link>
               </li>
               <li>
