@@ -1,3 +1,4 @@
+import { GlobalContextProvider } from '@/context/store';
 import './globals.css';
 import { Poppins } from 'next/font/google';
 import { Suspense } from 'react';
@@ -31,7 +32,7 @@ export default function RootLayout({ children }) {
             </div>
           }
         >
-          {children}
+          <GlobalContextProvider>{children}</GlobalContextProvider>
         </Suspense>
       </body>
     </html>

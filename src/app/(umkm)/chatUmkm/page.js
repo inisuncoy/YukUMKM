@@ -15,6 +15,8 @@ import Cookies from 'js-cookie';
 
 import request from '@/utils/request';
 import { useSearchParams } from 'next/navigation';
+import Loading from '@/components/Loading';
+import { useGlobalContext } from '@/context/store';
 
 const ChatPage = () => {
   const [isAction, setIsAction] = useState(false);
@@ -31,9 +33,9 @@ const ChatPage = () => {
 
   const [queryChatListValue] = useDebounce(queryChatList, 500);
 
-  const socketRef = useRef();
+  const { countMessage, setCountMessage } = useGlobalContext();
 
-  const pathname = useSearchParams();
+  const socketRef = useRef();
 
   const fetchusers = useCallback(async () => {
     // Periksa token sebelum melakukan request
@@ -104,6 +106,7 @@ const ChatPage = () => {
     socketRef.current = socket;
 
     socket.on('chatList', (response) => {
+      setLoading(false);
       setPartnerDatas(response);
     });
 
@@ -141,6 +144,9 @@ const ChatPage = () => {
     };
   }, [userId, detailPartner, isAction, queryChatListValue]);
 
+  const total = partnerDatas.reduce((acc, curr) => acc + curr.unreadCount, 0);
+  setCountMessage(total);
+
   if (showModal) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -153,6 +159,10 @@ const ChatPage = () => {
         </div>
       </div>
     );
+  }
+
+  if (loading) {
+    return <Loading />;
   }
 
   return (
@@ -194,7 +204,7 @@ const ChatPage = () => {
                       localStorage.removeItem('partner');
                     }}
                   >
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-4">
                       <div className="flex-shrink-0">
                         <Image
                           loading="lazy"
@@ -210,13 +220,25 @@ const ChatPage = () => {
                           className="w-8 h-8 rounded-full object-cover"
                         />
                       </div>
-                      <div className="flex-1 min-w-0 ms-4">
-                        <p className="text-sm font-medium text-gray-900 truncate ">
-                          {data.name}
-                        </p>
-                        <p className="text-sm text-gray-700 truncate ">
-                          {data.lastMessage}
-                        </p>
+                      <div className="flex-grow">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <h3 className="text-sm font-medium text-gray-900 truncate">
+                              {data.name}
+                            </h3>
+                            <p className="text-sm text-gray-700 truncate">
+                              {' '}
+                              {data.lastMessage}
+                            </p>
+                          </div>
+                          {data.unreadCount > 0 && (
+                            <span
+                              className={`bg-[#FE6D00] font-bold text-white text-center py-1 px-2 text-xs rounded`}
+                            >
+                              {data.unreadCount}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </li>
@@ -370,7 +392,7 @@ const ChatPage = () => {
                             localStorage.removeItem('partner');
                           }}
                         >
-                          <div className="flex items-center">
+                          <div className="flex items-center gap-4">
                             <div className="flex-shrink-0">
                               <Image
                                 loading="lazy"
@@ -387,13 +409,25 @@ const ChatPage = () => {
                                 className="w-8 h-8 rounded-full object-cover"
                               />
                             </div>
-                            <div className="flex-1 min-w-0 ms-4">
-                              <p className="text-sm font-medium text-gray-900 truncate ">
-                                {data.name}
-                              </p>
-                              <p className="text-sm text-gray-700 truncate ">
-                                {data.lastMessage}
-                              </p>
+                            <div className="flex-grow">
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <h3 className="text-sm font-medium text-gray-900 truncate">
+                                    {data.name}
+                                  </h3>
+                                  <p className="text-sm text-gray-700 truncate">
+                                    {' '}
+                                    {data.lastMessage}
+                                  </p>
+                                </div>
+                                {data.unreadCount > 0 && (
+                                  <span
+                                    className={`bg-[#FE6D00] font-bold text-white text-center py-1 px-2 text-xs rounded`}
+                                  >
+                                    {data.unreadCount}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </li>
