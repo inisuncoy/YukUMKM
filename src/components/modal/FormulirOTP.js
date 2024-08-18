@@ -204,8 +204,7 @@ const FormulirOTP = ({ length = 6, email, toastSuccess, href }) => {
           Didnt receive code?{' '}
           <button
             onClick={(e) => handleResend(e)}
-            className="font-medium text-indigo-500 hover:text-indigo-600"
-            href="#0"
+            className="font-medium text-[#FE6D00] "
           >
             Resend
           </button>

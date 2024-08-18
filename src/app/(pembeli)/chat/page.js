@@ -138,14 +138,13 @@ const ChatPage = () => {
       socket.emit('getChatList', { query: queryChatListValue });
     }
 
+    const total = partnerDatas.reduce((acc, curr) => acc + curr.unreadCount, 0);
+    setCountMessage(total);
     return () => {
       socket.off('chatList');
       socket.off('chatHistory');
     };
   }, [userId, detailPartner, isAction, queryChatListValue]);
-
-  const total = partnerDatas.reduce((acc, curr) => acc + curr.unreadCount, 0);
-  setCountMessage(total);
 
   if (showModal) {
     return (
