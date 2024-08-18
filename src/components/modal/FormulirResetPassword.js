@@ -239,7 +239,7 @@ const FormulirResetPassword = ({ length = 6, setModalResetPassword }) => {
               Remember your password?
               <span
                 onClick={() => setModalResetPassword(false)}
-                className="text-[#FE6D00] decoration-2 hover:underline font-medium"
+                className="text-[#FE6D00] decoration-2 hover:underline font-medium cursor-pointer"
               >
                 Login here
               </span>

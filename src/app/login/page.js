@@ -262,7 +262,7 @@ function Login() {
                         Lupa kata sandi?{' '}
                         <span
                           onClick={() => setModalResetPassword(true)}
-                          className="font-bold text-[#FE6D00] underline"
+                          className="font-bold text-[#FE6D00] underline cursor-pointer"
                         >
                           Hubungi Kami
                         </span>
