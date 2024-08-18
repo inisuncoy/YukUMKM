@@ -14,6 +14,7 @@ import Cookies from 'js-cookie';
 import FormulirOTP from '@/components/modal/FormulirOTP';
 import Loading from '@/components/Loading';
 import InputField from '@/components/forms/InputField';
+import FormulirResetPassword from '@/components/modal/FormulirResetPassword';
 
 function Login() {
   const [menu, setMenu] = useState(true);
@@ -23,6 +24,7 @@ function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [modalOtp, setModalOtp] = useState(false);
+  const [modalResetPassword, setModalResetPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
@@ -201,78 +203,86 @@ function Login() {
           <div className={`w-[550px] 'h-[550px] flex flex-col gap-[19px]`}>
             <div className="px-[22px] py-[18px] flex gap-[17px] bg-white rounded-[8px]">
               <span className="border-2 rounded-full border-[#FE6D00]"></span>
-              <h1 className="">Login</h1>
+              <h1 className="">
+                {modalResetPassword ? 'Forget Password' : 'Login'}
+              </h1>
             </div>
             <div className="px-[30px] pt-[33px] pb-[48px] h-full  bg-white rounded-[8px]">
-              <div className="flex ">
-                <div
-                  className={`flex-1 text-center pb-[10px] border-b-4 border-[#FE6D00] cursor-pointer ${
-                    menu ? '' : 'opacity-[0.25]'
-                  }`}
-                  onClick={() => setMenu(true)}
-                >
-                  <h1 className="text-[#FE6D00]">Pembeli</h1>
-                </div>
-                <div
-                  className={`flex-1 text-center pb-[10px] border-b-4 border-[#FE6D00] cursor-pointer ${
-                    menu ? 'opacity-[0.25]' : ''
-                  }`}
-                  onClick={() => setMenu(false)}
-                >
-                  <h1 className="text-[#FE6D00]">UMKM</h1>
-                </div>
-              </div>
-              <div className="pt-[45px] ">
-                <form onSubmit={onSubmit}>
-                  <div className="grid grid-cols-1 gap-[32px]">
-                    <InputField
-                      id={'email'}
-                      name={'email'}
-                      value={email}
-                      label={'Email'}
-                      placeholder={'Email'}
-                      type={'email'}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      validations={validations}
-                    />
-                    <InputField
-                      id={'password'}
-                      name={'password'}
-                      value={password}
-                      label={'Password'}
-                      placeholder={'Password'}
-                      type={'password'}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      validations={validations}
-                    />
+              {modalResetPassword ? (
+                <FormulirResetPassword
+                  setModalResetPassword={setModalResetPassword}
+                />
+              ) : (
+                <div>
+                  <div className="flex ">
+                    <div
+                      className={`flex-1 text-center pb-[10px] border-b-4 border-[#FE6D00] cursor-pointer ${
+                        menu ? '' : 'opacity-[0.25]'
+                      }`}
+                      onClick={() => setMenu(true)}
+                    >
+                      <h1 className="text-[#FE6D00]">Pembeli</h1>
+                    </div>
+                    <div
+                      className={`flex-1 text-center pb-[10px] border-b-4 border-[#FE6D00] cursor-pointer ${
+                        menu ? 'opacity-[0.25]' : ''
+                      }`}
+                      onClick={() => setMenu(false)}
+                    >
+                      <h1 className="text-[#FE6D00]">UMKM</h1>
+                    </div>
                   </div>
-                  <p className="mt-[14px] text-[16px] font-medium">
-                    Lupa kata sandi?{' '}
-                    <Link
-                      rel="noopener noreferrer"
-                      target="_blank"
-                      href={'https://wa.me/6281258081347'}
-                      className="font-bold text-[#FE6D00] underline"
-                    >
-                      Hubungi Kami
-                    </Link>
-                  </p>
-                  <button className="w-full text-center bg-gray-800 text-white py-[13px] text-[24px] font-bold rounded-[17px] mt-[30px]">
-                    Sign In
-                  </button>
-                  <p className="mt-[14px] text-[16px] font-medium">
-                    Tidak punya akun?{' '}
-                    <Link
-                      href={'/register'}
-                      className="font-bold text-[#FE6D00] underline"
-                    >
-                      Buat akun sekarang disini.
-                    </Link>
-                  </p>
-                </form>
-              </div>
+                  <div className="pt-[45px] ">
+                    <form onSubmit={onSubmit}>
+                      <div className="grid grid-cols-1 gap-[32px]">
+                        <InputField
+                          id={'email'}
+                          name={'email'}
+                          value={email}
+                          label={'Email'}
+                          placeholder={'Email'}
+                          type={'email'}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                          validations={validations}
+                        />
+                        <InputField
+                          id={'password'}
+                          name={'password'}
+                          value={password}
+                          label={'Password'}
+                          placeholder={'Password'}
+                          type={'password'}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                          validations={validations}
+                        />
+                      </div>
+                      <p className="mt-[14px] text-[16px] font-medium">
+                        Lupa kata sandi?{' '}
+                        <span
+                          onClick={() => setModalResetPassword(true)}
+                          className="font-bold text-[#FE6D00] underline"
+                        >
+                          Hubungi Kami
+                        </span>
+                      </p>
+                      <button className="w-full text-center bg-gray-800 text-white py-[13px] text-[24px] font-bold rounded-[17px] mt-[30px]">
+                        Sign In
+                      </button>
+                      <p className="mt-[14px] text-[16px] font-medium">
+                        Tidak punya akun?{' '}
+                        <Link
+                          href={'/register'}
+                          className="font-bold text-[#FE6D00] underline"
+                        >
+                          Buat akun sekarang disini.
+                        </Link>
+                      </p>
+                    </form>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
