@@ -221,8 +221,6 @@ const FormulirResetPassword = ({ length = 6, setModalResetPassword }) => {
       });
   };
 
-  console.log(token);
-
   if (loading) {
     return <Loading />;
   }

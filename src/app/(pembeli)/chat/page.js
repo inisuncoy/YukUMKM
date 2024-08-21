@@ -138,22 +138,23 @@ const ChatPage = () => {
       socket.emit('getChatList', { query: queryChatListValue });
     }
 
-    const total = partnerDatas.reduce((acc, curr) => acc + curr.unreadCount, 0);
-    setCountMessage(total);
     return () => {
       socket.off('chatList');
       socket.off('chatHistory');
     };
   }, [userId, detailPartner, isAction, queryChatListValue]);
 
+  const total = partnerDatas.reduce((acc, curr) => acc + curr.unreadCount, 0);
+  setCountMessage(total);
+
   if (showModal) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div className="bg-white p-8 rounded-lg shadow-lg text-center">
-          <h2 className="text-2xl font-bold mb-4">You need to log in</h2>
-          <p className="mb-4">Please log in to access the chat.</p>
+          <h2 className="text-2xl font-bold mb-4">Kamu Perlu Login!</h2>
+          <p className="mb-4">Silakan Login untuk mengakses obrolan.</p>
           <Link href="/login">
-            <p className="text-blue-500 underline">Go to Login Page</p>
+            <p className="text-blue-500 underline">Pergi ke Halaman Login</p>
           </Link>
         </div>
       </div>
@@ -172,7 +173,7 @@ const ChatPage = () => {
             value={queryChatList}
             onChange={(e) => setQueryChatList(e.target.value)}
             className=" w-full py-[20px] pl-[53px] rounded-[8px]"
-            placeholder="Search here..."
+            placeholder="Cari di ini . . ."
           />
           <button className="absolute z-50 top-0 left-0 bottom-0 m-auto ml-[15px] ">
             <IoIosSearch className="text-[24px] text-black " />
@@ -359,7 +360,7 @@ const ChatPage = () => {
               <div className="w-full relative shadow">
                 <input
                   className=" w-full py-[20px] pl-[53px] rounded-[8px]"
-                  placeholder="Search here..."
+                  placeholder="Cari di ini . . ."
                 />
                 <button className="absolute z-50 top-0 left-0 bottom-0 m-auto ml-[15px] ">
                   <IoIosSearch className="text-[24px] text-black " />

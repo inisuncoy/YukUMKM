@@ -22,24 +22,24 @@ const ACCEPTED_IMAGE_TYPES = [
 const formSchema = z.object({
   name: z
     .string()
-    .min(1, { message: 'Name must be at least 3 characters long' })
-    .max(30, { message: 'Name must be at most 30 characters long.' })
+    .min(1, { message: 'Panjang nama minimal harus 1 karakter' })
+    .max(30, { message: 'Panjang nama maksimal 30 karakter' })
     .optional(),
   address: z
     .string()
-    .min(1, { message: 'Address must be at least 3 characters long' })
-    .max(255, { message: 'Address must be at most 255 characters long.' })
+    .min(1, { message: 'Panjang alamat minimal harus 3 karakter' })
+    .max(255, { message: 'Panjang alamat maksimal 255 karakter.' })
     .optional(),
   profileUri: z
     .any()
     .optional()
     .refine(
       (file) => !file || file.size <= MAX_FILE_SIZE,
-      `The maximum file size that can be uploaded is 2MB`
+      `Ukuran file maksimal yang bisa diupload adalah 2MB`
     )
     .refine(
       (file) => !file || ACCEPTED_IMAGE_TYPES.includes(file.type),
-      'Only .jpg, .jpeg, .png and .webp formats are supported.'
+      'Hanya format .jpg, .jpeg, .png, dan .webp yang didukung.'
     ),
 });
 
@@ -112,7 +112,7 @@ const ProfilePage = () => {
       .then(function (response) {
         if (response.data?.code === 200 || response.data?.code === 201) {
           toast.dismiss();
-          toast.success('Success Update Profile');
+          toast.success('Profil Pembaruan Sukses');
           router.push('/profile');
           setUpdatedProfile(true);
           setProfileUri('');
