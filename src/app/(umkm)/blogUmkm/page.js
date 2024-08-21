@@ -51,7 +51,7 @@ export default function BlogUmkmPage() {
         <Link
           href={'/blogUmkm/tambahBlog'}
           className="bg-[#4D50FF] w-full py-[20px] text-center text-white rounded-[8px] flex items-center justify-center gap-4"
-          placeholder="Search here..."
+          placeholder="Cari di ini . . ."
         >
           <MdOutlineAdd className="text-[20px]" />
           <p>Tambah Blog</p>

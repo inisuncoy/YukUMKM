@@ -17,8 +17,8 @@ import request from '@/utils/request';
 const formSchema = z.object({
   comment: z
     .string()
-    .min(3, { message: 'Title must be at least 3 characters long' })
-    .max(190, { message: 'Title must be at most 190 characters long.' }),
+    .min(3, { message: 'Komentar harus terdiri dari minimal 3 karakter' })
+    .max(190, { message: 'Komentar maksimal 190 karakter' }),
 });
 
 const DetailBlogPage = ({ params }) => {
@@ -27,10 +27,11 @@ const DetailBlogPage = ({ params }) => {
   const [idBlogData, setIdBlog] = useState();
   const [addComment, setAddComment] = useState(false);
   const [comment, setComment] = useState();
-
+  const [limit, setLimit] = useState(5);
+  const [recordsTotalComment, setRecordsTotalComment] = useState();
+  const [dataComment, setDataComment] = useState([]);
   const [validations, setValidations] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [isLogin, setIsLogin] = useState(false);
 
   let token = Cookies.get('token');
@@ -39,31 +40,24 @@ const DetailBlogPage = ({ params }) => {
     e.preventDefault();
     setValidations([]);
     setLoading(true);
-    toast.loading('Saving data...');
+    toast.loading('Loading...');
 
-    const validation = formSchema.safeParse({
-      comment: comment,
-    });
+    const validation = formSchema.safeParse({ comment });
 
     if (!validation.success) {
-      validation.error.errors.map((validation) => {
-        const key = [
-          {
-            name: validation.path[0],
-            message: validation.message,
-          },
-        ];
+      validation.error.errors.forEach((validation) => {
+        const key = [{ name: validation.path[0], message: validation.message }];
         setValidations((validations) => [...validations, ...key]);
       });
       setLoading(false);
       toast.dismiss();
       toast.error('Invalid Input.');
-
       return;
     }
+
     let data = {
       blogId: idBlogData,
-      comment: comment,
+      comment,
     };
 
     request
@@ -71,7 +65,7 @@ const DetailBlogPage = ({ params }) => {
       .then(function (response) {
         if (response.data?.code === 200 || response.data?.code === 201) {
           toast.dismiss();
-          toast.success('Success Add Comment');
+          toast.success('Penambahan Komentar Sukses');
         }
         setLoading(false);
         setComment('');
@@ -81,14 +75,14 @@ const DetailBlogPage = ({ params }) => {
         if (
           (error.response?.data?.code === 400 ||
             error.response?.data?.code === 422) &&
-          error.response?.data.status == 'VALIDATION_ERROR'
+          error.response?.data.status === 'VALIDATION_ERROR'
         ) {
           setValidations(error.response?.data.error?.validation);
           toast.dismiss();
           toast.error(error.response?.data.error?.message);
         } else if (
           error.response?.data?.code === 404 &&
-          error.response?.data.status == 'NOT_FOUND'
+          error.response?.data.status === 'NOT_FOUND'
         ) {
           toast.dismiss();
           toast.error(error.response?.data.error?.message);
@@ -101,9 +95,7 @@ const DetailBlogPage = ({ params }) => {
   };
 
   const fetchBlog = useCallback(async () => {
-    let payload = {
-      slug: detailBlog,
-    };
+    let payload = { slug: detailBlog };
     await request
       .get(`/public/blog`, payload)
       .then(function (response) {
@@ -111,22 +103,45 @@ const DetailBlogPage = ({ params }) => {
         setIdBlog(response.data.data.id);
         setLoading(false);
       })
-      .catch(function (error) {
+      .catch(function () {
         setLoading(false);
       });
   }, [detailBlog]);
 
+  const fetchComment = useCallback(async () => {
+    if (!idBlogData) return; // Ensure idBlogData is available before fetching comments
+
+    let payload = {
+      blogId: idBlogData,
+    };
+
+    await request
+      .get(`/public/comment`, payload)
+      .then(function (response) {
+        setDataComment(response.data.data);
+        setRecordsTotalComment(response.data.recordsTotal);
+      })
+      .catch(function () {
+        setLoading(false);
+      });
+  }, [idBlogData]);
+
   useEffect(() => {
-    if (addComment) {
-      fetchBlog();
-    }
+    fetchBlog();
     if (token) {
       setIsLogin(true);
     }
-    setAddComment(false);
+  }, [fetchBlog, token]);
 
-    Promise.all([fetchBlog()]);
-  }, [fetchBlog, addComment, token]);
+  useEffect(() => {
+    if (idBlogData || addComment) {
+      fetchComment();
+      setAddComment(false); // Reset the addComment flag
+    }
+  }, [fetchComment, idBlogData, addComment]); // Trigger fetchComment after idBlogData is set or addComment changes
+
+  console.log(limit);
+  console.log(limit);
 
   if (loading) {
     return <Loading />;
@@ -188,8 +203,8 @@ const DetailBlogPage = ({ params }) => {
             </div>
             <div className="h-[65px]"></div>
             <div className="flex flex-col gap-3 ">
-              {data.comments &&
-                data.comments.map((comment, i) => (
+              {dataComment &&
+                dataComment.slice(0, limit).map((comment, i) => (
                   <div key={i} className="flex gap-[32px]">
                     {comment.user.profile_uri ? (
                       <div className="relative w-[51px] h-[51px] border-[2px] border-black flex justify-center items-end rounded-full  flex-shrink-0">
@@ -203,7 +218,7 @@ const DetailBlogPage = ({ params }) => {
                             process.env.NEXT_PUBLIC_HOST +
                             comment.user.profile_uri
                           }
-                          className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50"
+                          className="absolute left-0 top-0 w-full h-full object-cover object-center transition duration-50 rounded-full"
                         />
                       </div>
                     ) : (
@@ -227,6 +242,21 @@ const DetailBlogPage = ({ params }) => {
                     </div>
                   </div>
                 ))}
+            </div>
+            <div className="h-[30px]"></div>
+            <div className="w-full flex items-center justify-center">
+              <button
+                type="button"
+                onClick={() => setLimit(limit + 5)}
+                disabled={limit >= recordsTotalComment}
+                className={`py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900  bg-white rounded-lg border border-gray-200  ${
+                  limit >= recordsTotalComment ? 'cursor-not-allowed' : ''
+                }`}
+              >
+                {limit >= recordsTotalComment
+                  ? 'Komentar terakhir'
+                  : 'Tampilkan Lebih Banyak'}
+              </button>
             </div>
             <div className="h-[96px]"></div>
             <form onSubmit={onSubmit}>

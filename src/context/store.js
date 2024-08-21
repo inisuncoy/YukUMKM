@@ -53,8 +53,6 @@ export const GlobalContextProvider = ({ children }) => {
     };
   }, [userId]);
 
-  console.log('first');
-
   return (
     <GlobalContext.Provider value={{ countMessage, setCountMessage }}>
       {children}

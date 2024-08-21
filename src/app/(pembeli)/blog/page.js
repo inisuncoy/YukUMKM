@@ -75,7 +75,7 @@ export default function BlogPage() {
             value={queryBlog}
             onChange={(e) => setQueryBlog(e.target.value)}
             className=" w-full py-[20px] pl-[53px] rounded-[8px]"
-            placeholder="Search here..."
+            placeholder="Cari di ini . . ."
           />
           <button className="absolute z-50 top-0 left-0 bottom-0 m-auto ml-[15px] ">
             <IoIosSearch className="text-[24px] text-black " />
@@ -168,7 +168,7 @@ export default function BlogPage() {
                   </div>
                 </Link>
               )}
-              <div className="flex lg:gap-[33px] md:gap-[23px] gap-[13px] ">
+              <div className="grid grid-cols-2 lg:gap-[33px] md:gap-[23px] gap-[13px] ">
                 {recordsTotal >= 3 &&
                   blogDatas &&
                   blogDatas
