@@ -258,15 +258,14 @@ function Login() {
                           validations={validations}
                         />
                       </div>
-                      <p className="mt-[14px] text-[16px] font-medium">
-                        Lupa kata sandi?{' '}
-                        <span
+                      <div>
+                        <p
+                          className="mt-[14px] text-[16px] font-medium cursor-pointer text-[#FE6D00]  inline-block"
                           onClick={() => setModalResetPassword(true)}
-                          className="font-bold text-[#FE6D00] underline cursor-pointer"
                         >
-                          Hubungi Kami
-                        </span>
-                      </p>
+                          Lupa kata sandi?{' '}
+                        </p>
+                      </div>
                       <button className="w-full text-center bg-gray-800 text-white py-[13px] text-[24px] font-bold rounded-[17px] mt-[30px]">
                         Sign In
                       </button>
