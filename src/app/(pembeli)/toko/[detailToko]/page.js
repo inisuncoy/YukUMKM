@@ -36,8 +36,8 @@ const DetailTokoPage = ({ params }) => {
   const [categoryDatas, setCategoryDatas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [minPrice, setMinPrice] = useState();
-  const [maxPrice, setMaxPrice] = useState();
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
   const [review, setReview] = useState();
   const [modalReview, setModalReview] = useState(false);
   const [isActionReview, setIsActionReview] = useState(false);
@@ -512,14 +512,21 @@ const DetailTokoPage = ({ params }) => {
                         Minimum
                       </label>
                       <input
-                        type="number"
+                        type="text" // Change the type to 'text' to allow formatting
                         id="number-input"
                         aria-describedby="helper-text-explanation"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder=""
                         required
-                        value={minPrice}
-                        onChange={(e) => setMinPrice(e.target.value)}
+                        value={
+                          minPrice !== ''
+                            ? `Rp ${parseInt(minPrice).toLocaleString()}`
+                            : ''
+                        } // Format the value as "Rp"
+                        onChange={(e) => {
+                          const rawValue = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
+                          setMinPrice(rawValue ? parseInt(rawValue) : ''); // Update the state with the raw integer value
+                        }}
                       />
                     </div>
 
@@ -531,14 +538,21 @@ const DetailTokoPage = ({ params }) => {
                         Maksimal
                       </label>
                       <input
-                        type="number"
+                        type="text" // Change the type to 'text' to allow formatting
                         id="number-input"
                         aria-describedby="helper-text-explanation"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder=""
                         required
-                        value={maxPrice}
-                        onChange={(e) => setMaxPrice(e.target.value)}
+                        value={
+                          maxPrice !== ''
+                            ? `Rp ${parseInt(maxPrice).toLocaleString()}`
+                            : ''
+                        } // Format the value as "Rp"
+                        onChange={(e) => {
+                          const rawValue = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
+                          setMaxPrice(rawValue ? parseInt(rawValue) : ''); // Update the state with the raw integer value
+                        }}
                       />
                     </div>
                   </div>

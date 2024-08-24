@@ -15,24 +15,40 @@ const InputField = ({
   readOnly = false,
   validations,
 }) => {
+  const handleChange = (e) => {
+    const { value } = e.target;
+
+    // If type is number, remove non-digit characters for the value and format it with "Rp"
+    if (type === 'number') {
+      const rawValue = value.replace(/\D/g, ''); // Extract digits only
+      onChange({ target: { name, value: rawValue ? parseInt(rawValue) : '' } });
+    } else {
+      onChange(e);
+    }
+  };
+
+  // Format value as "Rp" if type is number
+  const formattedValue =
+    type === 'number' ? `Rp ${value ? value.toLocaleString() : ''}` : value;
+
   return (
     <div>
       <div className="relative  w-full min-w-[200px] border-none ">
         <input
           id={id}
           name={name}
-          type={type}
-          value={value}
-          onChange={onChange}
+          type={type === 'number' ? 'text' : type} // Use text type to allow formatting
+          value={formattedValue}
+          onChange={handleChange}
           placeholder={placeholder}
           multiple={multiple}
           required={required}
           disabled={disabled}
           readOnly={readOnly}
-          className="  peer pl-0 h-full w-full border-b border-x-0 border-t-0 border-blue-gray-200 bg-transparent pt-7 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline-none transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:border-x-0  focus:outline-none disabled:border-0 "
+          className="peer pl-0 h-full w-full border-b border-x-0 border-t-0 border-blue-gray-200 bg-transparent pt-7 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline-none transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:border-x-0  focus:outline-none disabled:border-0 "
         />
         <label
-          htmlFor="password"
+          htmlFor={id}
           className="after:content[' '] pointer-events-none absolute left-0 top-0 flex h-full w-full  select-none !overflow-visible truncate text-[16px] font-bold  leading-tight text-gray-500 transition-all after:absolute after:bottom-0 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500"
         >
           {label} <span className="text-[#FE6D00]">*</span>

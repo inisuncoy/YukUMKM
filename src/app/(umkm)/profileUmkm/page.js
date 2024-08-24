@@ -14,6 +14,8 @@ import Cookies from 'js-cookie';
 import { FaWhatsapp } from 'react-icons/fa6';
 import LineChart from '@/components/chart/lineChart';
 import moment from 'moment';
+import Table from '@/components/table/Table';
+import Pagination from '@/components/Pagination';
 
 const MAX_FILE_SIZE = 2000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -70,7 +72,7 @@ const ProfileUmkmPage = () => {
   const [financeType, setFinanceType] = useState();
   const [balance, setBalance] = useState();
   const [dateTime, setDateTime] = useState();
-  const [year, setYear] = useState(new Date());
+  const [year, setYear] = useState(new Date().getFullYear());
 
   const [income, setIncome] = useState([]);
   const [expense, setExpense] = useState([]);
@@ -79,12 +81,26 @@ const ProfileUmkmPage = () => {
   const [modalLogout, setModalLogout] = useState(false);
   const [modalFormKeuangan, setModalFormKeuangan] = useState(false);
   const [modalFormProfile, setModalFormProfile] = useState(false);
+  const [financeDatas, setFinanceDatas] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [validations, setValidations] = useState([]);
   const [isAction, setIsAction] = useState(false);
 
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [recordsTotal, setRecordsTotal] = useState('');
+
   const router = useRouter();
+
+  const minOffset = 0;
+  const maxOffset = 60;
+  const thisYear = new Date().getFullYear();
+  const years = [];
+
+  for (let i = minOffset; i <= maxOffset; i++) {
+    years.push(thisYear - i);
+  }
 
   const onUpdate = async (e) => {
     setValidations([]);
@@ -192,31 +208,12 @@ const ProfileUmkmPage = () => {
     toast.loading('Saving data...');
     e.preventDefault();
 
-    // const validation = formSchemaKeuangan.safeParse({
-    //   // balance: balance,
-    //   dateTime: dateTime,
-    // });
-
-    // if (!validation.success) {
-    //   validation.error.errors.map((validation) => {
-    //     const key = [
-    //       {
-    //         name: validation.path[0],
-    //         message: validation.message,
-    //       },
-    //     ];
-    //     setValidations((validations) => [...validations, ...key]);
-    //   });
-    //   setLoading(false);
-    //   toast.dismiss();
-    //   toast.error('Invalid Input.');
-
-    //   return;
-    // }
     let data = {
       financeType: financeType,
       balance: balance,
-      datetime: `${moment(dateTime).format('DD-MM-YYYY hh:mm:ss')}`,
+      datetime: `${moment(dateTime)
+        .startOf('day') // Set to start of the day (00:00:00)
+        .format('DD-MM-YYYY HH:mm:ss')}`, // Use HH for 24-hour format
     };
 
     request
@@ -260,10 +257,29 @@ const ProfileUmkmPage = () => {
         setLoading(false);
       });
   };
+  console.log(moment(dateTime).startOf('day').format('DD-MM-YYYY HH:mm:ss'));
+
+  const fetchFinance = useCallback(async () => {
+    let payload = {
+      year: year,
+      page: page,
+      limit: limit,
+    };
+    await request
+      .get(`/cms/finance`, payload)
+      .then(function (response) {
+        setFinanceDatas(response.data.data);
+        setRecordsTotal(response.data.recordsTotal);
+        setLoading(false);
+      })
+      .catch(function (error) {
+        setLoading(false);
+      });
+  }, [year, page, limit]);
 
   const fetchChart = useCallback(async () => {
     let payload = {
-      year: `${moment(year).format('YYYY')}`,
+      year: year,
     };
     await request
       .get(`/cms/finance/chart`, payload)
@@ -276,17 +292,6 @@ const ProfileUmkmPage = () => {
         setLoading(false);
       });
   }, [year]);
-
-  useEffect(() => {
-    if (isAction) {
-      fetchChart();
-    }
-    setIsAction(false);
-  }, [fetchChart, isAction]);
-
-  useEffect(() => {
-    fetchChart();
-  }, [fetchChart]);
 
   const fetchUsers = useCallback(async () => {
     await request
@@ -307,8 +312,8 @@ const ProfileUmkmPage = () => {
   }, []);
 
   useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+    Promise.all([fetchUsers(), fetchChart(), fetchFinance()]);
+  }, [fetchUsers, fetchChart, fetchFinance]);
 
   useEffect(() => {
     if (updatedProfile) {
@@ -316,6 +321,15 @@ const ProfileUmkmPage = () => {
       setUpdatedProfile(false);
     }
   }, [fetchUsers, updatedProfile]);
+
+  useEffect(() => {
+    if (isAction) {
+      fetchChart();
+      fetchFinance();
+    }
+    setIsAction(false);
+  }, [fetchChart, fetchFinance, isAction]);
+
   return (
     <>
       <div className="flex flex-col gap-[30px]">
@@ -488,6 +502,24 @@ const ProfileUmkmPage = () => {
                   </button>
                 </div>
                 <LineChart income={income} expense={expense} />
+                <select
+                  value={year}
+                  onChange={(e) => setYear(e.target.value)}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block max-w-[100px] p-2.5 "
+                >
+                  {years.map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+                <Table financeDatas={financeDatas} />
+                <Pagination
+                  recordsTotal={recordsTotal}
+                  limit={limit}
+                  page={page}
+                  setPage={setPage}
+                />
               </div>
             </div>
           </div>

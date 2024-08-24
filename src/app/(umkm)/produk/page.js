@@ -18,6 +18,8 @@ import SelectionField from '@/components/forms/SelectionField';
 
 import request from '@/utils/request';
 import { checkAspectRatio } from '@/utils/checkAspectRatio';
+import { NumberFormat } from '@/utils/numberFormat';
+import Pagination from '@/components/Pagination';
 
 const icon = (
   <svg
@@ -112,6 +114,9 @@ const ProdukPage = () => {
   const [images, setImages] = useState([]);
   const [imgLength, setImgLength] = useState(5);
   const [detailItem, setDetailItem] = useState();
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [recordsTotal, setRecordsTotal] = useState('');
 
   const dataStatus = [
     { name: 'Tersedia', value: true },
@@ -366,17 +371,20 @@ const ProdukPage = () => {
   const fetchProducts = useCallback(async () => {
     const payload = {
       name_insensitive: debounceValue,
+      page: page,
+      limit: limit,
     };
     request
       .get(`/cms/item`, payload)
       .then(function (response) {
         setProductDatas(response.data.data);
+        setRecordsTotal(response.data.recordsTotal);
         setLoading(false);
       })
       .catch(function (error) {
         setLoading(false);
       });
-  }, [debounceValue]);
+  }, [debounceValue, page, limit]);
 
   useEffect(() => {
     fetchProducts();
@@ -508,7 +516,9 @@ const ProdukPage = () => {
                             <h1>{data.name}</h1>
                           </div>
                         </td>
-                        <td className="px-6 py-4">Rp {data.price}</td>
+                        <td className="px-6 py-4">
+                          {NumberFormat(data.price)}
+                        </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex justify-end items-center gap-[12px]">
                             <button
@@ -534,6 +544,12 @@ const ProdukPage = () => {
               </table>
             </div>
           </div>
+          <Pagination
+            recordsTotal={recordsTotal}
+            limit={limit}
+            page={page}
+            setPage={setPage}
+          />
         </div>
       </div>
       {menuActive && (
