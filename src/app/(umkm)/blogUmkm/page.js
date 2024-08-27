@@ -12,13 +12,22 @@ import CardBlogSmall from '@/components/card/CardBlogSmall';
 import NextBreadcrumb from '@/components/NextBreadcrumb';
 import { MdOutlineAdd } from 'react-icons/md';
 import request from '@/utils/request';
+import Pagination from '@/components/Pagination';
 export default function BlogUmkmPage() {
   const [blogDatas, setBlogDatas] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [recordsTotal, setRecordsTotal] = useState('');
+
   const fetchBlogs = useCallback(async () => {
+    let payload = {
+      page: page,
+      limit: limit,
+    };
     request
-      .get(`/cms/blog`)
+      .get(`/cms/blog`, payload)
       .then(function (response) {
         setBlogDatas(response.data.data);
         setRecordsTotal(response.data.recordsTotal);
@@ -27,7 +36,7 @@ export default function BlogUmkmPage() {
       .catch(function (error) {
         setLoading(false);
       });
-  }, []);
+  }, [page, limit]);
 
   useEffect(() => {
     fetchBlogs();
@@ -79,6 +88,12 @@ export default function BlogUmkmPage() {
                   />
                 ))}
             </div>
+            <Pagination
+              recordsTotal={recordsTotal}
+              limit={limit}
+              page={page}
+              setPage={setPage}
+            />
           </div>
         </div>
       </div>

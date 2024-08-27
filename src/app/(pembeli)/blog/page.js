@@ -18,38 +18,63 @@ import NextBreadcrumb from '@/components/NextBreadcrumb';
 import request from '@/utils/request';
 
 export default function BlogPage() {
-  const [blogDatas, setBlogDatas] = useState();
+  const [blogDatas, setBlogDatas] = useState([]);
+  const [blogDataSearch, setBlogDataSearch] = useState([]);
   const [recordsTotal, setRecordsTotal] = useState();
   const [loading, setLoading] = useState(true);
   const [queryBlog, setQueryBlog] = useState('');
   const [modalSearch, setModalSearch] = useState(false);
+  const [firstLoad, setFirstLoad] = useState(true);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(4);
 
   const [queryBlogValue] = useDebounce(queryBlog, 500);
+  const totalPages = Math.ceil(recordsTotal / limit);
 
   const fetchBlog = useCallback(async () => {
-    let payload = { name_insensitive: queryBlogValue };
+    let payload = {
+      title_insensitive: queryBlogValue,
+      page: queryBlogValue ? '' : page,
+      limit: queryBlogValue ? '' : limit,
+    };
 
     await request
       .get(`/public/blog`, payload)
       .then(function (response) {
-        setBlogDatas(response.data.data);
+        setBlogDataSearch(response.data.data);
+        if (!queryBlogValue) {
+          setBlogDatas((prev) => {
+            const newData = response.data.data;
+            const mergedData = [...prev, ...newData];
+
+            const uniqueData = Array.from(
+              new Set(mergedData.map((item) => item.id))
+            ).map((id) => mergedData.find((item) => item.id === id));
+
+            return uniqueData;
+          });
+        }
         setRecordsTotal(response.data.recordsTotal);
         setLoading(false);
       })
       .catch(function (error) {
         setLoading(false);
       });
-  }, [queryBlogValue]);
+  }, [queryBlogValue, page, limit]);
 
   useEffect(() => {
+    if (firstLoad || page) {
+      fetchBlog(); // Fetch blogs only on the first load
+      setFirstLoad(false); // Ensure fetchBlog doesn't run again unnecessarily
+    }
+
     if (queryBlogValue) {
-      fetchBlog();
+      fetchBlog(); // Fetch blogs when there is a search query
       setModalSearch(true);
     } else {
       setModalSearch(false);
     }
-    Promise.all([fetchBlog()]);
-  }, [fetchBlog, queryBlogValue]);
+  }, [fetchBlog, queryBlogValue, firstLoad, page]);
 
   if (loading) {
     return <Loading />;
@@ -103,8 +128,8 @@ export default function BlogPage() {
         {modalSearch ? (
           <div className=" w-full  rounded-lg relative overflow-y-auto h-[350px]">
             <div className="grid grid-cols-1 divide-y bg-white rounded-lg">
-              {blogDatas &&
-                blogDatas.map((data, i) => (
+              {blogDataSearch &&
+                blogDataSearch.map((data, i) => (
                   <CardBlogSmall
                     key={i}
                     name={data.user.name}
@@ -200,6 +225,20 @@ export default function BlogPage() {
                         href={`blog/${data.slug}`}
                       />
                     ))}
+              </div>
+              <div className="w-full flex items-center justify-center">
+                <button
+                  type="button"
+                  onClick={() => setPage(page + 1)}
+                  disabled={page >= totalPages}
+                  className={`py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900  bg-white rounded-lg border border-gray-200  ${
+                    page >= totalPages ? 'cursor-not-allowed' : ''
+                  }`}
+                >
+                  {page >= totalPages
+                    ? 'Blog terakhir'
+                    : 'Tampilkan Lebih Banyak'}
+                </button>
               </div>
             </div>
           </div>

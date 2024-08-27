@@ -12,7 +12,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
-// Registrasikan komponen-komponen Chart.js
+// Register Chart.js components
 Chart.register(
   CategoryScale,
   LinearScale,
@@ -40,6 +40,12 @@ const labels = [
 ];
 
 const LineChart = ({ income, expense }) => {
+  // Determine the maximum value in the datasets
+  const maxDataValue = Math.max(...income, ...expense);
+
+  // Set y.max dynamically with some padding
+  const yMax = maxDataValue > 5000000 ? maxDataValue + 1000000 : 5000000;
+
   const data = {
     labels: labels,
     datasets: [
@@ -67,7 +73,7 @@ const LineChart = ({ income, expense }) => {
       },
       y: {
         min: 0,
-        max: 10000000,
+        max: yMax, // Use dynamic y.max
         display: true,
         ticks: {
           callback: function (value) {
@@ -77,6 +83,7 @@ const LineChart = ({ income, expense }) => {
       },
     },
   };
+
   return (
     <div style={{ position: 'relative', width: '100%', height: '400px' }}>
       <Line options={options} data={data} />

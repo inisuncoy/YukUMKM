@@ -22,6 +22,7 @@ import CardProductV2 from '@/components/card/CardProductV2';
 import Loading from '@/components/Loading';
 
 import request from '@/utils/request';
+import Pagination from '@/components/Pagination';
 
 const formSchema = z.object({
   rating: z.number(),
@@ -36,8 +37,8 @@ const DetailTokoPage = ({ params }) => {
   const [categoryDatas, setCategoryDatas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [minPrice, setMinPrice] = useState();
-  const [maxPrice, setMaxPrice] = useState();
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
   const [review, setReview] = useState();
   const [modalReview, setModalReview] = useState(false);
   const [isActionReview, setIsActionReview] = useState(false);
@@ -45,6 +46,9 @@ const DetailTokoPage = ({ params }) => {
   const [validations, setValidations] = useState([]);
   const [selectedStar, setSelectedStar] = useState(0);
   const [queryItemSeller, setQueryItemSeller] = useState('');
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(30);
+  const [recordsTotal, setRecordsTotal] = useState('');
 
   const [queryItemSellerValue] = useDebounce(queryItemSeller, 500);
 
@@ -71,6 +75,8 @@ const DetailTokoPage = ({ params }) => {
       maxPrice: maxPrice,
       status: true,
       name_insensitive: queryItemSellerValue,
+      page: page,
+      limit: limit,
     };
 
     const queryParams = new URLSearchParams();
@@ -82,12 +88,21 @@ const DetailTokoPage = ({ params }) => {
       .get(`/public/item?${queryParams.toString()}`, payload)
       .then(function (response) {
         setProductSallerDatas(response.data.data);
+        setRecordsTotal(response.data.recordsTotal);
         setLoading(false);
       })
       .catch(function (error) {
         setLoading(false);
       });
-  }, [idSeller, selectedItems, minPrice, maxPrice, queryItemSellerValue]);
+  }, [
+    idSeller,
+    selectedItems,
+    minPrice,
+    maxPrice,
+    queryItemSellerValue,
+    page,
+    limit,
+  ]);
 
   const fetchReview = useCallback(async () => {
     const token = Cookies.get('token');
@@ -327,10 +342,10 @@ const DetailTokoPage = ({ params }) => {
                   <div className="flex flex-col gap-[12px] grow">
                     <div>
                       <div className="flex justify-between">
-                        <h1 className="font-semibold text-[30px] md:text-[40px]">
+                        <h1 className="font-semibold text-[30px] md:text-[40px] grow">
                           {data.name}
                         </h1>
-                        <div className="w-full flex justify-end items-center grow-0 text-[14px] gap-1 ">
+                        <div className="flex justify-end items-center grow-0 text-[14px] gap-1 ">
                           <FaStar className="text-[#FEC810] text-2xl md:text-4xl" />
                           <div className="px-[3px] py-[6px] text-center text-[18px] md:text-[24px]">
                             <h1>{data.avgRating ?? 0}</h1>
@@ -450,8 +465,17 @@ const DetailTokoPage = ({ params }) => {
                     price={data.price}
                     seller={data.user.name}
                     href={`${data.user?.slug}/${data.slug}`}
+                    slug={data.user?.slug}
                   />
                 ))}
+            </div>
+            <div className="mb-4">
+              <Pagination
+                recordsTotal={recordsTotal}
+                limit={limit}
+                page={page}
+                setPage={setPage}
+              />
             </div>
           </div>
           <div className="lg:w-[280px] lg:h-[520px] bg-white lg:shadow-2xl lg:absolute lg:top-0 xl:-left-[134px] lg:-left-[24px] rounded-lg lg:pb-0 md:pb-5">
@@ -512,14 +536,21 @@ const DetailTokoPage = ({ params }) => {
                         Minimum
                       </label>
                       <input
-                        type="number"
+                        type="text" // Change the type to 'text' to allow formatting
                         id="number-input"
                         aria-describedby="helper-text-explanation"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder=""
                         required
-                        value={minPrice}
-                        onChange={(e) => setMinPrice(e.target.value)}
+                        value={
+                          minPrice !== ''
+                            ? `Rp ${parseInt(minPrice).toLocaleString()}`
+                            : ''
+                        } // Format the value as "Rp"
+                        onChange={(e) => {
+                          const rawValue = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
+                          setMinPrice(rawValue ? parseInt(rawValue) : ''); // Update the state with the raw integer value
+                        }}
                       />
                     </div>
 
@@ -531,14 +562,21 @@ const DetailTokoPage = ({ params }) => {
                         Maksimal
                       </label>
                       <input
-                        type="number"
+                        type="text" // Change the type to 'text' to allow formatting
                         id="number-input"
                         aria-describedby="helper-text-explanation"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder=""
                         required
-                        value={maxPrice}
-                        onChange={(e) => setMaxPrice(e.target.value)}
+                        value={
+                          maxPrice !== ''
+                            ? `Rp ${parseInt(maxPrice).toLocaleString()}`
+                            : ''
+                        } // Format the value as "Rp"
+                        onChange={(e) => {
+                          const rawValue = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
+                          setMaxPrice(rawValue ? parseInt(rawValue) : ''); // Update the state with the raw integer value
+                        }}
                       />
                     </div>
                   </div>

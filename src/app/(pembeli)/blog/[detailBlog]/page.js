@@ -140,9 +140,6 @@ const DetailBlogPage = ({ params }) => {
     }
   }, [fetchComment, idBlogData, addComment]); // Trigger fetchComment after idBlogData is set or addComment changes
 
-  console.log(limit);
-  console.log(limit);
-
   if (loading) {
     return <Loading />;
   }

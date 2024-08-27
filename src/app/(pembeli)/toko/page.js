@@ -8,6 +8,7 @@ import { useDebounce } from 'use-debounce';
 import NextBreadcrumb from '@/components/NextBreadcrumb';
 import CardTokoV2 from '@/components/card/CardTokoV2';
 import Loading from '@/components/Loading';
+import Pagination from '@/components/Pagination';
 
 import request from '@/utils/request';
 
@@ -15,21 +16,29 @@ const TokoPage = () => {
   const [sallerDatas, setSallerDatas] = useState();
   const [loading, setLoading] = useState(true);
   const [querySeller, setQuerySeller] = useState('');
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(25);
+  const [recordsTotal, setRecordsTotal] = useState('');
 
   const [querySellerValue] = useDebounce(querySeller, 500);
 
   const fetchSaller = useCallback(async () => {
-    let payload = { name_insensitive: querySellerValue };
+    let payload = {
+      name_insensitive: querySellerValue,
+      page: page,
+      limit: limit,
+    };
     await request
       .get(`/public/seller`, payload)
       .then(function (response) {
         setSallerDatas(response.data.data);
+        setRecordsTotal(response.data.recordsTotal);
         setLoading(false);
       })
       .catch(function (error) {
         setLoading(false);
       });
-  }, [querySellerValue]);
+  }, [querySellerValue, page, limit]);
 
   useEffect(() => {
     if (querySellerValue) {
@@ -80,6 +89,7 @@ const TokoPage = () => {
             Toko
           </h1>
         </div>
+
         <div className="xl:px-[60px] lg:px[50px] md:px-[40px] px-[0px] grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-x-[16px] gap-y-[30px]">
           {loading ? (
             <div>Loading</div>
@@ -96,6 +106,13 @@ const TokoPage = () => {
             ))
           )}
         </div>
+        <div className="h-[35px]"></div>
+        <Pagination
+          recordsTotal={recordsTotal}
+          limit={limit}
+          page={page}
+          setPage={setPage}
+        />
       </div>
     </div>
   );

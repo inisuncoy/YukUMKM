@@ -17,6 +17,7 @@ import Loading from '@/components/Loading';
 import NextBreadcrumb from '@/components/NextBreadcrumb';
 import CardProductV2 from '@/components/card/CardProductV2';
 import CardProductSmall from '@/components/card/CardProductSmall';
+import Pagination from '@/components/Pagination';
 
 import { NumberFormat } from '@/utils/numberFormat';
 import request from '@/utils/request';
@@ -31,6 +32,9 @@ const DetailProdukPage = ({ params }) => {
   const [sellerData, setSellerData] = useState(false);
   const [queryProduct, setQueryProduct] = useState('');
   const [modalSearch, setModalSearch] = useState(false);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(20);
+  const [recordsTotal, setRecordsTotal] = useState('');
 
   const [queryProductValue] = useDebounce(queryProduct, 500);
   const router = useRouter();
@@ -68,10 +72,16 @@ const DetailProdukPage = ({ params }) => {
   }, [detailProduk, router]);
 
   const fetchProductSeller = useCallback(async () => {
-    let payload = { status: true, name_insensitive: queryProductValue };
+    let payload = {
+      status: true,
+      name_insensitive: queryProductValue,
+      page: page,
+      limit: limit,
+    };
     try {
       const response = await request.get(`/public/item`, payload);
       setProductSellerDatas(response.data.data);
+      setRecordsTotal(response.data.recordsTotal);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching product saller data:', error);
@@ -79,7 +89,7 @@ const DetailProdukPage = ({ params }) => {
     } finally {
       setLoading(false);
     }
-  }, [queryProductValue]);
+  }, [queryProductValue, page, limit]);
 
   const checkTokenAndPerformAction = (action) => {
     const token = Cookies.get('token');
@@ -186,7 +196,7 @@ const DetailProdukPage = ({ params }) => {
                       />
                     </div>
 
-                    <div className="flex justify-between w-full lg:gap-0 md:gap-[54px]">
+                    <div className="grid grid-cols-3 w-full gap-2 lg:gap-2 md:gap-[54px]">
                       {productSellerById &&
                         productSellerById.item_image &&
                         productSellerById?.item_image.map((data, i) => (
@@ -327,8 +337,17 @@ const DetailProdukPage = ({ params }) => {
                       price={data.price}
                       seller={data.user.name}
                       href={`/toko/${data.user.slug}/${data.slug}`}
+                      slug={data.user?.slug}
                     />
                   ))}
+              </div>
+              <div className="my-4">
+                <Pagination
+                  recordsTotal={recordsTotal}
+                  limit={limit}
+                  page={page}
+                  setPage={setPage}
+                />
               </div>
             </div>
           </>
