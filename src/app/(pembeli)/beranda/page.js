@@ -182,7 +182,7 @@ export default function HomePage() {
                                   seller.profile_uri
                                     ? process.env.NEXT_PUBLIC_HOST +
                                       seller.profile_uri
-                                    : '/assets/logo/logoUMKM.png'
+                                    : '/assets/icon/defaultLogo.png'
                                 }
                                 className="w-full h-full object-cover object-bottom rounded-lg"
                               />
@@ -212,6 +212,7 @@ export default function HomePage() {
                                       seller={seller.name}
                                       href={`/toko/${seller.slug}/${product.slug}`}
                                       sizeImg={'w-[145px] h-[145px]'}
+                                      slug={seller.slug}
                                     />
                                   ))}
                               </div>
@@ -255,6 +256,7 @@ export default function HomePage() {
                       price={data.price}
                       seller={data.user.name}
                       href={`/toko/${data.user.slug}/${data.slug}`}
+                      slug={data.user.slug}
                     />
                   ))}
                 </div>

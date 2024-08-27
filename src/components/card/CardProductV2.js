@@ -16,6 +16,7 @@ const CardProductV2 = ({
   href,
   className,
   sizeImg,
+  slug,
 }) => {
   const router = useRouter();
   return (
@@ -52,7 +53,7 @@ const CardProductV2 = ({
           className="flex items-center gap-2 text-[10px] absolute bottom-2 left-3"
           onClick={(e) => {
             e.preventDefault();
-            router.push(`/toko/${seller}`);
+            router.push(`/toko/${slug}`);
           }}
         >
           <Image
